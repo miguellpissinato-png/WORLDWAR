@@ -1,0 +1,11 @@
+{
+  "_nota": "Construções iniciais por estado (código do mapa). Valores de exemplo, a balancear. Capitais que não aparecem aqui recebem 'default_capital_buildings' de scenario.json.",
+  "DEU-1599": { "civilian_factory": 6, "military_factory": 4, "infrastructure": 4 },
+  "RUS-2365": { "civilian_factory": 7, "military_factory": 3, "infrastructure": 3 },
+  "USA-3556": { "civilian_factory": 2, "infrastructure": 4 },
+  "GBR-R-Greater London": { "civilian_factory": 8, "military_factory": 2, "infrastructure": 4 },
+  "FRA-5333": { "civilian_factory": 7, "military_factory": 3, "infrastructure": 4 },
+  "ITA-5422": { "civilian_factory": 4, "military_factory": 2, "infrastructure": 3 },
+  "JPN-1860": { "civilian_factory": 6, "military_factory": 4, "infrastructure": 3 },
+  "BRA-627": { "civilian_factory": 2, "infrastructure": 2 }
+}

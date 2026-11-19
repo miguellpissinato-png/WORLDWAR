@@ -1,0 +1,417 @@
+{
+  "_nota": "Dono de cada estado em 1º/01/1936. 'countries': país moderno (código ISO do Natural Earth) -> país do jogo. 'states': exceções por estado, que têm prioridade. Fronteiras aproximadas pelas divisões atuais; a conferir com fontes.",
+  "countries": {
+    "ABW": "HOL",
+    "AFG": "AFE",
+    "AGO": "POR",
+    "AIA": "RUN",
+    "ALB": "ALB",
+    "ALD": "FIN",
+    "AND": "ESP",
+    "ARE": "RUN",
+    "ARG": "ARG",
+    "ARM": "URS",
+    "ASM": "EUA",
+    "ATC": "AUS",
+    "ATF": "FRA",
+    "ATG": "RUN",
+    "AUS": "AUS",
+    "AUT": "AUT",
+    "AZE": "URS",
+    "BDI": "BEL",
+    "BEL": "BEL",
+    "BEN": "FRA",
+    "BFA": "FRA",
+    "BGD": "IND",
+    "BGR": "BUL",
+    "BHR": "RUN",
+    "BHS": "RUN",
+    "BIH": "IUG",
+    "BLM": "FRA",
+    "BLR": "URS",
+    "BLZ": "RUN",
+    "BMU": "RUN",
+    "BOL": "BOL",
+    "BRA": "BRA",
+    "BRB": "RUN",
+    "BRN": "RUN",
+    "BTN": "BUT",
+    "BWA": "RUN",
+    "CAF": "FRA",
+    "CAN": "CAN",
+    "CHE": "SUI",
+    "CHL": "CHL",
+    "CHN": "CHI",
+    "CIV": "FRA",
+    "CLP": "FRA",
+    "CMR": "FRA",
+    "COD": "BEL",
+    "COG": "FRA",
+    "COK": "NZE",
+    "COL": "COL",
+    "COM": "FRA",
+    "CPV": "POR",
+    "CRI": "CRI",
+    "CSI": "AUS",
+    "CUB": "CUB",
+    "CUW": "HOL",
+    "CYM": "RUN",
+    "CYN": "RUN",
+    "CYP": "RUN",
+    "CZE": "TCH",
+    "DEU": "ALE",
+    "DJI": "FRA",
+    "DMA": "RUN",
+    "DNK": "DIN",
+    "DOM": "DOM",
+    "DZA": "FRA",
+    "ECU": "EQU",
+    "EGY": "EGI",
+    "ERI": "ITA",
+    "ESB": "RUN",
+    "ESP": "ESP",
+    "EST": "EST",
+    "ETH": "ETI",
+    "FIN": "FIN",
+    "FJI": "RUN",
+    "FLK": "RUN",
+    "FRA": "FRA",
+    "FRO": "DIN",
+    "FSM": "JAP",
+    "GAB": "FRA",
+    "GBR": "RUN",
+    "GEO": "URS",
+    "GGY": "RUN",
+    "GHA": "RUN",
+    "GIB": "RUN",
+    "GIN": "FRA",
+    "GMB": "RUN",
+    "GNB": "POR",
+    "GNQ": "ESP",
+    "GRC": "GRE",
+    "GRD": "RUN",
+    "GRL": "DIN",
+    "GTM": "GUA",
+    "GUM": "EUA",
+    "GUY": "RUN",
+    "HKG": "RUN",
+    "HMD": "AUS",
+    "HND": "HON",
+    "HRV": "IUG",
+    "HTI": "HAI",
+    "HUN": "HUN",
+    "IDN": "HOL",
+    "IMN": "RUN",
+    "IND": "IND",
+    "IOA": "RUN",
+    "IOT": "RUN",
+    "IRL": "IRL",
+    "IRN": "IRA",
+    "IRQ": "IRQ",
+    "ISL": "ISL",
+    "ISR": "RUN",
+    "ITA": "ITA",
+    "JAM": "RUN",
+    "JEY": "RUN",
+    "JOR": "RUN",
+    "JPN": "JAP",
+    "KAB": "URS",
+    "KAS": "IND",
+    "KAZ": "URS",
+    "KEN": "RUN",
+    "KGZ": "URS",
+    "KHM": "FRA",
+    "KIR": "RUN",
+    "KNA": "RUN",
+    "KOR": "JAP",
+    "KOS": "IUG",
+    "KWT": "RUN",
+    "LAO": "FRA",
+    "LBN": "FRA",
+    "LBR": "LIB",
+    "LBY": "ITA",
+    "LCA": "RUN",
+    "LIE": "SUI",
+    "LKA": "RUN",
+    "LSO": "RUN",
+    "LTU": "LIT",
+    "LUX": "LUX",
+    "LVA": "LET",
+    "MAC": "POR",
+    "MAF": "FRA",
+    "MAR": "FRA",
+    "MCO": "FRA",
+    "MDA": "ROM",
+    "MDG": "FRA",
+    "MDV": "RUN",
+    "MEX": "MEX",
+    "MHL": "JAP",
+    "MKD": "IUG",
+    "MLI": "FRA",
+    "MLT": "RUN",
+    "MMR": "IND",
+    "MNE": "IUG",
+    "MNG": "MON",
+    "MNP": "JAP",
+    "MOZ": "POR",
+    "MRT": "FRA",
+    "MSR": "RUN",
+    "MUS": "RUN",
+    "MWI": "RUN",
+    "MYS": "RUN",
+    "NAM": "AFS",
+    "NCL": "FRA",
+    "NER": "FRA",
+    "NFK": "AUS",
+    "NGA": "RUN",
+    "NIC": "NIC",
+    "NIU": "NZE",
+    "NLD": "HOL",
+    "NOR": "NOR",
+    "NPL": "NEP",
+    "NRU": "AUS",
+    "NZL": "NZE",
+    "OMN": "OMA",
+    "PAK": "IND",
+    "PAN": "PAN",
+    "PCN": "RUN",
+    "PER": "PER",
+    "PGA": "FRA",
+    "PHL": "EUA",
+    "PLW": "JAP",
+    "PNG": "AUS",
+    "POL": "POL",
+    "PRI": "EUA",
+    "PRK": "JAP",
+    "PRT": "POR",
+    "PRY": "PAR",
+    "PSX": "RUN",
+    "PYF": "FRA",
+    "QAT": "RUN",
+    "ROU": "ROM",
+    "RUS": "URS",
+    "RWA": "BEL",
+    "SAH": "ESP",
+    "SAU": "ARS",
+    "SDN": "RUN",
+    "SDS": "RUN",
+    "SEN": "FRA",
+    "SGP": "RUN",
+    "SGS": "RUN",
+    "SHN": "RUN",
+    "SLB": "RUN",
+    "SLE": "RUN",
+    "SLV": "ELS",
+    "SMR": "ITA",
+    "SOL": "RUN",
+    "SOM": "ITA",
+    "SPM": "FRA",
+    "SRB": "IUG",
+    "STP": "POR",
+    "SUR": "HOL",
+    "SVK": "TCH",
+    "SVN": "IUG",
+    "SWE": "SUE",
+    "SWZ": "RUN",
+    "SXM": "HOL",
+    "SYC": "RUN",
+    "SYR": "FRA",
+    "TCA": "RUN",
+    "TCD": "FRA",
+    "TGO": "FRA",
+    "THA": "SIA",
+    "TJK": "URS",
+    "TKM": "URS",
+    "TLS": "POR",
+    "TON": "RUN",
+    "TTO": "RUN",
+    "TUN": "FRA",
+    "TUR": "TUR",
+    "TUV": "RUN",
+    "TWN": "JAP",
+    "TZA": "RUN",
+    "UGA": "RUN",
+    "UKR": "URS",
+    "UMI": "EUA",
+    "URY": "URU",
+    "USA": "EUA",
+    "USG": "EUA",
+    "UZB": "URS",
+    "VAT": "ITA",
+    "VCT": "RUN",
+    "VEN": "VEN",
+    "VGB": "RUN",
+    "VIR": "EUA",
+    "VNM": "FRA",
+    "VUT": "FRA",
+    "WLF": "FRA",
+    "WSB": "RUN",
+    "WSM": "NZE",
+    "YEM": "IEM",
+    "ZAF": "AFS",
+    "ZMB": "RUN",
+    "ZWE": "RUN"
+  },
+  "states": {
+    "POL-3139": {
+      "owner": "ALE",
+      "note": "Prússia Oriental (hoje Vármia-Masúria)"
+    },
+    "POL-3142": {
+      "owner": "ALE",
+      "note": "Pomerânia (hoje Pomerânia Ocidental)"
+    },
+    "POL-3141": {
+      "owner": "ALE",
+      "note": "Baixa Silésia"
+    },
+    "POL-3143": {
+      "owner": "ALE",
+      "note": "Brandemburgo Oriental (hoje Lubúsquia)"
+    },
+    "POL-3167": {
+      "owner": "ALE",
+      "note": "Alta Silésia (hoje Opole)"
+    },
+    "RUS-2324": {
+      "owner": "ALE",
+      "note": "Königsberg (hoje Kaliningrado)"
+    },
+    "UKR-291": {
+      "owner": "POL",
+      "note": "Lwów (hoje Lviv)"
+    },
+    "UKR-286": {
+      "owner": "POL",
+      "note": "Volínia (hoje Rivne)"
+    },
+    "UKR-318": {
+      "owner": "POL",
+      "note": "Volínia"
+    },
+    "UKR-292": {
+      "owner": "POL",
+      "note": "Tarnopol"
+    },
+    "UKR-289": {
+      "owner": "POL",
+      "note": "Stanisławów"
+    },
+    "BLR-2338": {
+      "owner": "POL",
+      "note": "Brześć"
+    },
+    "BLR-2344": {
+      "owner": "POL",
+      "note": "Grodno"
+    },
+    "LTU-1075": {
+      "owner": "POL",
+      "note": "Wilno (hoje Vilnius)"
+    },
+    "UKR-288": {
+      "owner": "ROM",
+      "note": "Bucovina (hoje Chernivtsi)"
+    },
+    "UKR-293": {
+      "owner": "TCH",
+      "note": "Rutênia Subcarpática"
+    },
+    "RUS-2605": {
+      "owner": "TUV",
+      "note": "Tuva"
+    },
+    "CHN-1839": {
+      "owner": "MAN",
+      "note": "Heilongjiang"
+    },
+    "CHN-1828": {
+      "owner": "MAN",
+      "note": "Jilin"
+    },
+    "CHN-1813": {
+      "owner": "MAN",
+      "note": "Liaoning"
+    },
+    "CHN-1662": {
+      "owner": "TIB",
+      "note": "Tibete"
+    },
+    "TUR-2289": {
+      "owner": "FRA",
+      "note": "Sanjak de Alexandreta (Síria francesa)"
+    },
+    "HRV-1592": {
+      "owner": "ITA",
+      "note": "Ístria"
+    },
+    "HRV-1586": {
+      "owner": "ITA",
+      "note": "Fiume"
+    },
+    "SVN-R-Goriška": {
+      "owner": "ITA",
+      "note": "Gorizia"
+    },
+    "SVN-R-Obalno-kraška": {
+      "owner": "ITA",
+      "note": "Litoral"
+    },
+    "SVN-R-Notranjsko-kraška": {
+      "owner": "ITA",
+      "note": "Carniola Interior"
+    },
+    "YEM-3510": {
+      "owner": "RUN",
+      "note": "Colônia de Áden"
+    },
+    "YEM-3511": {
+      "owner": "RUN",
+      "note": "Protetorado de Áden"
+    },
+    "YEM-157": {
+      "owner": "RUN",
+      "note": "Protetorado de Áden"
+    },
+    "YEM-336": {
+      "owner": "RUN",
+      "note": "Protetorado de Áden"
+    },
+    "YEM-3497": {
+      "owner": "RUN",
+      "note": "Protetorado de Áden"
+    },
+    "YEM-332": {
+      "owner": "RUN",
+      "note": "Protetorado de Áden"
+    },
+    "YEM-334": {
+      "owner": "RUN",
+      "note": "Protetorado de Áden"
+    },
+    "CMR-1477": {
+      "owner": "RUN",
+      "note": "Camarões Britânicos"
+    },
+    "CMR-799": {
+      "owner": "RUN",
+      "note": "Camarões Britânicos"
+    },
+    "MAR-1445": {
+      "owner": "ESP",
+      "note": "Protetorado Espanhol do Marrocos"
+    },
+    "MAR-3456": {
+      "owner": "ESP",
+      "note": "Saara Espanhol"
+    },
+    "MAR-3469": {
+      "owner": "ESP",
+      "note": "Saara Espanhol"
+    },
+    "CAN-686": {
+      "owner": "RUN",
+      "note": "Domínio da Terra Nova"
+    }
+  }
+}

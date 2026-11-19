@@ -27,7 +27,18 @@ Documento de design completo: `docs/design.md`.
 - `src/data/` — carregamento dos JSON
 - `ui/` — cenas e scripts de interface
 - `data/common/` — definições gerais (construções etc.); `data/scenarios/<ano>/` — cenários
+- `ui/map/` — desenho do mapa: `map_view.gd` (imagem de IDs + shader), `map.gdshader`,
+  `map_labels.gd` (nomes curvos e capitais), `map_camera.gd`
+- `tools/map/` — scripts Python que geram `data/map/` a partir do Natural Earth
 - `tests/` — testes automáticos da simulação
+
+## Mapa
+
+- `data/map/states.json` (dados) e `data/map/shapes.json` (contornos, só a interface usa) são gerados;
+  não editar à mão. O id de cada estado depende da ordem dos códigos: use sempre o `code` nos dados.
+- Donos por cenário: `data/scenarios/<ano>/owners.json`. Capitais e construções iniciais usam o `code`.
+- O mapa é pintado por um shader que lê uma imagem de IDs; mudar o dono de um estado = chamar
+  `MapView.color_by_owner()` de novo (não precisa redesenhar polígonos).
 
 ## Testes
 

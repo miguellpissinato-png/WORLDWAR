@@ -9,15 +9,26 @@ Feito no Godot 4.5 com GDScript.
 2. No Godot, clique em **Importar** e escolha o arquivo `project.godot` desta pasta.
 3. Aperte **F5** para rodar.
 
-## Estado atual (Fase 1, início)
+## Estado atual (Fase 1)
 
-- Relógio do jogo com pausa e 5 velocidades (espaço e teclas 1–5)
-- Cenário de 1936 com 8 países de exemplo, cada um com um estado (a capital)
-- Fila de construção: fábricas civis, militares e infraestrutura
-- Todas as ações passam por comandos (base para o multiplayer)
-- 15 testes automáticos
+- Mapa mundial com 3.681 estados (divisões regionais do Natural Earth, domínio público), projeção de Miller
+- Fronteiras de 1º/01/1936 com 74 países, colônias e as principais diferenças das fronteiras atuais
+  (Prússia Oriental, leste da Polônia, Manchukuo, Coreia e Taiwan japonesas, Fiume e Ístria etc.)
+- Visual: terreno com textura, cores dos países translúcidas, fronteiras grossas com faixa clara,
+  linhas finas entre estados, oceano escuro, nomes curvos sobre os países e capitais com estrela
+- Clique num estado para ver os dados e construir (só nos seus estados)
+- Relógio do jogo com pausa e 5 velocidades; fila de construção; tudo via comandos
+- 19 testes automáticos
 
-Ainda não tem mapa: a tela atual é provisória. Os números em `data/` são valores de exemplo.
+Controles: roda do mouse = zoom, botão direito = arrastar, WASD = mover, espaço = pausar, 1–5 = velocidade.
+
+Os números de fábricas e os líderes de países menores ainda são provisórios (`data/`).
+
+## Mapa
+
+Os arquivos `data/map/` são gerados por `tools/map/build_map.py` a partir do Natural Earth.
+Os donos de cada estado em 1936 ficam em `data/scenarios/1936/owners.json` (regras por país moderno
+e exceções por estado), e podem ser editados sem programar.
 
 ## Testes
 
