@@ -1,5 +1,5 @@
 # Cache do Godot (gerado automaticamente)
 .godot/
-*.import
 export/
 *.tmp
+__pycache__/

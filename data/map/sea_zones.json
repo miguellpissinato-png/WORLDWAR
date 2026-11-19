@@ -1,0 +1,8552 @@
+[
+{
+"id":1,
+"code":"MAR-0001",
+"name":"Oceano Ártico 1",
+"center":[
+30.3,
+160.7
+]
+},
+{
+"id":2,
+"code":"MAR-0002",
+"name":"Oceano Ártico 2",
+"center":[
+45.4,
+245.6
+]
+},
+{
+"id":3,
+"code":"MAR-0003",
+"name":"Golfo do Anadyr",
+"center":[
+32.9,
+379.0
+]
+},
+{
+"id":4,
+"code":"MAR-0004",
+"name":"Mar de Bering 1",
+"center":[
+24.3,
+446.1
+]
+},
+{
+"id":5,
+"code":"MAR-0005",
+"name":"Mar de Bering 2",
+"center":[
+27.4,
+508.2
+]
+},
+{
+"id":6,
+"code":"MAR-0006",
+"name":"Oceano Pacífico 1",
+"center":[
+31.1,
+566.8
+]
+},
+{
+"id":7,
+"code":"MAR-0007",
+"name":"Oceano Pacífico 2",
+"center":[
+31.1,
+637.7
+]
+},
+{
+"id":8,
+"code":"MAR-0008",
+"name":"Oceano Pacífico 3",
+"center":[
+31.0,
+784.5
+]
+},
+{
+"id":9,
+"code":"MAR-0009",
+"name":"Oceano Pacífico 4",
+"center":[
+31.5,
+835.7
+]
+},
+{
+"id":10,
+"code":"MAR-0010",
+"name":"Oceano Pacífico 5",
+"center":[
+26.8,
+896.6
+]
+},
+{
+"id":11,
+"code":"MAR-0011",
+"name":"Oceano Pacífico 6",
+"center":[
+32.3,
+973.6
+]
+},
+{
+"id":12,
+"code":"MAR-0012",
+"name":"Oceano Pacífico 7",
+"center":[
+26.1,
+1059.7
+]
+},
+{
+"id":13,
+"code":"MAR-0013",
+"name":"Oceano Pacífico 8",
+"center":[
+24.1,
+1134.7
+]
+},
+{
+"id":14,
+"code":"MAR-0014",
+"name":"Oceano Pacífico 9",
+"center":[
+25.8,
+1187.9
+]
+},
+{
+"id":15,
+"code":"MAR-0015",
+"name":"Oceano Pacífico 10",
+"center":[
+29.9,
+1240.2
+]
+},
+{
+"id":16,
+"code":"MAR-0016",
+"name":"Oceano Pacífico 11",
+"center":[
+33.5,
+1301.7
+]
+},
+{
+"id":17,
+"code":"MAR-0017",
+"name":"Oceano Pacífico 12",
+"center":[
+34.3,
+1366.6
+]
+},
+{
+"id":18,
+"code":"MAR-0018",
+"name":"Oceano Pacífico 13",
+"center":[
+38.8,
+1422.2
+]
+},
+{
+"id":19,
+"code":"MAR-0019",
+"name":"Oceano Pacífico 14",
+"center":[
+19.7,
+1475.6
+]
+},
+{
+"id":20,
+"code":"MAR-0020",
+"name":"Oceano Pacífico 15",
+"center":[
+25.5,
+1534.3
+]
+},
+{
+"id":21,
+"code":"MAR-0021",
+"name":"Oceano Pacífico 16",
+"center":[
+25.3,
+1610.3
+]
+},
+{
+"id":22,
+"code":"MAR-0022",
+"name":"Oceano Pacífico 17",
+"center":[
+46.2,
+1663.3
+]
+},
+{
+"id":23,
+"code":"MAR-0023",
+"name":"Oceano Ártico 3",
+"center":[
+51.6,
+45.8
+]
+},
+{
+"id":24,
+"code":"MAR-0024",
+"name":"Oceano Ártico 4",
+"center":[
+91.1,
+160.6
+]
+},
+{
+"id":25,
+"code":"MAR-0025",
+"name":"Oceano Ártico 5",
+"center":[
+138.6,
+166.2
+]
+},
+{
+"id":26,
+"code":"MAR-0026",
+"name":"Mar de Chukchi 1",
+"center":[
+99.0,
+255.0
+]
+},
+{
+"id":27,
+"code":"MAR-0027",
+"name":"Mar de Chukchi 2",
+"center":[
+146.8,
+268.7
+]
+},
+{
+"id":28,
+"code":"MAR-0028",
+"name":"Mar de Chukchi 3",
+"center":[
+88.2,
+291.6
+]
+},
+{
+"id":29,
+"code":"MAR-0029",
+"name":"Mar de Chukchi 4",
+"center":[
+51.8,
+308.8
+]
+},
+{
+"id":30,
+"code":"MAR-0030",
+"name":"Mar de Chukchi 5",
+"center":[
+139.9,
+320.4
+]
+},
+{
+"id":31,
+"code":"MAR-0031",
+"name":"Mar de Bering 3",
+"center":[
+117.3,
+368.3
+]
+},
+{
+"id":32,
+"code":"MAR-0032",
+"name":"Mar de Bering 4",
+"center":[
+84.5,
+449.9
+]
+},
+{
+"id":33,
+"code":"MAR-0033",
+"name":"Mar de Bering 5",
+"center":[
+147.1,
+498.2
+]
+},
+{
+"id":34,
+"code":"MAR-0034",
+"name":"Mar de Bering 6",
+"center":[
+85.5,
+499.1
+]
+},
+{
+"id":35,
+"code":"MAR-0035",
+"name":"Oceano Pacífico 18",
+"center":[
+100.1,
+561.9
+]
+},
+{
+"id":36,
+"code":"MAR-0036",
+"name":"Oceano Pacífico 19",
+"center":[
+100.4,
+635.6
+]
+},
+{
+"id":37,
+"code":"MAR-0037",
+"name":"Oceano Pacífico 20",
+"center":[
+54.6,
+714.6
+]
+},
+{
+"id":38,
+"code":"MAR-0038",
+"name":"Oceano Pacífico 21",
+"center":[
+127.0,
+747.6
+]
+},
+{
+"id":39,
+"code":"MAR-0039",
+"name":"Oceano Pacífico 22",
+"center":[
+85.3,
+787.0
+]
+},
+{
+"id":40,
+"code":"MAR-0040",
+"name":"Oceano Pacífico 23",
+"center":[
+100.2,
+854.7
+]
+},
+{
+"id":41,
+"code":"MAR-0041",
+"name":"Oceano Pacífico 24",
+"center":[
+143.1,
+885.4
+]
+},
+{
+"id":42,
+"code":"MAR-0042",
+"name":"Oceano Pacífico 25",
+"center":[
+78.2,
+902.4
+]
+},
+{
+"id":43,
+"code":"MAR-0043",
+"name":"Oceano Pacífico 26",
+"center":[
+100.7,
+967.6
+]
+},
+{
+"id":44,
+"code":"MAR-0044",
+"name":"Oceano Pacífico 27",
+"center":[
+79.9,
+1022.9
+]
+},
+{
+"id":45,
+"code":"MAR-0045",
+"name":"Oceano Pacífico 28",
+"center":[
+132.2,
+1033.4
+]
+},
+{
+"id":46,
+"code":"MAR-0046",
+"name":"Oceano Pacífico 29",
+"center":[
+87.0,
+1075.4
+]
+},
+{
+"id":47,
+"code":"MAR-0047",
+"name":"Oceano Pacífico 30",
+"center":[
+79.8,
+1120.1
+]
+},
+{
+"id":48,
+"code":"MAR-0048",
+"name":"Oceano Pacífico 31",
+"center":[
+140.6,
+1120.1
+]
+},
+{
+"id":49,
+"code":"MAR-0049",
+"name":"Oceano Pacífico 32",
+"center":[
+83.4,
+1187.8
+]
+},
+{
+"id":50,
+"code":"MAR-0050",
+"name":"Oceano Pacífico 33",
+"center":[
+136.7,
+1191.7
+]
+},
+{
+"id":51,
+"code":"MAR-0051",
+"name":"Oceano Pacífico 34",
+"center":[
+87.7,
+1255.1
+]
+},
+{
+"id":52,
+"code":"MAR-0052",
+"name":"Oceano Pacífico 35",
+"center":[
+141.7,
+1300.8
+]
+},
+{
+"id":53,
+"code":"MAR-0053",
+"name":"Oceano Pacífico 36",
+"center":[
+81.9,
+1313.9
+]
+},
+{
+"id":54,
+"code":"MAR-0054",
+"name":"Oceano Pacífico 37",
+"center":[
+90.3,
+1366.2
+]
+},
+{
+"id":55,
+"code":"MAR-0055",
+"name":"Oceano Pacífico 38",
+"center":[
+140.1,
+1368.6
+]
+},
+{
+"id":56,
+"code":"MAR-0056",
+"name":"Oceano Pacífico 39",
+"center":[
+86.4,
+1410.5
+]
+},
+{
+"id":57,
+"code":"MAR-0057",
+"name":"Oceano Pacífico 40",
+"center":[
+71.4,
+1486.7
+]
+},
+{
+"id":58,
+"code":"MAR-0058",
+"name":"Oceano Pacífico 41",
+"center":[
+101.4,
+1536.0
+]
+},
+{
+"id":59,
+"code":"MAR-0059",
+"name":"Oceano Pacífico 42",
+"center":[
+108.7,
+1659.2
+]
+},
+{
+"id":60,
+"code":"MAR-0060",
+"name":"Oceano Pacífico 43",
+"center":[
+59.5,
+1743.9
+]
+},
+{
+"id":61,
+"code":"MAR-0061",
+"name":"Oceano Ártico 6",
+"center":[
+189.1,
+45.8
+]
+},
+{
+"id":62,
+"code":"MAR-0062",
+"name":"Oceano Ártico 7",
+"center":[
+187.9,
+163.3
+]
+},
+{
+"id":63,
+"code":"MAR-0063",
+"name":"Oceano Ártico 8",
+"center":[
+216.9,
+240.8
+]
+},
+{
+"id":64,
+"code":"MAR-0064",
+"name":"Mar de Bering 7",
+"center":[
+151.7,
+441.2
+]
+},
+{
+"id":65,
+"code":"MAR-0065",
+"name":"Oceano Pacífico 44",
+"center":[
+160.8,
+546.2
+]
+},
+{
+"id":66,
+"code":"MAR-0066",
+"name":"Oceano Pacífico 45",
+"center":[
+238.5,
+597.5
+]
+},
+{
+"id":67,
+"code":"MAR-0067",
+"name":"Oceano Pacífico 46",
+"center":[
+190.2,
+616.0
+]
+},
+{
+"id":68,
+"code":"MAR-0068",
+"name":"Oceano Pacífico 47",
+"center":[
+212.1,
+740.3
+]
+},
+{
+"id":69,
+"code":"MAR-0069",
+"name":"Oceano Pacífico 48",
+"center":[
+162.9,
+804.8
+]
+},
+{
+"id":70,
+"code":"MAR-0070",
+"name":"Oceano Pacífico 49",
+"center":[
+210.5,
+819.9
+]
+},
+{
+"id":71,
+"code":"MAR-0071",
+"name":"Oceano Pacífico 50",
+"center":[
+202.1,
+907.0
+]
+},
+{
+"id":72,
+"code":"MAR-0072",
+"name":"Oceano Pacífico 51",
+"center":[
+209.2,
+954.3
+]
+},
+{
+"id":73,
+"code":"MAR-0073",
+"name":"Oceano Pacífico 52",
+"center":[
+154.9,
+955.3
+]
+},
+{
+"id":74,
+"code":"MAR-0074",
+"name":"Oceano Pacífico 53",
+"center":[
+197.2,
+1003.9
+]
+},
+{
+"id":75,
+"code":"MAR-0075",
+"name":"Oceano Pacífico 54",
+"center":[
+159.7,
+1050.7
+]
+},
+{
+"id":76,
+"code":"MAR-0076",
+"name":"Oceano Pacífico 55",
+"center":[
+217.5,
+1062.1
+]
+},
+{
+"id":77,
+"code":"MAR-0077",
+"name":"Oceano Pacífico 56",
+"center":[
+197.1,
+1115.9
+]
+},
+{
+"id":78,
+"code":"MAR-0078",
+"name":"Oceano Pacífico 57",
+"center":[
+191.8,
+1189.0
+]
+},
+{
+"id":79,
+"code":"MAR-0079",
+"name":"Oceano Pacífico 58",
+"center":[
+210.3,
+1248.8
+]
+},
+{
+"id":80,
+"code":"MAR-0080",
+"name":"Oceano Pacífico 59",
+"center":[
+150.9,
+1249.3
+]
+},
+{
+"id":81,
+"code":"MAR-0081",
+"name":"Oceano Pacífico 60",
+"center":[
+208.1,
+1300.1
+]
+},
+{
+"id":82,
+"code":"MAR-0082",
+"name":"Oceano Pacífico 61",
+"center":[
+196.2,
+1364.6
+]
+},
+{
+"id":83,
+"code":"MAR-0083",
+"name":"Oceano Pacífico 62",
+"center":[
+179.6,
+1441.4
+]
+},
+{
+"id":84,
+"code":"MAR-0084",
+"name":"Oceano Pacífico 63",
+"center":[
+203.4,
+1615.5
+]
+},
+{
+"id":85,
+"code":"MAR-0085",
+"name":"Oceano Pacífico 64",
+"center":[
+207.3,
+1743.9
+]
+},
+{
+"id":86,
+"code":"MAR-0086",
+"name":"Oceano Ártico 9",
+"center":[
+250.9,
+162.2
+]
+},
+{
+"id":87,
+"code":"MAR-0087",
+"name":"Oceano Ártico 10",
+"center":[
+306.8,
+163.5
+]
+},
+{
+"id":88,
+"code":"MAR-0088",
+"name":"Mar de Beaufort 1",
+"center":[
+297.2,
+248.8
+]
+},
+{
+"id":89,
+"code":"MAR-0089",
+"name":"Golfo do Alasca",
+"center":[
+302.7,
+475.5
+]
+},
+{
+"id":90,
+"code":"MAR-0090",
+"name":"Oceano Pacífico 65",
+"center":[
+288.4,
+585.2
+]
+},
+{
+"id":91,
+"code":"MAR-0091",
+"name":"Oceano Pacífico 66",
+"center":[
+285.8,
+833.2
+]
+},
+{
+"id":92,
+"code":"MAR-0092",
+"name":"Oceano Pacífico 67",
+"center":[
+310.9,
+895.9
+]
+},
+{
+"id":93,
+"code":"MAR-0093",
+"name":"Oceano Pacífico 68",
+"center":[
+261.4,
+899.6
+]
+},
+{
+"id":94,
+"code":"MAR-0094",
+"name":"Oceano Pacífico 69",
+"center":[
+268.8,
+954.3
+]
+},
+{
+"id":95,
+"code":"MAR-0095",
+"name":"Oceano Pacífico 70",
+"center":[
+337.4,
+965.4
+]
+},
+{
+"id":96,
+"code":"MAR-0096",
+"name":"Oceano Pacífico 71",
+"center":[
+266.3,
+1006.0
+]
+},
+{
+"id":97,
+"code":"MAR-0097",
+"name":"Oceano Pacífico 72",
+"center":[
+267.9,
+1077.2
+]
+},
+{
+"id":98,
+"code":"MAR-0098",
+"name":"Oceano Pacífico 73",
+"center":[
+309.7,
+1105.7
+]
+},
+{
+"id":99,
+"code":"MAR-0099",
+"name":"Oceano Pacífico 74",
+"center":[
+252.1,
+1134.1
+]
+},
+{
+"id":100,
+"code":"MAR-0100",
+"name":"Oceano Pacífico 75",
+"center":[
+259.8,
+1187.0
+]
+},
+{
+"id":101,
+"code":"MAR-0101",
+"name":"Oceano Pacífico 76",
+"center":[
+331.4,
+1211.2
+]
+},
+{
+"id":102,
+"code":"MAR-0102",
+"name":"Oceano Pacífico 77",
+"center":[
+270.8,
+1232.8
+]
+},
+{
+"id":103,
+"code":"MAR-0103",
+"name":"Oceano Pacífico 78",
+"center":[
+317.9,
+1251.9
+]
+},
+{
+"id":104,
+"code":"MAR-0104",
+"name":"Oceano Pacífico 79",
+"center":[
+272.0,
+1314.1
+]
+},
+{
+"id":105,
+"code":"MAR-0105",
+"name":"Oceano Pacífico 80",
+"center":[
+327.2,
+1315.0
+]
+},
+{
+"id":106,
+"code":"MAR-0106",
+"name":"Oceano Pacífico 81",
+"center":[
+254.7,
+1367.5
+]
+},
+{
+"id":107,
+"code":"MAR-0107",
+"name":"Oceano Pacífico 82",
+"center":[
+316.2,
+1371.3
+]
+},
+{
+"id":108,
+"code":"MAR-0108",
+"name":"Oceano Pacífico 83",
+"center":[
+319.5,
+1437.4
+]
+},
+{
+"id":109,
+"code":"MAR-0109",
+"name":"Oceano Pacífico 84",
+"center":[
+259.7,
+1462.5
+]
+},
+{
+"id":110,
+"code":"MAR-0110",
+"name":"Oceano Ártico 11",
+"center":[
+361.0,
+31.2
+]
+},
+{
+"id":111,
+"code":"MAR-0111",
+"name":"Oceano Ártico 12",
+"center":[
+407.1,
+144.1
+]
+},
+{
+"id":112,
+"code":"MAR-0112",
+"name":"Oceano Ártico 13",
+"center":[
+354.7,
+166.5
+]
+},
+{
+"id":113,
+"code":"MAR-0113",
+"name":"Mar de Beaufort 2",
+"center":[
+363.1,
+251.4
+]
+},
+{
+"id":114,
+"code":"MAR-0114",
+"name":"Mar de Beaufort 3",
+"center":[
+419.1,
+258.6
+]
+},
+{
+"id":115,
+"code":"MAR-0115",
+"name":"Oceano Pacífico 85",
+"center":[
+371.9,
+478.5
+]
+},
+{
+"id":116,
+"code":"MAR-0116",
+"name":"Oceano Pacífico 86",
+"center":[
+432.2,
+491.8
+]
+},
+{
+"id":117,
+"code":"MAR-0117",
+"name":"Oceano Pacífico 87",
+"center":[
+354.4,
+587.7
+]
+},
+{
+"id":118,
+"code":"MAR-0118",
+"name":"Oceano Pacífico 88",
+"center":[
+394.8,
+596.8
+]
+},
+{
+"id":119,
+"code":"MAR-0119",
+"name":"Oceano Pacífico 89",
+"center":[
+432.3,
+601.0
+]
+},
+{
+"id":120,
+"code":"MAR-0120",
+"name":"Oceano Pacífico 90",
+"center":[
+358.1,
+720.5
+]
+},
+{
+"id":121,
+"code":"MAR-0121",
+"name":"Oceano Pacífico 91",
+"center":[
+401.3,
+909.9
+]
+},
+{
+"id":122,
+"code":"MAR-0122",
+"name":"Oceano Pacífico 92",
+"center":[
+381.5,
+1044.2
+]
+},
+{
+"id":123,
+"code":"MAR-0123",
+"name":"Oceano Pacífico 93",
+"center":[
+443.0,
+1109.4
+]
+},
+{
+"id":124,
+"code":"MAR-0124",
+"name":"Oceano Pacífico 94",
+"center":[
+359.4,
+1127.2
+]
+},
+{
+"id":125,
+"code":"MAR-0125",
+"name":"Oceano Pacífico 95",
+"center":[
+426.0,
+1192.5
+]
+},
+{
+"id":126,
+"code":"MAR-0126",
+"name":"Oceano Pacífico 96",
+"center":[
+386.2,
+1205.5
+]
+},
+{
+"id":127,
+"code":"MAR-0127",
+"name":"Oceano Pacífico 97",
+"center":[
+372.0,
+1252.0
+]
+},
+{
+"id":128,
+"code":"MAR-0128",
+"name":"Oceano Pacífico 98",
+"center":[
+433.8,
+1259.7
+]
+},
+{
+"id":129,
+"code":"MAR-0129",
+"name":"Oceano Pacífico 99",
+"center":[
+372.2,
+1307.6
+]
+},
+{
+"id":130,
+"code":"MAR-0130",
+"name":"Oceano Pacífico 100",
+"center":[
+436.1,
+1314.1
+]
+},
+{
+"id":131,
+"code":"MAR-0131",
+"name":"Oceano Pacífico 101",
+"center":[
+377.9,
+1360.8
+]
+},
+{
+"id":132,
+"code":"MAR-0132",
+"name":"Oceano Pacífico 102",
+"center":[
+428.5,
+1376.2
+]
+},
+{
+"id":133,
+"code":"MAR-0133",
+"name":"Oceano Pacífico 103",
+"center":[
+427.2,
+1418.5
+]
+},
+{
+"id":134,
+"code":"MAR-0134",
+"name":"Oceano Pacífico 104",
+"center":[
+369.1,
+1420.1
+]
+},
+{
+"id":135,
+"code":"MAR-0135",
+"name":"Oceano Pacífico 105",
+"center":[
+390.8,
+1492.4
+]
+},
+{
+"id":136,
+"code":"MAR-0136",
+"name":"Oceano Pacífico 106",
+"center":[
+368.4,
+1604.2
+]
+},
+{
+"id":137,
+"code":"MAR-0137",
+"name":"Oceano Pacífico 107",
+"center":[
+381.5,
+1738.3
+]
+},
+{
+"id":138,
+"code":"MAR-0138",
+"name":"Oceano Ártico 14",
+"center":[
+520.1,
+30.9
+]
+},
+{
+"id":139,
+"code":"MAR-0139",
+"name":"Oceano Ártico 15",
+"center":[
+544.5,
+87.6
+]
+},
+{
+"id":140,
+"code":"MAR-0140",
+"name":"Oceano Ártico 16",
+"center":[
+536.7,
+111.9
+]
+},
+{
+"id":141,
+"code":"MAR-0141",
+"name":"Oceano Ártico 17",
+"center":[
+477.3,
+126.5
+]
+},
+{
+"id":142,
+"code":"MAR-0142",
+"name":"Mar de Beaufort 4",
+"center":[
+533.8,
+194.1
+]
+},
+{
+"id":143,
+"code":"MAR-0143",
+"name":"Mar de Beaufort 5",
+"center":[
+482.9,
+211.1
+]
+},
+{
+"id":144,
+"code":"MAR-0144",
+"name":"Golfo de Amundsen 1",
+"center":[
+544.4,
+257.0
+]
+},
+{
+"id":145,
+"code":"MAR-0145",
+"name":"Mar de Beaufort 6",
+"center":[
+475.9,
+268.5
+]
+},
+{
+"id":146,
+"code":"MAR-0146",
+"name":"Oceano Pacífico 108",
+"center":[
+466.3,
+541.2
+]
+},
+{
+"id":147,
+"code":"MAR-0147",
+"name":"Oceano Pacífico 109",
+"center":[
+505.5,
+600.7
+]
+},
+{
+"id":148,
+"code":"MAR-0148",
+"name":"Oceano Pacífico 110",
+"center":[
+495.2,
+656.3
+]
+},
+{
+"id":149,
+"code":"MAR-0149",
+"name":"Oceano Pacífico 111",
+"center":[
+482.4,
+720.5
+]
+},
+{
+"id":150,
+"code":"MAR-0150",
+"name":"Oceano Pacífico 112",
+"center":[
+474.4,
+784.9
+]
+},
+{
+"id":151,
+"code":"MAR-0151",
+"name":"Oceano Pacífico 113",
+"center":[
+513.1,
+852.7
+]
+},
+{
+"id":152,
+"code":"MAR-0152",
+"name":"Oceano Pacífico 114",
+"center":[
+526.1,
+912.2
+]
+},
+{
+"id":153,
+"code":"MAR-0153",
+"name":"Oceano Pacífico 115",
+"center":[
+546.6,
+1090.9
+]
+},
+{
+"id":154,
+"code":"MAR-0154",
+"name":"Oceano Pacífico 116",
+"center":[
+494.3,
+1180.4
+]
+},
+{
+"id":155,
+"code":"MAR-0155",
+"name":"Oceano Pacífico 117",
+"center":[
+491.5,
+1255.5
+]
+},
+{
+"id":156,
+"code":"MAR-0156",
+"name":"Oceano Pacífico 118",
+"center":[
+499.3,
+1301.9
+]
+},
+{
+"id":157,
+"code":"MAR-0157",
+"name":"Oceano Pacífico 119",
+"center":[
+483.5,
+1356.5
+]
+},
+{
+"id":158,
+"code":"MAR-0158",
+"name":"Oceano Pacífico 120",
+"center":[
+500.7,
+1438.6
+]
+},
+{
+"id":159,
+"code":"MAR-0159",
+"name":"Oceano Pacífico 121",
+"center":[
+544.7,
+1611.2
+]
+},
+{
+"id":160,
+"code":"MAR-0160",
+"name":"Oceano Ártico 18",
+"center":[
+646.5,
+36.4
+]
+},
+{
+"id":161,
+"code":"MAR-0161",
+"name":"Oceano Ártico 19",
+"center":[
+602.6,
+84.1
+]
+},
+{
+"id":162,
+"code":"MAR-0162",
+"name":"Passagem do Noroeste 1",
+"center":[
+612.2,
+156.3
+]
+},
+{
+"id":163,
+"code":"MAR-0163",
+"name":"Golfo de Amundsen 2",
+"center":[
+622.5,
+265.7
+]
+},
+{
+"id":164,
+"code":"MAR-0164",
+"name":"Oceano Pacífico 122",
+"center":[
+551.0,
+719.1
+]
+},
+{
+"id":165,
+"code":"MAR-0165",
+"name":"Oceano Pacífico 123",
+"center":[
+552.1,
+784.9
+]
+},
+{
+"id":166,
+"code":"MAR-0166",
+"name":"Oceano Pacífico 124",
+"center":[
+605.8,
+792.5
+]
+},
+{
+"id":167,
+"code":"MAR-0167",
+"name":"Oceano Pacífico 125",
+"center":[
+619.8,
+852.5
+]
+},
+{
+"id":168,
+"code":"MAR-0168",
+"name":"Oceano Pacífico 126",
+"center":[
+619.4,
+899.9
+]
+},
+{
+"id":169,
+"code":"MAR-0169",
+"name":"Oceano Pacífico 127",
+"center":[
+578.0,
+952.9
+]
+},
+{
+"id":170,
+"code":"MAR-0170",
+"name":"Oceano Pacífico 128",
+"center":[
+611.2,
+1028.5
+]
+},
+{
+"id":171,
+"code":"MAR-0171",
+"name":"Oceano Pacífico 129",
+"center":[
+575.8,
+1227.6
+]
+},
+{
+"id":172,
+"code":"MAR-0172",
+"name":"Oceano Pacífico 130",
+"center":[
+573.9,
+1307.5
+]
+},
+{
+"id":173,
+"code":"MAR-0173",
+"name":"Oceano Pacífico 131",
+"center":[
+615.8,
+1355.3
+]
+},
+{
+"id":174,
+"code":"MAR-0174",
+"name":"Oceano Pacífico 132",
+"center":[
+550.5,
+1357.6
+]
+},
+{
+"id":175,
+"code":"MAR-0175",
+"name":"Oceano Pacífico 133",
+"center":[
+567.5,
+1458.1
+]
+},
+{
+"id":176,
+"code":"MAR-0176",
+"name":"Oceano Pacífico 134",
+"center":[
+605.0,
+1474.7
+]
+},
+{
+"id":177,
+"code":"MAR-0177",
+"name":"Oceano Pacífico 135",
+"center":[
+557.3,
+1738.3
+]
+},
+{
+"id":178,
+"code":"MAR-0178",
+"name":"Oceano Ártico 20",
+"center":[
+708.9,
+17.8
+]
+},
+{
+"id":179,
+"code":"MAR-0179",
+"name":"Oceano Ártico 21",
+"center":[
+725.6,
+75.5
+]
+},
+{
+"id":180,
+"code":"MAR-0180",
+"name":"Passagem do Noroeste 2",
+"center":[
+680.7,
+134.9
+]
+},
+{
+"id":181,
+"code":"MAR-0181",
+"name":"Passagem do Noroeste 3",
+"center":[
+732.1,
+143.8
+]
+},
+{
+"id":182,
+"code":"MAR-0182",
+"name":"Viscount Melville Sound 1",
+"center":[
+661.2,
+200.4
+]
+},
+{
+"id":183,
+"code":"MAR-0183",
+"name":"Viscount Melville Sound 2",
+"center":[
+708.1,
+207.4
+]
+},
+{
+"id":184,
+"code":"MAR-0184",
+"name":"Passagem do Noroeste 4",
+"center":[
+690.6,
+307.7
+]
+},
+{
+"id":185,
+"code":"MAR-0185",
+"name":"Oceano Pacífico 136",
+"center":[
+666.5,
+872.9
+]
+},
+{
+"id":186,
+"code":"MAR-0186",
+"name":"Oceano Pacífico 137",
+"center":[
+726.0,
+895.4
+]
+},
+{
+"id":187,
+"code":"MAR-0187",
+"name":"Oceano Pacífico 138",
+"center":[
+655.7,
+953.7
+]
+},
+{
+"id":188,
+"code":"MAR-0188",
+"name":"Oceano Pacífico 139",
+"center":[
+712.2,
+960.1
+]
+},
+{
+"id":189,
+"code":"MAR-0189",
+"name":"Oceano Pacífico 140",
+"center":[
+670.3,
+1028.0
+]
+},
+{
+"id":190,
+"code":"MAR-0190",
+"name":"Oceano Pacífico 141",
+"center":[
+738.9,
+1033.7
+]
+},
+{
+"id":191,
+"code":"MAR-0191",
+"name":"Oceano Pacífico 142",
+"center":[
+745.6,
+1089.3
+]
+},
+{
+"id":192,
+"code":"MAR-0192",
+"name":"Oceano Pacífico 143",
+"center":[
+654.8,
+1106.0
+]
+},
+{
+"id":193,
+"code":"MAR-0193",
+"name":"Oceano Pacífico 144",
+"center":[
+706.8,
+1221.3
+]
+},
+{
+"id":194,
+"code":"MAR-0194",
+"name":"Oceano Pacífico 145",
+"center":[
+661.1,
+1335.1
+]
+},
+{
+"id":195,
+"code":"MAR-0195",
+"name":"Oceano Pacífico 146",
+"center":[
+714.0,
+1338.8
+]
+},
+{
+"id":196,
+"code":"MAR-0196",
+"name":"Oceano Pacífico 147",
+"center":[
+683.8,
+1404.3
+]
+},
+{
+"id":197,
+"code":"MAR-0197",
+"name":"Oceano Pacífico 148",
+"center":[
+718.6,
+1418.0
+]
+},
+{
+"id":198,
+"code":"MAR-0198",
+"name":"Oceano Pacífico 149",
+"center":[
+659.5,
+1492.7
+]
+},
+{
+"id":199,
+"code":"MAR-0199",
+"name":"Oceano Pacífico 150",
+"center":[
+733.2,
+1499.8
+]
+},
+{
+"id":200,
+"code":"MAR-0200",
+"name":"Oceano Pacífico 151",
+"center":[
+715.9,
+1618.9
+]
+},
+{
+"id":201,
+"code":"MAR-0201",
+"name":"Oceano Pacífico 152",
+"center":[
+729.9,
+1737.0
+]
+},
+{
+"id":202,
+"code":"MAR-0202",
+"name":"Oceano Ártico 22",
+"center":[
+789.1,
+17.8
+]
+},
+{
+"id":203,
+"code":"MAR-0203",
+"name":"Oceano Ártico 23",
+"center":[
+843.6,
+19.7
+]
+},
+{
+"id":204,
+"code":"MAR-0204",
+"name":"Passagem do Noroeste 5",
+"center":[
+781.2,
+81.6
+]
+},
+{
+"id":205,
+"code":"MAR-0205",
+"name":"Passagem do Noroeste 6",
+"center":[
+835.1,
+93.6
+]
+},
+{
+"id":206,
+"code":"MAR-0206",
+"name":"Passagem do Noroeste 7",
+"center":[
+758.1,
+152.3
+]
+},
+{
+"id":207,
+"code":"MAR-0207",
+"name":"Passagem do Noroeste 8",
+"center":[
+773.7,
+198.8
+]
+},
+{
+"id":208,
+"code":"MAR-0208",
+"name":"Passagem do Noroeste 9",
+"center":[
+788.0,
+252.9
+]
+},
+{
+"id":209,
+"code":"MAR-0209",
+"name":"Passagem do Noroeste 10",
+"center":[
+804.0,
+286.7
+]
+},
+{
+"id":210,
+"code":"MAR-0210",
+"name":"Golfo do México 1",
+"center":[
+843.5,
+891.2
+]
+},
+{
+"id":211,
+"code":"MAR-0211",
+"name":"Oceano Pacífico 153",
+"center":[
+779.9,
+959.1
+]
+},
+{
+"id":212,
+"code":"MAR-0212",
+"name":"Oceano Pacífico 154",
+"center":[
+848.0,
+1005.8
+]
+},
+{
+"id":213,
+"code":"MAR-0213",
+"name":"Oceano Pacífico 155",
+"center":[
+797.1,
+1016.2
+]
+},
+{
+"id":214,
+"code":"MAR-0214",
+"name":"Oceano Pacífico 156",
+"center":[
+825.4,
+1077.1
+]
+},
+{
+"id":215,
+"code":"MAR-0215",
+"name":"Oceano Pacífico 157",
+"center":[
+824.4,
+1134.0
+]
+},
+{
+"id":216,
+"code":"MAR-0216",
+"name":"Oceano Pacífico 158",
+"center":[
+818.2,
+1193.1
+]
+},
+{
+"id":217,
+"code":"MAR-0217",
+"name":"Oceano Pacífico 159",
+"center":[
+795.7,
+1338.8
+]
+},
+{
+"id":218,
+"code":"MAR-0218",
+"name":"Oceano Pacífico 160",
+"center":[
+782.6,
+1420.5
+]
+},
+{
+"id":219,
+"code":"MAR-0219",
+"name":"Oceano Pacífico 161",
+"center":[
+805.9,
+1479.1
+]
+},
+{
+"id":220,
+"code":"MAR-0220",
+"name":"Oceano Ártico 24",
+"center":[
+887.8,
+41.3
+]
+},
+{
+"id":221,
+"code":"MAR-0221",
+"name":"Passagem do Noroeste 11",
+"center":[
+870.3,
+130.4
+]
+},
+{
+"id":222,
+"code":"MAR-0222",
+"name":"Passagem do Noroeste 12",
+"center":[
+939.3,
+218.5
+]
+},
+{
+"id":223,
+"code":"MAR-0223",
+"name":"Passagem do Noroeste 13",
+"center":[
+896.9,
+251.9
+]
+},
+{
+"id":224,
+"code":"MAR-0224",
+"name":"Baía de Hudson 1",
+"center":[
+895.9,
+433.2
+]
+},
+{
+"id":225,
+"code":"MAR-0225",
+"name":"Golfo do México 2",
+"center":[
+851.0,
+838.6
+]
+},
+{
+"id":226,
+"code":"MAR-0226",
+"name":"Golfo do México 3",
+"center":[
+896.5,
+839.3
+]
+},
+{
+"id":227,
+"code":"MAR-0227",
+"name":"Golfo do México 4",
+"center":[
+946.2,
+840.4
+]
+},
+{
+"id":228,
+"code":"MAR-0228",
+"name":"Golfo do México 5",
+"center":[
+893.8,
+895.3
+]
+},
+{
+"id":229,
+"code":"MAR-0229",
+"name":"Mar das Caraíbas 1",
+"center":[
+944.6,
+900.8
+]
+},
+{
+"id":230,
+"code":"MAR-0230",
+"name":"Oceano Pacífico 162",
+"center":[
+906.5,
+1006.9
+]
+},
+{
+"id":231,
+"code":"MAR-0231",
+"name":"Oceano Pacífico 163",
+"center":[
+898.8,
+1077.6
+]
+},
+{
+"id":232,
+"code":"MAR-0232",
+"name":"Oceano Pacífico 164",
+"center":[
+884.5,
+1135.2
+]
+},
+{
+"id":233,
+"code":"MAR-0233",
+"name":"Oceano Pacífico 165",
+"center":[
+885.8,
+1194.3
+]
+},
+{
+"id":234,
+"code":"MAR-0234",
+"name":"Oceano Pacífico 166",
+"center":[
+934.6,
+1208.3
+]
+},
+{
+"id":235,
+"code":"MAR-0235",
+"name":"Oceano Pacífico 167",
+"center":[
+869.2,
+1273.4
+]
+},
+{
+"id":236,
+"code":"MAR-0236",
+"name":"Oceano Pacífico 168",
+"center":[
+904.3,
+1370.9
+]
+},
+{
+"id":237,
+"code":"MAR-0237",
+"name":"Oceano Pacífico 169",
+"center":[
+873.3,
+1424.2
+]
+},
+{
+"id":238,
+"code":"MAR-0238",
+"name":"Oceano Pacífico 170",
+"center":[
+941.7,
+1479.6
+]
+},
+{
+"id":239,
+"code":"MAR-0239",
+"name":"Oceano Pacífico 171",
+"center":[
+944.0,
+1529.2
+]
+},
+{
+"id":240,
+"code":"MAR-0240",
+"name":"Oceano Pacífico 172",
+"center":[
+866.6,
+1609.9
+]
+},
+{
+"id":241,
+"code":"MAR-0241",
+"name":"Oceano Pacífico 173",
+"center":[
+873.2,
+1709.6
+]
+},
+{
+"id":242,
+"code":"MAR-0242",
+"name":"Oceano Ártico 25",
+"center":[
+965.1,
+14.1
+]
+},
+{
+"id":243,
+"code":"MAR-0243",
+"name":"Baía de Baffin 1",
+"center":[
+1032.8,
+148.8
+]
+},
+{
+"id":244,
+"code":"MAR-0244",
+"name":"Baía de Baffin 2",
+"center":[
+1014.0,
+195.7
+]
+},
+{
+"id":245,
+"code":"MAR-0245",
+"name":"Bacia de Foxe 1",
+"center":[
+998.9,
+287.8
+]
+},
+{
+"id":246,
+"code":"MAR-0246",
+"name":"Bacia de Foxe 2",
+"center":[
+1007.9,
+314.9
+]
+},
+{
+"id":247,
+"code":"MAR-0247",
+"name":"Bacia de Foxe 3",
+"center":[
+971.9,
+352.8
+]
+},
+{
+"id":248,
+"code":"MAR-0248",
+"name":"Baía de Hudson 2",
+"center":[
+1004.2,
+430.1
+]
+},
+{
+"id":249,
+"code":"MAR-0249",
+"name":"Baía de Hudson 3",
+"center":[
+961.7,
+430.5
+]
+},
+{
+"id":250,
+"code":"MAR-0250",
+"name":"Baía de Hudson 4",
+"center":[
+990.6,
+509.9
+]
+},
+{
+"id":251,
+"code":"MAR-0251",
+"name":"Oceano Atlântico 1",
+"center":[
+1013.2,
+794.7
+]
+},
+{
+"id":252,
+"code":"MAR-0252",
+"name":"Estreito da Flórida",
+"center":[
+1012.7,
+854.9
+]
+},
+{
+"id":253,
+"code":"MAR-0253",
+"name":"Mar das Caraíbas 2",
+"center":[
+997.4,
+913.1
+]
+},
+{
+"id":254,
+"code":"MAR-0254",
+"name":"Mar das Caraíbas 3",
+"center":[
+1007.8,
+952.0
+]
+},
+{
+"id":255,
+"code":"MAR-0255",
+"name":"Mar das Caraíbas 4",
+"center":[
+967.7,
+960.5
+]
+},
+{
+"id":256,
+"code":"MAR-0256",
+"name":"Mar das Caraíbas 5",
+"center":[
+1008.8,
+1010.3
+]
+},
+{
+"id":257,
+"code":"MAR-0257",
+"name":"Oceano Pacífico 174",
+"center":[
+962.9,
+1063.7
+]
+},
+{
+"id":258,
+"code":"MAR-0258",
+"name":"Oceano Pacífico 175",
+"center":[
+1008.7,
+1065.2
+]
+},
+{
+"id":259,
+"code":"MAR-0259",
+"name":"Oceano Pacífico 176",
+"center":[
+956.8,
+1131.4
+]
+},
+{
+"id":260,
+"code":"MAR-0260",
+"name":"Oceano Pacífico 177",
+"center":[
+970.0,
+1213.3
+]
+},
+{
+"id":261,
+"code":"MAR-0261",
+"name":"Oceano Pacífico 178",
+"center":[
+1004.5,
+1227.0
+]
+},
+{
+"id":262,
+"code":"MAR-0262",
+"name":"Oceano Pacífico 179",
+"center":[
+956.7,
+1285.9
+]
+},
+{
+"id":263,
+"code":"MAR-0263",
+"name":"Oceano Pacífico 180",
+"center":[
+1008.6,
+1299.1
+]
+},
+{
+"id":264,
+"code":"MAR-0264",
+"name":"Oceano Pacífico 181",
+"center":[
+1012.5,
+1366.2
+]
+},
+{
+"id":265,
+"code":"MAR-0265",
+"name":"Oceano Pacífico 182",
+"center":[
+957.7,
+1367.8
+]
+},
+{
+"id":266,
+"code":"MAR-0266",
+"name":"Oceano Pacífico 183",
+"center":[
+1013.8,
+1413.4
+]
+},
+{
+"id":267,
+"code":"MAR-0267",
+"name":"Oceano Pacífico 184",
+"center":[
+953.2,
+1424.2
+]
+},
+{
+"id":268,
+"code":"MAR-0268",
+"name":"Oceano Pacífico 185",
+"center":[
+1037.7,
+1473.9
+]
+},
+{
+"id":269,
+"code":"MAR-0269",
+"name":"Oceano Pacífico 186",
+"center":[
+1027.6,
+1538.8
+]
+},
+{
+"id":270,
+"code":"MAR-0270",
+"name":"Oceano Pacífico 187",
+"center":[
+1025.1,
+1593.0
+]
+},
+{
+"id":271,
+"code":"MAR-0271",
+"name":"Oceano Pacífico 188",
+"center":[
+957.6,
+1598.0
+]
+},
+{
+"id":272,
+"code":"MAR-0272",
+"name":"Oceano Pacífico 189",
+"center":[
+996.1,
+1655.0
+]
+},
+{
+"id":273,
+"code":"MAR-0273",
+"name":"Oceano Pacífico 190",
+"center":[
+992.4,
+1700.7
+]
+},
+{
+"id":274,
+"code":"MAR-0274",
+"name":"Oceano Pacífico 191",
+"center":[
+986.3,
+1759.5
+]
+},
+{
+"id":275,
+"code":"MAR-0275",
+"name":"Bacia de Kane",
+"center":[
+1111.5,
+64.6
+]
+},
+{
+"id":276,
+"code":"MAR-0276",
+"name":"Baía de Baffin 3",
+"center":[
+1071.4,
+124.3
+]
+},
+{
+"id":277,
+"code":"MAR-0277",
+"name":"Baía de Baffin 4",
+"center":[
+1139.1,
+191.0
+]
+},
+{
+"id":278,
+"code":"MAR-0278",
+"name":"Baía de Baffin 5",
+"center":[
+1079.6,
+202.3
+]
+},
+{
+"id":279,
+"code":"MAR-0279",
+"name":"Baía de Baffin 6",
+"center":[
+1140.7,
+263.9
+]
+},
+{
+"id":280,
+"code":"MAR-0280",
+"name":"Estreito de Hudson 1",
+"center":[
+1050.2,
+379.0
+]
+},
+{
+"id":281,
+"code":"MAR-0281",
+"name":"Estreito de Hudson 2",
+"center":[
+1135.5,
+423.0
+]
+},
+{
+"id":282,
+"code":"MAR-0282",
+"name":"Oceano Atlântico 2",
+"center":[
+1125.2,
+671.6
+]
+},
+{
+"id":283,
+"code":"MAR-0283",
+"name":"Oceano Atlântico 3",
+"center":[
+1072.9,
+719.0
+]
+},
+{
+"id":284,
+"code":"MAR-0284",
+"name":"Oceano Atlântico 4",
+"center":[
+1121.7,
+742.4
+]
+},
+{
+"id":285,
+"code":"MAR-0285",
+"name":"Oceano Atlântico 5",
+"center":[
+1066.3,
+783.4
+]
+},
+{
+"id":286,
+"code":"MAR-0286",
+"name":"Mar dos Sargaços 1",
+"center":[
+1121.6,
+783.4
+]
+},
+{
+"id":287,
+"code":"MAR-0287",
+"name":"Mar dos Sargaços 2",
+"center":[
+1126.2,
+841.3
+]
+},
+{
+"id":288,
+"code":"MAR-0288",
+"name":"Oceano Atlântico 6",
+"center":[
+1086.0,
+868.0
+]
+},
+{
+"id":289,
+"code":"MAR-0289",
+"name":"Oceano Atlântico 7",
+"center":[
+1074.4,
+889.5
+]
+},
+{
+"id":290,
+"code":"MAR-0290",
+"name":"Oceano Atlântico 8",
+"center":[
+1120.2,
+906.1
+]
+},
+{
+"id":291,
+"code":"MAR-0291",
+"name":"Mar das Caraíbas 6",
+"center":[
+1062.9,
+962.2
+]
+},
+{
+"id":292,
+"code":"MAR-0292",
+"name":"Mar das Caraíbas 7",
+"center":[
+1125.4,
+962.2
+]
+},
+{
+"id":293,
+"code":"MAR-0293",
+"name":"Mar das Caraíbas 8",
+"center":[
+1057.8,
+1003.6
+]
+},
+{
+"id":294,
+"code":"MAR-0294",
+"name":"Oceano Pacífico 192",
+"center":[
+1064.6,
+1305.4
+]
+},
+{
+"id":295,
+"code":"MAR-0295",
+"name":"Oceano Pacífico 193",
+"center":[
+1069.4,
+1367.7
+]
+},
+{
+"id":296,
+"code":"MAR-0296",
+"name":"Oceano Pacífico 194",
+"center":[
+1064.4,
+1426.9
+]
+},
+{
+"id":297,
+"code":"MAR-0297",
+"name":"Oceano Atlântico 9",
+"center":[
+1139.7,
+1700.6
+]
+},
+{
+"id":298,
+"code":"MAR-0298",
+"name":"Oceano Pacífico 195",
+"center":[
+1065.8,
+1742.0
+]
+},
+{
+"id":299,
+"code":"MAR-0299",
+"name":"Canal Robeson",
+"center":[
+1194.0,
+23.3
+]
+},
+{
+"id":300,
+"code":"MAR-0300",
+"name":"Baía de Baffin 7",
+"center":[
+1198.0,
+189.6
+]
+},
+{
+"id":301,
+"code":"MAR-0301",
+"name":"Baía de Baffin 8",
+"center":[
+1202.1,
+241.8
+]
+},
+{
+"id":302,
+"code":"MAR-0302",
+"name":"Baía de Baffin 9",
+"center":[
+1236.4,
+261.7
+]
+},
+{
+"id":303,
+"code":"MAR-0303",
+"name":"Estreito de Davis 1",
+"center":[
+1181.5,
+312.0
+]
+},
+{
+"id":304,
+"code":"MAR-0304",
+"name":"Estreito de Davis 2",
+"center":[
+1234.2,
+320.5
+]
+},
+{
+"id":305,
+"code":"MAR-0305",
+"name":"Estreito de Davis 3",
+"center":[
+1185.4,
+374.3
+]
+},
+{
+"id":306,
+"code":"MAR-0306",
+"name":"Mar do Labrador 1",
+"center":[
+1199.8,
+435.0
+]
+},
+{
+"id":307,
+"code":"MAR-0307",
+"name":"Oceano Atlântico 10",
+"center":[
+1193.4,
+642.8
+]
+},
+{
+"id":308,
+"code":"MAR-0308",
+"name":"Mar dos Sargaços 3",
+"center":[
+1225.3,
+766.3
+]
+},
+{
+"id":309,
+"code":"MAR-0309",
+"name":"Mar dos Sargaços 4",
+"center":[
+1174.9,
+773.7
+]
+},
+{
+"id":310,
+"code":"MAR-0310",
+"name":"Mar dos Sargaços 5",
+"center":[
+1213.5,
+841.3
+]
+},
+{
+"id":311,
+"code":"MAR-0311",
+"name":"Mar dos Sargaços 6",
+"center":[
+1184.8,
+906.7
+]
+},
+{
+"id":312,
+"code":"MAR-0312",
+"name":"Oceano Atlântico 11",
+"center":[
+1230.2,
+970.6
+]
+},
+{
+"id":313,
+"code":"MAR-0313",
+"name":"Mar das Caraíbas 9",
+"center":[
+1168.4,
+985.2
+]
+},
+{
+"id":314,
+"code":"MAR-0314",
+"name":"Oceano Atlântico 12",
+"center":[
+1237.3,
+1020.6
+]
+},
+{
+"id":315,
+"code":"MAR-0315",
+"name":"Oceano Atlântico 13",
+"center":[
+1224.6,
+1533.7
+]
+},
+{
+"id":316,
+"code":"MAR-0316",
+"name":"Oceano Atlântico 14",
+"center":[
+1196.0,
+1592.1
+]
+},
+{
+"id":317,
+"code":"MAR-0317",
+"name":"Oceano Atlântico 15",
+"center":[
+1157.9,
+1599.3
+]
+},
+{
+"id":318,
+"code":"MAR-0318",
+"name":"Oceano Atlântico 16",
+"center":[
+1187.5,
+1657.4
+]
+},
+{
+"id":319,
+"code":"MAR-0319",
+"name":"Oceano Atlântico 17",
+"center":[
+1225.6,
+1722.1
+]
+},
+{
+"id":320,
+"code":"MAR-0320",
+"name":"Oceano Atlântico 18",
+"center":[
+1249.8,
+1761.6
+]
+},
+{
+"id":321,
+"code":"MAR-0321",
+"name":"Baía de Disko",
+"center":[
+1277.0,
+291.2
+]
+},
+{
+"id":322,
+"code":"MAR-0322",
+"name":"Estreito de Davis 4",
+"center":[
+1251.0,
+378.2
+]
+},
+{
+"id":323,
+"code":"MAR-0323",
+"name":"Estreito de Davis 5",
+"center":[
+1306.2,
+420.4
+]
+},
+{
+"id":324,
+"code":"MAR-0324",
+"name":"Estreito de Davis 6",
+"center":[
+1261.4,
+429.1
+]
+},
+{
+"id":325,
+"code":"MAR-0325",
+"name":"Mar do Labrador 2",
+"center":[
+1306.9,
+494.2
+]
+},
+{
+"id":326,
+"code":"MAR-0326",
+"name":"Mar do Labrador 3",
+"center":[
+1260.4,
+523.4
+]
+},
+{
+"id":327,
+"code":"MAR-0327",
+"name":"Oceano Atlântico 19",
+"center":[
+1321.9,
+555.7
+]
+},
+{
+"id":328,
+"code":"MAR-0328",
+"name":"Oceano Atlântico 20",
+"center":[
+1329.9,
+610.3
+]
+},
+{
+"id":329,
+"code":"MAR-0329",
+"name":"Oceano Atlântico 21",
+"center":[
+1251.4,
+660.2
+]
+},
+{
+"id":330,
+"code":"MAR-0330",
+"name":"Oceano Atlântico 22",
+"center":[
+1315.7,
+732.7
+]
+},
+{
+"id":331,
+"code":"MAR-0331",
+"name":"Oceano Atlântico 23",
+"center":[
+1267.3,
+753.2
+]
+},
+{
+"id":332,
+"code":"MAR-0332",
+"name":"Mar dos Sargaços 7",
+"center":[
+1291.9,
+847.1
+]
+},
+{
+"id":333,
+"code":"MAR-0333",
+"name":"Oceano Atlântico 24",
+"center":[
+1319.7,
+1020.0
+]
+},
+{
+"id":334,
+"code":"MAR-0334",
+"name":"Oceano Atlântico 25",
+"center":[
+1315.3,
+1095.3
+]
+},
+{
+"id":335,
+"code":"MAR-0335",
+"name":"Oceano Atlântico 26",
+"center":[
+1295.1,
+1468.0
+]
+},
+{
+"id":336,
+"code":"MAR-0336",
+"name":"Oceano Atlântico 27",
+"center":[
+1310.0,
+1551.6
+]
+},
+{
+"id":337,
+"code":"MAR-0337",
+"name":"Oceano Atlântico 28",
+"center":[
+1256.1,
+1588.9
+]
+},
+{
+"id":338,
+"code":"MAR-0338",
+"name":"Oceano Atlântico 29",
+"center":[
+1269.9,
+1628.3
+]
+},
+{
+"id":339,
+"code":"MAR-0339",
+"name":"Oceano Atlântico 30",
+"center":[
+1309.2,
+1702.0
+]
+},
+{
+"id":340,
+"code":"MAR-0340",
+"name":"Oceano Atlântico 31",
+"center":[
+1345.7,
+1756.3
+]
+},
+{
+"id":341,
+"code":"MAR-0341",
+"name":"Oceano Atlântico 32",
+"center":[
+1417.6,
+376.8
+]
+},
+{
+"id":342,
+"code":"MAR-0342",
+"name":"Oceano Atlântico 33",
+"center":[
+1422.8,
+441.5
+]
+},
+{
+"id":343,
+"code":"MAR-0343",
+"name":"Oceano Atlântico 34",
+"center":[
+1358.9,
+445.3
+]
+},
+{
+"id":344,
+"code":"MAR-0344",
+"name":"Oceano Atlântico 35",
+"center":[
+1355.4,
+494.2
+]
+},
+{
+"id":345,
+"code":"MAR-0345",
+"name":"Oceano Atlântico 36",
+"center":[
+1402.6,
+513.8
+]
+},
+{
+"id":346,
+"code":"MAR-0346",
+"name":"Oceano Atlântico 37",
+"center":[
+1439.1,
+557.5
+]
+},
+{
+"id":347,
+"code":"MAR-0347",
+"name":"Oceano Atlântico 38",
+"center":[
+1394.2,
+672.9
+]
+},
+{
+"id":348,
+"code":"MAR-0348",
+"name":"Oceano Atlântico 39",
+"center":[
+1410.7,
+754.8
+]
+},
+{
+"id":349,
+"code":"MAR-0349",
+"name":"Oceano Atlântico 40",
+"center":[
+1389.2,
+911.5
+]
+},
+{
+"id":350,
+"code":"MAR-0350",
+"name":"Oceano Atlântico 41",
+"center":[
+1417.8,
+1046.5
+]
+},
+{
+"id":351,
+"code":"MAR-0351",
+"name":"Oceano Atlântico 42",
+"center":[
+1366.0,
+1065.8
+]
+},
+{
+"id":352,
+"code":"MAR-0352",
+"name":"Oceano Atlântico 43",
+"center":[
+1361.2,
+1117.4
+]
+},
+{
+"id":353,
+"code":"MAR-0353",
+"name":"Oceano Atlântico 44",
+"center":[
+1419.7,
+1128.0
+]
+},
+{
+"id":354,
+"code":"MAR-0354",
+"name":"Oceano Atlântico 45",
+"center":[
+1429.5,
+1251.5
+]
+},
+{
+"id":355,
+"code":"MAR-0355",
+"name":"Oceano Atlântico 46",
+"center":[
+1421.2,
+1342.2
+]
+},
+{
+"id":356,
+"code":"MAR-0356",
+"name":"Oceano Atlântico 47",
+"center":[
+1370.7,
+1365.5
+]
+},
+{
+"id":357,
+"code":"MAR-0357",
+"name":"Oceano Atlântico 48",
+"center":[
+1356.8,
+1416.4
+]
+},
+{
+"id":358,
+"code":"MAR-0358",
+"name":"Oceano Atlântico 49",
+"center":[
+1361.8,
+1476.3
+]
+},
+{
+"id":359,
+"code":"MAR-0359",
+"name":"Oceano Atlântico 50",
+"center":[
+1428.5,
+1555.9
+]
+},
+{
+"id":360,
+"code":"MAR-0360",
+"name":"Oceano Atlântico 51",
+"center":[
+1353.8,
+1634.8
+]
+},
+{
+"id":361,
+"code":"MAR-0361",
+"name":"Oceano Atlântico 52",
+"center":[
+1416.8,
+1649.0
+]
+},
+{
+"id":362,
+"code":"MAR-0362",
+"name":"Oceano Atlântico 53",
+"center":[
+1369.0,
+1719.5
+]
+},
+{
+"id":363,
+"code":"MAR-0363",
+"name":"Oceano Atlântico 54",
+"center":[
+1418.6,
+1730.0
+]
+},
+{
+"id":364,
+"code":"MAR-0364",
+"name":"Oceano Atlântico 55",
+"center":[
+1484.8,
+319.6
+]
+},
+{
+"id":365,
+"code":"MAR-0365",
+"name":"Estreito da Dinamarca",
+"center":[
+1530.5,
+323.4
+]
+},
+{
+"id":366,
+"code":"MAR-0366",
+"name":"Oceano Atlântico 56",
+"center":[
+1474.1,
+374.5
+]
+},
+{
+"id":367,
+"code":"MAR-0367",
+"name":"Oceano Atlântico 57",
+"center":[
+1530.0,
+450.6
+]
+},
+{
+"id":368,
+"code":"MAR-0368",
+"name":"Oceano Atlântico 58",
+"center":[
+1483.0,
+451.8
+]
+},
+{
+"id":369,
+"code":"MAR-0369",
+"name":"Oceano Atlântico 59",
+"center":[
+1469.3,
+657.0
+]
+},
+{
+"id":370,
+"code":"MAR-0370",
+"name":"Oceano Atlântico 60",
+"center":[
+1524.1,
+657.0
+]
+},
+{
+"id":371,
+"code":"MAR-0371",
+"name":"Oceano Atlântico 61",
+"center":[
+1537.5,
+729.6
+]
+},
+{
+"id":372,
+"code":"MAR-0372",
+"name":"Oceano Atlântico 62",
+"center":[
+1482.5,
+730.1
+]
+},
+{
+"id":373,
+"code":"MAR-0373",
+"name":"Oceano Atlântico 63",
+"center":[
+1473.1,
+785.7
+]
+},
+{
+"id":374,
+"code":"MAR-0374",
+"name":"Oceano Atlântico 64",
+"center":[
+1541.4,
+785.7
+]
+},
+{
+"id":375,
+"code":"MAR-0375",
+"name":"Oceano Atlântico 65",
+"center":[
+1525.0,
+839.8
+]
+},
+{
+"id":376,
+"code":"MAR-0376",
+"name":"Oceano Atlântico 66",
+"center":[
+1541.3,
+898.2
+]
+},
+{
+"id":377,
+"code":"MAR-0377",
+"name":"Oceano Atlântico 67",
+"center":[
+1466.6,
+941.9
+]
+},
+{
+"id":378,
+"code":"MAR-0378",
+"name":"Oceano Atlântico 68",
+"center":[
+1531.8,
+951.0
+]
+},
+{
+"id":379,
+"code":"MAR-0379",
+"name":"Oceano Atlântico 69",
+"center":[
+1511.2,
+1022.2
+]
+},
+{
+"id":380,
+"code":"MAR-0380",
+"name":"Oceano Atlântico 70",
+"center":[
+1476.0,
+1068.3
+]
+},
+{
+"id":381,
+"code":"MAR-0381",
+"name":"Oceano Atlântico 71",
+"center":[
+1542.0,
+1068.3
+]
+},
+{
+"id":382,
+"code":"MAR-0382",
+"name":"Oceano Atlântico 72",
+"center":[
+1473.6,
+1133.3
+]
+},
+{
+"id":383,
+"code":"MAR-0383",
+"name":"Oceano Atlântico 73",
+"center":[
+1526.0,
+1137.3
+]
+},
+{
+"id":384,
+"code":"MAR-0384",
+"name":"Oceano Atlântico 74",
+"center":[
+1527.4,
+1192.8
+]
+},
+{
+"id":385,
+"code":"MAR-0385",
+"name":"Oceano Atlântico 75",
+"center":[
+1476.9,
+1202.4
+]
+},
+{
+"id":386,
+"code":"MAR-0386",
+"name":"Oceano Atlântico 76",
+"center":[
+1468.4,
+1255.1
+]
+},
+{
+"id":387,
+"code":"MAR-0387",
+"name":"Oceano Atlântico 77",
+"center":[
+1532.9,
+1255.1
+]
+},
+{
+"id":388,
+"code":"MAR-0388",
+"name":"Oceano Atlântico 78",
+"center":[
+1491.4,
+1298.1
+]
+},
+{
+"id":389,
+"code":"MAR-0389",
+"name":"Oceano Atlântico 79",
+"center":[
+1481.5,
+1363.6
+]
+},
+{
+"id":390,
+"code":"MAR-0390",
+"name":"Oceano Atlântico 80",
+"center":[
+1540.9,
+1368.6
+]
+},
+{
+"id":391,
+"code":"MAR-0391",
+"name":"Oceano Atlântico 81",
+"center":[
+1450.6,
+1460.7
+]
+},
+{
+"id":392,
+"code":"MAR-0392",
+"name":"Oceano Atlântico 82",
+"center":[
+1484.5,
+1643.6
+]
+},
+{
+"id":393,
+"code":"MAR-0393",
+"name":"Oceano Atlântico 83",
+"center":[
+1530.0,
+1700.0
+]
+},
+{
+"id":394,
+"code":"MAR-0394",
+"name":"Oceano Atlântico 84",
+"center":[
+1489.8,
+1713.9
+]
+},
+{
+"id":395,
+"code":"MAR-0395",
+"name":"Oceano Atlântico 85",
+"center":[
+1534.3,
+1756.3
+]
+},
+{
+"id":396,
+"code":"MAR-0396",
+"name":"Oceano Atlântico 86",
+"center":[
+1481.4,
+1760.6
+]
+},
+{
+"id":397,
+"code":"MAR-0397",
+"name":"mar da Gronelândia 1",
+"center":[
+1611.0,
+29.3
+]
+},
+{
+"id":398,
+"code":"MAR-0398",
+"name":"mar da Gronelândia 2",
+"center":[
+1621.9,
+133.1
+]
+},
+{
+"id":399,
+"code":"MAR-0399",
+"name":"mar da Gronelândia 3",
+"center":[
+1597.2,
+196.8
+]
+},
+{
+"id":400,
+"code":"MAR-0400",
+"name":"mar da Gronelândia 4",
+"center":[
+1608.2,
+243.6
+]
+},
+{
+"id":401,
+"code":"MAR-0401",
+"name":"Scoresby Sund",
+"center":[
+1567.9,
+267.1
+]
+},
+{
+"id":402,
+"code":"MAR-0402",
+"name":"mar da Gronelândia 5",
+"center":[
+1594.8,
+316.5
+]
+},
+{
+"id":403,
+"code":"MAR-0403",
+"name":"Oceano Atlântico 87",
+"center":[
+1551.8,
+387.2
+]
+},
+{
+"id":404,
+"code":"MAR-0404",
+"name":"Oceano Atlântico 88",
+"center":[
+1640.4,
+387.9
+]
+},
+{
+"id":405,
+"code":"MAR-0405",
+"name":"Oceano Atlântico 89",
+"center":[
+1593.5,
+440.5
+]
+},
+{
+"id":406,
+"code":"MAR-0406",
+"name":"Oceano Atlântico 90",
+"center":[
+1569.5,
+494.8
+]
+},
+{
+"id":407,
+"code":"MAR-0407",
+"name":"Oceano Atlântico 91",
+"center":[
+1567.1,
+575.8
+]
+},
+{
+"id":408,
+"code":"MAR-0408",
+"name":"Oceano Atlântico 92",
+"center":[
+1642.8,
+620.8
+]
+},
+{
+"id":409,
+"code":"MAR-0409",
+"name":"Oceano Atlântico 93",
+"center":[
+1573.2,
+640.0
+]
+},
+{
+"id":410,
+"code":"MAR-0410",
+"name":"Oceano Atlântico 94",
+"center":[
+1602.3,
+715.5
+]
+},
+{
+"id":411,
+"code":"MAR-0411",
+"name":"Oceano Atlântico 95",
+"center":[
+1591.4,
+778.9
+]
+},
+{
+"id":412,
+"code":"MAR-0412",
+"name":"Oceano Atlântico 96",
+"center":[
+1595.2,
+847.3
+]
+},
+{
+"id":413,
+"code":"MAR-0413",
+"name":"Oceano Atlântico 97",
+"center":[
+1604.2,
+912.4
+]
+},
+{
+"id":414,
+"code":"MAR-0414",
+"name":"Oceano Atlântico 98",
+"center":[
+1599.3,
+968.8
+]
+},
+{
+"id":415,
+"code":"MAR-0415",
+"name":"Oceano Atlântico 99",
+"center":[
+1585.6,
+1009.6
+]
+},
+{
+"id":416,
+"code":"MAR-0416",
+"name":"Oceano Atlântico 100",
+"center":[
+1639.1,
+1025.8
+]
+},
+{
+"id":417,
+"code":"MAR-0417",
+"name":"Oceano Atlântico 101",
+"center":[
+1607.4,
+1075.6
+]
+},
+{
+"id":418,
+"code":"MAR-0418",
+"name":"Oceano Atlântico 102",
+"center":[
+1578.3,
+1132.5
+]
+},
+{
+"id":419,
+"code":"MAR-0419",
+"name":"Oceano Atlântico 103",
+"center":[
+1641.2,
+1136.1
+]
+},
+{
+"id":420,
+"code":"MAR-0420",
+"name":"Oceano Atlântico 104",
+"center":[
+1590.9,
+1193.4
+]
+},
+{
+"id":421,
+"code":"MAR-0421",
+"name":"Oceano Atlântico 105",
+"center":[
+1598.6,
+1240.8
+]
+},
+{
+"id":422,
+"code":"MAR-0422",
+"name":"Oceano Atlântico 106",
+"center":[
+1638.8,
+1296.6
+]
+},
+{
+"id":423,
+"code":"MAR-0423",
+"name":"Oceano Atlântico 107",
+"center":[
+1558.1,
+1322.1
+]
+},
+{
+"id":424,
+"code":"MAR-0424",
+"name":"Oceano Atlântico 108",
+"center":[
+1608.8,
+1360.5
+]
+},
+{
+"id":425,
+"code":"MAR-0425",
+"name":"Oceano Atlântico 109",
+"center":[
+1573.1,
+1416.6
+]
+},
+{
+"id":426,
+"code":"MAR-0426",
+"name":"Oceano Atlântico 110",
+"center":[
+1645.0,
+1422.4
+]
+},
+{
+"id":427,
+"code":"MAR-0427",
+"name":"Oceano Atlântico 111",
+"center":[
+1566.2,
+1491.5
+]
+},
+{
+"id":428,
+"code":"MAR-0428",
+"name":"Oceano Atlântico 112",
+"center":[
+1606.9,
+1553.2
+]
+},
+{
+"id":429,
+"code":"MAR-0429",
+"name":"Oceano Atlântico 113",
+"center":[
+1565.5,
+1590.9
+]
+},
+{
+"id":430,
+"code":"MAR-0430",
+"name":"Oceano Atlântico 114",
+"center":[
+1646.8,
+1610.1
+]
+},
+{
+"id":431,
+"code":"MAR-0431",
+"name":"Oceano Atlântico 115",
+"center":[
+1563.1,
+1660.3
+]
+},
+{
+"id":432,
+"code":"MAR-0432",
+"name":"Oceano Atlântico 116",
+"center":[
+1628.2,
+1692.3
+]
+},
+{
+"id":433,
+"code":"MAR-0433",
+"name":"Oceano Atlântico 117",
+"center":[
+1620.5,
+1763.4
+]
+},
+{
+"id":434,
+"code":"MAR-0434",
+"name":"mar da Gronelândia 6",
+"center":[
+1723.7,
+30.1
+]
+},
+{
+"id":435,
+"code":"MAR-0435",
+"name":"mar da Gronelândia 7",
+"center":[
+1683.2,
+31.0
+]
+},
+{
+"id":436,
+"code":"MAR-0436",
+"name":"mar da Gronelândia 8",
+"center":[
+1653.5,
+98.3
+]
+},
+{
+"id":437,
+"code":"MAR-0437",
+"name":"mar da Gronelândia 9",
+"center":[
+1711.7,
+99.2
+]
+},
+{
+"id":438,
+"code":"MAR-0438",
+"name":"mar da Gronelândia 10",
+"center":[
+1651.9,
+152.5
+]
+},
+{
+"id":439,
+"code":"MAR-0439",
+"name":"mar da Gronelândia 11",
+"center":[
+1714.0,
+160.7
+]
+},
+{
+"id":440,
+"code":"MAR-0440",
+"name":"mar da Gronelândia 12",
+"center":[
+1653.0,
+195.6
+]
+},
+{
+"id":441,
+"code":"MAR-0441",
+"name":"mar da Gronelândia 13",
+"center":[
+1720.1,
+196.2
+]
+},
+{
+"id":442,
+"code":"MAR-0442",
+"name":"mar da Gronelândia 14",
+"center":[
+1706.8,
+241.0
+]
+},
+{
+"id":443,
+"code":"MAR-0443",
+"name":"mar da Gronelândia 15",
+"center":[
+1655.1,
+255.6
+]
+},
+{
+"id":444,
+"code":"MAR-0444",
+"name":"mar da Gronelândia 16",
+"center":[
+1656.0,
+316.5
+]
+},
+{
+"id":445,
+"code":"MAR-0445",
+"name":"Mar da Noruega 1",
+"center":[
+1707.4,
+328.6
+]
+},
+{
+"id":446,
+"code":"MAR-0446",
+"name":"Mar da Noruega 2",
+"center":[
+1707.9,
+384.0
+]
+},
+{
+"id":447,
+"code":"MAR-0447",
+"name":"Oceano Atlântico 118",
+"center":[
+1722.5,
+437.9
+]
+},
+{
+"id":448,
+"code":"MAR-0448",
+"name":"Oceano Atlântico 119",
+"center":[
+1659.2,
+443.8
+]
+},
+{
+"id":449,
+"code":"MAR-0449",
+"name":"Oceano Atlântico 120",
+"center":[
+1650.7,
+496.8
+]
+},
+{
+"id":450,
+"code":"MAR-0450",
+"name":"Oceano Atlântico 121",
+"center":[
+1701.5,
+514.8
+]
+},
+{
+"id":451,
+"code":"MAR-0451",
+"name":"Oceano Atlântico 122",
+"center":[
+1658.6,
+546.4
+]
+},
+{
+"id":452,
+"code":"MAR-0452",
+"name":"Oceano Atlântico 123",
+"center":[
+1696.9,
+601.6
+]
+},
+{
+"id":453,
+"code":"MAR-0453",
+"name":"Golfo da Biscaia",
+"center":[
+1745.5,
+605.3
+]
+},
+{
+"id":454,
+"code":"MAR-0454",
+"name":"Oceano Atlântico 124",
+"center":[
+1696.0,
+660.6
+]
+},
+{
+"id":455,
+"code":"MAR-0455",
+"name":"Oceano Atlântico 125",
+"center":[
+1658.7,
+680.0
+]
+},
+{
+"id":456,
+"code":"MAR-0456",
+"name":"Oceano Atlântico 126",
+"center":[
+1689.4,
+735.6
+]
+},
+{
+"id":457,
+"code":"MAR-0457",
+"name":"Oceano Atlântico 127",
+"center":[
+1650.6,
+763.9
+]
+},
+{
+"id":458,
+"code":"MAR-0458",
+"name":"Oceano Atlântico 128",
+"center":[
+1670.8,
+831.9
+]
+},
+{
+"id":459,
+"code":"MAR-0459",
+"name":"Oceano Atlântico 129",
+"center":[
+1677.2,
+1088.5
+]
+},
+{
+"id":460,
+"code":"MAR-0460",
+"name":"Oceano Atlântico 130",
+"center":[
+1713.3,
+1140.2
+]
+},
+{
+"id":461,
+"code":"MAR-0461",
+"name":"Oceano Atlântico 131",
+"center":[
+1660.5,
+1192.9
+]
+},
+{
+"id":462,
+"code":"MAR-0462",
+"name":"Oceano Atlântico 132",
+"center":[
+1714.2,
+1196.0
+]
+},
+{
+"id":463,
+"code":"MAR-0463",
+"name":"Oceano Atlântico 133",
+"center":[
+1715.5,
+1257.0
+]
+},
+{
+"id":464,
+"code":"MAR-0464",
+"name":"Oceano Atlântico 134",
+"center":[
+1676.2,
+1265.2
+]
+},
+{
+"id":465,
+"code":"MAR-0465",
+"name":"Oceano Atlântico 135",
+"center":[
+1690.8,
+1322.4
+]
+},
+{
+"id":466,
+"code":"MAR-0466",
+"name":"Oceano Atlântico 136",
+"center":[
+1703.5,
+1428.6
+]
+},
+{
+"id":467,
+"code":"MAR-0467",
+"name":"Oceano Atlântico 137",
+"center":[
+1656.3,
+1489.0
+]
+},
+{
+"id":468,
+"code":"MAR-0468",
+"name":"Oceano Atlântico 138",
+"center":[
+1695.9,
+1511.1
+]
+},
+{
+"id":469,
+"code":"MAR-0469",
+"name":"Oceano Atlântico 139",
+"center":[
+1722.2,
+1523.2
+]
+},
+{
+"id":470,
+"code":"MAR-0470",
+"name":"Oceano Atlântico 140",
+"center":[
+1657.7,
+1561.3
+]
+},
+{
+"id":471,
+"code":"MAR-0471",
+"name":"Oceano Atlântico 141",
+"center":[
+1709.1,
+1616.5
+]
+},
+{
+"id":472,
+"code":"MAR-0472",
+"name":"Oceano Atlântico 142",
+"center":[
+1731.6,
+1703.9
+]
+},
+{
+"id":473,
+"code":"MAR-0473",
+"name":"Oceano Atlântico 143",
+"center":[
+1739.6,
+1763.4
+]
+},
+{
+"id":474,
+"code":"MAR-0474",
+"name":"Oceano Ártico 26",
+"center":[
+1780.0,
+32.6
+]
+},
+{
+"id":475,
+"code":"MAR-0475",
+"name":"mar da Gronelândia 17",
+"center":[
+1830.0,
+61.7
+]
+},
+{
+"id":476,
+"code":"MAR-0476",
+"name":"mar da Gronelândia 18",
+"center":[
+1764.6,
+95.0
+]
+},
+{
+"id":477,
+"code":"MAR-0477",
+"name":"mar da Gronelândia 19",
+"center":[
+1827.2,
+130.8
+]
+},
+{
+"id":478,
+"code":"MAR-0478",
+"name":"mar da Gronelândia 20",
+"center":[
+1797.6,
+196.5
+]
+},
+{
+"id":479,
+"code":"MAR-0479",
+"name":"Mar da Noruega 3",
+"center":[
+1767.3,
+274.9
+]
+},
+{
+"id":480,
+"code":"MAR-0480",
+"name":"Mar da Noruega 4",
+"center":[
+1761.1,
+322.8
+]
+},
+{
+"id":481,
+"code":"MAR-0481",
+"name":"Mar da Noruega 5",
+"center":[
+1825.9,
+322.8
+]
+},
+{
+"id":482,
+"code":"MAR-0482",
+"name":"Mar da Noruega 6",
+"center":[
+1839.9,
+381.7
+]
+},
+{
+"id":483,
+"code":"MAR-0483",
+"name":"Mar da Noruega 7",
+"center":[
+1765.1,
+384.0
+]
+},
+{
+"id":484,
+"code":"MAR-0484",
+"name":"Mar da Noruega 8",
+"center":[
+1822.5,
+424.9
+]
+},
+{
+"id":485,
+"code":"MAR-0485",
+"name":"Mar do Norte 1",
+"center":[
+1787.8,
+462.7
+]
+},
+{
+"id":486,
+"code":"MAR-0486",
+"name":"Mar do Norte 2",
+"center":[
+1834.8,
+487.7
+]
+},
+{
+"id":487,
+"code":"MAR-0487",
+"name":"Mar do Norte 3",
+"center":[
+1828.1,
+548.4
+]
+},
+{
+"id":488,
+"code":"MAR-0488",
+"name":"Mar Mediterrâneo 1",
+"center":[
+1837.5,
+714.1
+]
+},
+{
+"id":489,
+"code":"MAR-0489",
+"name":"Golfo da Guiné 1",
+"center":[
+1823.5,
+1077.5
+]
+},
+{
+"id":490,
+"code":"MAR-0490",
+"name":"Oceano Atlântico 144",
+"center":[
+1772.5,
+1124.1
+]
+},
+{
+"id":491,
+"code":"MAR-0491",
+"name":"Oceano Atlântico 145",
+"center":[
+1827.8,
+1128.6
+]
+},
+{
+"id":492,
+"code":"MAR-0492",
+"name":"Oceano Atlântico 146",
+"center":[
+1816.5,
+1197.5
+]
+},
+{
+"id":493,
+"code":"MAR-0493",
+"name":"Oceano Atlântico 147",
+"center":[
+1761.9,
+1199.3
+]
+},
+{
+"id":494,
+"code":"MAR-0494",
+"name":"Oceano Atlântico 148",
+"center":[
+1816.7,
+1250.6
+]
+},
+{
+"id":495,
+"code":"MAR-0495",
+"name":"Oceano Atlântico 149",
+"center":[
+1763.2,
+1251.4
+]
+},
+{
+"id":496,
+"code":"MAR-0496",
+"name":"Oceano Atlântico 150",
+"center":[
+1763.9,
+1299.2
+]
+},
+{
+"id":497,
+"code":"MAR-0497",
+"name":"Oceano Atlântico 151",
+"center":[
+1823.6,
+1303.3
+]
+},
+{
+"id":498,
+"code":"MAR-0498",
+"name":"Oceano Atlântico 152",
+"center":[
+1759.9,
+1360.3
+]
+},
+{
+"id":499,
+"code":"MAR-0499",
+"name":"Oceano Atlântico 153",
+"center":[
+1777.1,
+1429.3
+]
+},
+{
+"id":500,
+"code":"MAR-0500",
+"name":"Oceano Atlântico 154",
+"center":[
+1788.4,
+1480.7
+]
+},
+{
+"id":501,
+"code":"MAR-0501",
+"name":"Oceano Atlântico 155",
+"center":[
+1802.2,
+1538.9
+]
+},
+{
+"id":502,
+"code":"MAR-0502",
+"name":"Oceano Atlântico 156",
+"center":[
+1848.1,
+1605.6
+]
+},
+{
+"id":503,
+"code":"MAR-0503",
+"name":"Oceano Atlântico 157",
+"center":[
+1775.9,
+1611.0
+]
+},
+{
+"id":504,
+"code":"MAR-0504",
+"name":"Oceano Atlântico 158",
+"center":[
+1820.7,
+1702.3
+]
+},
+{
+"id":505,
+"code":"MAR-0505",
+"name":"Oceano Atlântico 159",
+"center":[
+1832.6,
+1761.3
+]
+},
+{
+"id":506,
+"code":"MAR-0506",
+"name":"Oceano Ártico 27",
+"center":[
+1879.7,
+23.5
+]
+},
+{
+"id":507,
+"code":"MAR-0507",
+"name":"Oceano Ártico 28",
+"center":[
+1941.5,
+25.2
+]
+},
+{
+"id":508,
+"code":"MAR-0508",
+"name":"mar da Gronelândia 21",
+"center":[
+1882.7,
+82.8
+]
+},
+{
+"id":509,
+"code":"MAR-0509",
+"name":"mar da Gronelândia 22",
+"center":[
+1922.1,
+132.4
+]
+},
+{
+"id":510,
+"code":"MAR-0510",
+"name":"mar da Gronelândia 23",
+"center":[
+1880.1,
+143.1
+]
+},
+{
+"id":511,
+"code":"MAR-0511",
+"name":"Mar da Noruega 9",
+"center":[
+1919.7,
+191.5
+]
+},
+{
+"id":512,
+"code":"MAR-0512",
+"name":"Mar da Noruega 10",
+"center":[
+1945.6,
+253.9
+]
+},
+{
+"id":513,
+"code":"MAR-0513",
+"name":"Mar da Noruega 11",
+"center":[
+1866.7,
+260.5
+]
+},
+{
+"id":514,
+"code":"MAR-0514",
+"name":"Mar da Noruega 12",
+"center":[
+1894.5,
+332.2
+]
+},
+{
+"id":515,
+"code":"MAR-0515",
+"name":"Kattegat",
+"center":[
+1915.3,
+484.5
+]
+},
+{
+"id":516,
+"code":"MAR-0516",
+"name":"Mar Mediterrâneo 2",
+"center":[
+1863.1,
+690.7
+]
+},
+{
+"id":517,
+"code":"MAR-0517",
+"name":"Mar Tirreno",
+"center":[
+1929.2,
+712.9
+]
+},
+{
+"id":518,
+"code":"MAR-0518",
+"name":"Golfo da Guiné 2",
+"center":[
+1872.5,
+1112.6
+]
+},
+{
+"id":519,
+"code":"MAR-0519",
+"name":"Oceano Atlântico 160",
+"center":[
+1883.3,
+1185.8
+]
+},
+{
+"id":520,
+"code":"MAR-0520",
+"name":"Oceano Atlântico 161",
+"center":[
+1887.5,
+1250.9
+]
+},
+{
+"id":521,
+"code":"MAR-0521",
+"name":"Oceano Atlântico 162",
+"center":[
+1889.5,
+1321.9
+]
+},
+{
+"id":522,
+"code":"MAR-0522",
+"name":"Oceano Atlântico 163",
+"center":[
+1870.5,
+1353.0
+]
+},
+{
+"id":523,
+"code":"MAR-0523",
+"name":"Oceano Atlântico 164",
+"center":[
+1874.5,
+1438.1
+]
+},
+{
+"id":524,
+"code":"MAR-0524",
+"name":"Oceano Atlântico 165",
+"center":[
+1933.4,
+1454.8
+]
+},
+{
+"id":525,
+"code":"MAR-0525",
+"name":"Oceano Atlântico 166",
+"center":[
+1917.1,
+1591.0
+]
+},
+{
+"id":526,
+"code":"MAR-0526",
+"name":"Oceano Atlântico 167",
+"center":[
+1899.5,
+1702.3
+]
+},
+{
+"id":527,
+"code":"MAR-0527",
+"name":"Oceano Atlântico 168",
+"center":[
+1893.4,
+1757.0
+]
+},
+{
+"id":528,
+"code":"MAR-0528",
+"name":"Oceano Ártico 29",
+"center":[
+1993.1,
+26.9
+]
+},
+{
+"id":529,
+"code":"MAR-0529",
+"name":"Mar de Barents 1",
+"center":[
+2033.2,
+99.9
+]
+},
+{
+"id":530,
+"code":"MAR-0530",
+"name":"Mar de Barents 2",
+"center":[
+1998.3,
+157.2
+]
+},
+{
+"id":531,
+"code":"MAR-0531",
+"name":"Mar da Noruega 13",
+"center":[
+1990.8,
+210.2
+]
+},
+{
+"id":532,
+"code":"MAR-0532",
+"name":"Mar da Noruega 14",
+"center":[
+2008.1,
+255.3
+]
+},
+{
+"id":533,
+"code":"MAR-0533",
+"name":"Golfo de Bótnia 1",
+"center":[
+2010.4,
+381.8
+]
+},
+{
+"id":534,
+"code":"MAR-0534",
+"name":"Golfo de Bótnia 2",
+"center":[
+2007.7,
+437.5
+]
+},
+{
+"id":535,
+"code":"MAR-0535",
+"name":"Mar Báltico",
+"center":[
+1988.3,
+485.7
+]
+},
+{
+"id":536,
+"code":"MAR-0536",
+"name":"Mar Egeu",
+"center":[
+2048.6,
+715.6
+]
+},
+{
+"id":537,
+"code":"MAR-0537",
+"name":"Mar Mediterrâneo 3",
+"center":[
+2004.0,
+749.5
+]
+},
+{
+"id":538,
+"code":"MAR-0538",
+"name":"Mar Mediterrâneo 4",
+"center":[
+2048.6,
+769.2
+]
+},
+{
+"id":539,
+"code":"MAR-0539",
+"name":"Oceano Atlântico 169",
+"center":[
+1970.9,
+1460.9
+]
+},
+{
+"id":540,
+"code":"MAR-0540",
+"name":"Oceano Atlântico 170",
+"center":[
+1991.4,
+1557.4
+]
+},
+{
+"id":541,
+"code":"MAR-0541",
+"name":"Oceano Atlântico 171",
+"center":[
+1957.2,
+1562.2
+]
+},
+{
+"id":542,
+"code":"MAR-0542",
+"name":"Oceano Índico 1",
+"center":[
+2043.9,
+1568.7
+]
+},
+{
+"id":543,
+"code":"MAR-0543",
+"name":"Oceano Atlântico 172",
+"center":[
+1985.8,
+1708.6
+]
+},
+{
+"id":544,
+"code":"MAR-0544",
+"name":"Oceano Ártico 30",
+"center":[
+2050.9,
+29.9
+]
+},
+{
+"id":545,
+"code":"MAR-0545",
+"name":"Oceano Ártico 31",
+"center":[
+2110.1,
+30.8
+]
+},
+{
+"id":546,
+"code":"MAR-0546",
+"name":"Mar de Barents 3",
+"center":[
+2104.6,
+100.4
+]
+},
+{
+"id":547,
+"code":"MAR-0547",
+"name":"Mar de Barents 4",
+"center":[
+2052.3,
+137.8
+]
+},
+{
+"id":548,
+"code":"MAR-0548",
+"name":"Mar de Barents 5",
+"center":[
+2103.3,
+154.7
+]
+},
+{
+"id":549,
+"code":"MAR-0549",
+"name":"Mar de Barents 6",
+"center":[
+2141.4,
+169.7
+]
+},
+{
+"id":550,
+"code":"MAR-0550",
+"name":"Mar de Barents 7",
+"center":[
+2071.7,
+214.0
+]
+},
+{
+"id":551,
+"code":"MAR-0551",
+"name":"Mar Negro 1",
+"center":[
+2117.7,
+631.3
+]
+},
+{
+"id":552,
+"code":"MAR-0552",
+"name":"Mar Negro 2",
+"center":[
+2109.9,
+663.5
+]
+},
+{
+"id":553,
+"code":"MAR-0553",
+"name":"Mar Mediterrâneo 5",
+"center":[
+2102.0,
+755.9
+]
+},
+{
+"id":554,
+"code":"MAR-0554",
+"name":"Mar Mediterrâneo 6",
+"center":[
+2111.9,
+779.3
+]
+},
+{
+"id":555,
+"code":"MAR-0555",
+"name":"Oceano Índico 2",
+"center":[
+2137.1,
+1406.5
+]
+},
+{
+"id":556,
+"code":"MAR-0556",
+"name":"Oceano Índico 3",
+"center":[
+2068.0,
+1489.5
+]
+},
+{
+"id":557,
+"code":"MAR-0557",
+"name":"Oceano Índico 4",
+"center":[
+2122.3,
+1494.8
+]
+},
+{
+"id":558,
+"code":"MAR-0558",
+"name":"Oceano Índico 5",
+"center":[
+2118.1,
+1583.5
+]
+},
+{
+"id":559,
+"code":"MAR-0559",
+"name":"Oceano Índico 6",
+"center":[
+2094.8,
+1671.6
+]
+},
+{
+"id":560,
+"code":"MAR-0560",
+"name":"Oceano Índico 7",
+"center":[
+2101.7,
+1746.2
+]
+},
+{
+"id":561,
+"code":"MAR-0561",
+"name":"Oceano Ártico 32",
+"center":[
+2235.5,
+21.8
+]
+},
+{
+"id":562,
+"code":"MAR-0562",
+"name":"Oceano Ártico 33",
+"center":[
+2167.9,
+26.6
+]
+},
+{
+"id":563,
+"code":"MAR-0563",
+"name":"Mar de Barents 8",
+"center":[
+2236.4,
+86.5
+]
+},
+{
+"id":564,
+"code":"MAR-0564",
+"name":"Mar de Barents 9",
+"center":[
+2171.2,
+98.5
+]
+},
+{
+"id":565,
+"code":"MAR-0565",
+"name":"Mar de Barents 10",
+"center":[
+2233.5,
+161.1
+]
+},
+{
+"id":566,
+"code":"MAR-0566",
+"name":"Mar de Barents 11",
+"center":[
+2181.6,
+198.4
+]
+},
+{
+"id":567,
+"code":"MAR-0567",
+"name":"Mar de Barents 12",
+"center":[
+2234.2,
+227.2
+]
+},
+{
+"id":568,
+"code":"MAR-0568",
+"name":"Mar de Barents 13",
+"center":[
+2153.7,
+249.2
+]
+},
+{
+"id":569,
+"code":"MAR-0569",
+"name":"Mar de Barents 14",
+"center":[
+2234.6,
+276.8
+]
+},
+{
+"id":570,
+"code":"MAR-0570",
+"name":"Mar Branco",
+"center":[
+2153.5,
+336.9
+]
+},
+{
+"id":571,
+"code":"MAR-0571",
+"name":"Mar Vermelho 1",
+"center":[
+2171.3,
+884.1
+]
+},
+{
+"id":572,
+"code":"MAR-0572",
+"name":"Mar Vermelho 2",
+"center":[
+2213.1,
+966.7
+]
+},
+{
+"id":573,
+"code":"MAR-0573",
+"name":"Oceano Índico 8",
+"center":[
+2227.5,
+1177.5
+]
+},
+{
+"id":574,
+"code":"MAR-0574",
+"name":"Canal de Moçambique 1",
+"center":[
+2240.9,
+1265.9
+]
+},
+{
+"id":575,
+"code":"MAR-0575",
+"name":"Canal de Moçambique 2",
+"center":[
+2184.9,
+1313.1
+]
+},
+{
+"id":576,
+"code":"MAR-0576",
+"name":"Canal de Moçambique 3",
+"center":[
+2193.8,
+1348.0
+]
+},
+{
+"id":577,
+"code":"MAR-0577",
+"name":"Oceano Índico 9",
+"center":[
+2168.0,
+1422.5
+]
+},
+{
+"id":578,
+"code":"MAR-0578",
+"name":"Oceano Índico 10",
+"center":[
+2231.1,
+1427.0
+]
+},
+{
+"id":579,
+"code":"MAR-0579",
+"name":"Oceano Índico 11",
+"center":[
+2177.6,
+1481.0
+]
+},
+{
+"id":580,
+"code":"MAR-0580",
+"name":"Oceano Índico 12",
+"center":[
+2184.0,
+1583.5
+]
+},
+{
+"id":581,
+"code":"MAR-0581",
+"name":"Oceano Índico 13",
+"center":[
+2238.4,
+1586.2
+]
+},
+{
+"id":582,
+"code":"MAR-0582",
+"name":"Oceano Índico 14",
+"center":[
+2237.3,
+1646.0
+]
+},
+{
+"id":583,
+"code":"MAR-0583",
+"name":"Oceano Índico 15",
+"center":[
+2176.0,
+1682.1
+]
+},
+{
+"id":584,
+"code":"MAR-0584",
+"name":"Oceano Índico 16",
+"center":[
+2199.7,
+1746.2
+]
+},
+{
+"id":585,
+"code":"MAR-0585",
+"name":"Oceano Ártico 34",
+"center":[
+2304.1,
+18.3
+]
+},
+{
+"id":586,
+"code":"MAR-0586",
+"name":"Mar de Barents 15",
+"center":[
+2300.8,
+90.1
+]
+},
+{
+"id":587,
+"code":"MAR-0587",
+"name":"Mar de Barents 16",
+"center":[
+2344.8,
+137.0
+]
+},
+{
+"id":588,
+"code":"MAR-0588",
+"name":"Mar de Barents 17",
+"center":[
+2293.8,
+140.9
+]
+},
+{
+"id":589,
+"code":"MAR-0589",
+"name":"Mar de Barents 18",
+"center":[
+2306.5,
+199.0
+]
+},
+{
+"id":590,
+"code":"MAR-0590",
+"name":"Mar de Barents 19",
+"center":[
+2285.1,
+260.2
+]
+},
+{
+"id":591,
+"code":"MAR-0591",
+"name":"Mar de Barents 20",
+"center":[
+2330.8,
+276.6
+]
+},
+{
+"id":592,
+"code":"MAR-0592",
+"name":"Mar Cáspio",
+"center":[
+2301.5,
+666.4
+]
+},
+{
+"id":593,
+"code":"MAR-0593",
+"name":"Golfo Pérsico",
+"center":[
+2310.5,
+842.2
+]
+},
+{
+"id":594,
+"code":"MAR-0594",
+"name":"Mar Arábico 1",
+"center":[
+2346.2,
+964.9
+]
+},
+{
+"id":595,
+"code":"MAR-0595",
+"name":"Mar Arábico 2",
+"center":[
+2341.6,
+1022.4
+]
+},
+{
+"id":596,
+"code":"MAR-0596",
+"name":"Oceano Índico 17",
+"center":[
+2305.2,
+1068.4
+]
+},
+{
+"id":597,
+"code":"MAR-0597",
+"name":"Oceano Índico 18",
+"center":[
+2281.3,
+1144.1
+]
+},
+{
+"id":598,
+"code":"MAR-0598",
+"name":"Oceano Índico 19",
+"center":[
+2347.4,
+1149.6
+]
+},
+{
+"id":599,
+"code":"MAR-0599",
+"name":"Oceano Índico 20",
+"center":[
+2294.0,
+1198.5
+]
+},
+{
+"id":600,
+"code":"MAR-0600",
+"name":"Oceano Índico 21",
+"center":[
+2346.6,
+1256.8
+]
+},
+{
+"id":601,
+"code":"MAR-0601",
+"name":"Oceano Índico 22",
+"center":[
+2313.1,
+1259.1
+]
+},
+{
+"id":602,
+"code":"MAR-0602",
+"name":"Oceano Índico 23",
+"center":[
+2338.7,
+1314.1
+]
+},
+{
+"id":603,
+"code":"MAR-0603",
+"name":"Oceano Índico 24",
+"center":[
+2298.8,
+1352.7
+]
+},
+{
+"id":604,
+"code":"MAR-0604",
+"name":"Oceano Índico 25",
+"center":[
+2289.9,
+1441.1
+]
+},
+{
+"id":605,
+"code":"MAR-0605",
+"name":"Oceano Índico 26",
+"center":[
+2308.2,
+1533.1
+]
+},
+{
+"id":606,
+"code":"MAR-0606",
+"name":"Oceano Índico 27",
+"center":[
+2293.6,
+1587.5
+]
+},
+{
+"id":607,
+"code":"MAR-0607",
+"name":"Oceano Índico 28",
+"center":[
+2339.7,
+1593.0
+]
+},
+{
+"id":608,
+"code":"MAR-0608",
+"name":"Oceano Índico 29",
+"center":[
+2283.1,
+1670.0
+]
+},
+{
+"id":609,
+"code":"MAR-0609",
+"name":"Oceano Índico 30",
+"center":[
+2340.7,
+1675.4
+]
+},
+{
+"id":610,
+"code":"MAR-0610",
+"name":"Oceano Índico 31",
+"center":[
+2286.2,
+1736.5
+]
+},
+{
+"id":611,
+"code":"MAR-0611",
+"name":"Oceano Ártico 35",
+"center":[
+2363.2,
+14.2
+]
+},
+{
+"id":612,
+"code":"MAR-0612",
+"name":"Oceano Ártico 36",
+"center":[
+2421.2,
+28.7
+]
+},
+{
+"id":613,
+"code":"MAR-0613",
+"name":"Mar de Barents 21",
+"center":[
+2355.4,
+90.5
+]
+},
+{
+"id":614,
+"code":"MAR-0614",
+"name":"Mar de Barents 22",
+"center":[
+2408.5,
+94.5
+]
+},
+{
+"id":615,
+"code":"MAR-0615",
+"name":"Mar de Barents 23",
+"center":[
+2412.9,
+130.8
+]
+},
+{
+"id":616,
+"code":"MAR-0616",
+"name":"Mar de Kara 1",
+"center":[
+2449.8,
+190.6
+]
+},
+{
+"id":617,
+"code":"MAR-0617",
+"name":"Mar de Kara 2",
+"center":[
+2401.2,
+205.9
+]
+},
+{
+"id":618,
+"code":"MAR-0618",
+"name":"Mar de Kara 3",
+"center":[
+2444.7,
+257.1
+]
+},
+{
+"id":619,
+"code":"MAR-0619",
+"name":"Mar de Kara 4",
+"center":[
+2411.8,
+267.4
+]
+},
+{
+"id":620,
+"code":"MAR-0620",
+"name":"Mar Arábico 3",
+"center":[
+2415.2,
+901.2
+]
+},
+{
+"id":621,
+"code":"MAR-0621",
+"name":"Mar Arábico 4",
+"center":[
+2405.0,
+970.9
+]
+},
+{
+"id":622,
+"code":"MAR-0622",
+"name":"Mar Arábico 5",
+"center":[
+2405.2,
+1019.7
+]
+},
+{
+"id":623,
+"code":"MAR-0623",
+"name":"Oceano Índico 32",
+"center":[
+2363.9,
+1081.1
+]
+},
+{
+"id":624,
+"code":"MAR-0624",
+"name":"Oceano Índico 33",
+"center":[
+2417.0,
+1108.6
+]
+},
+{
+"id":625,
+"code":"MAR-0625",
+"name":"Oceano Índico 34",
+"center":[
+2409.8,
+1197.0
+]
+},
+{
+"id":626,
+"code":"MAR-0626",
+"name":"Oceano Índico 35",
+"center":[
+2362.6,
+1204.1
+]
+},
+{
+"id":627,
+"code":"MAR-0627",
+"name":"Oceano Índico 36",
+"center":[
+2398.0,
+1253.5
+]
+},
+{
+"id":628,
+"code":"MAR-0628",
+"name":"Oceano Índico 37",
+"center":[
+2396.2,
+1302.4
+]
+},
+{
+"id":629,
+"code":"MAR-0629",
+"name":"Oceano Índico 38",
+"center":[
+2415.4,
+1359.7
+]
+},
+{
+"id":630,
+"code":"MAR-0630",
+"name":"Oceano Índico 39",
+"center":[
+2352.4,
+1367.4
+]
+},
+{
+"id":631,
+"code":"MAR-0631",
+"name":"Oceano Índico 40",
+"center":[
+2355.4,
+1448.6
+]
+},
+{
+"id":632,
+"code":"MAR-0632",
+"name":"Oceano Índico 41",
+"center":[
+2432.0,
+1458.1
+]
+},
+{
+"id":633,
+"code":"MAR-0633",
+"name":"Oceano Índico 42",
+"center":[
+2393.7,
+1586.1
+]
+},
+{
+"id":634,
+"code":"MAR-0634",
+"name":"Oceano Índico 43",
+"center":[
+2398.4,
+1652.8
+]
+},
+{
+"id":635,
+"code":"MAR-0635",
+"name":"Oceano Índico 44",
+"center":[
+2448.3,
+1753.8
+]
+},
+{
+"id":636,
+"code":"MAR-0636",
+"name":"Oceano Ártico 37",
+"center":[
+2470.7,
+21.9
+]
+},
+{
+"id":637,
+"code":"MAR-0637",
+"name":"Oceano Ártico 38",
+"center":[
+2521.7,
+23.6
+]
+},
+{
+"id":638,
+"code":"MAR-0638",
+"name":"Mar de Kara 5",
+"center":[
+2526.0,
+90.1
+]
+},
+{
+"id":639,
+"code":"MAR-0639",
+"name":"Mar de Barents 24",
+"center":[
+2465.5,
+95.3
+]
+},
+{
+"id":640,
+"code":"MAR-0640",
+"name":"Mar de Kara 6",
+"center":[
+2519.2,
+156.8
+]
+},
+{
+"id":641,
+"code":"MAR-0641",
+"name":"Mar de Kara 7",
+"center":[
+2512.6,
+195.0
+]
+},
+{
+"id":642,
+"code":"MAR-0642",
+"name":"Golfo de Ob",
+"center":[
+2531.6,
+270.6
+]
+},
+{
+"id":643,
+"code":"MAR-0643",
+"name":"Mar Arábico 6",
+"center":[
+2457.9,
+917.4
+]
+},
+{
+"id":644,
+"code":"MAR-0644",
+"name":"Mar Arábico 7",
+"center":[
+2500.1,
+936.3
+]
+},
+{
+"id":645,
+"code":"MAR-0645",
+"name":"Mar Arábico 8",
+"center":[
+2467.6,
+965.0
+]
+},
+{
+"id":646,
+"code":"MAR-0646",
+"name":"Mar das Laquedivas 1",
+"center":[
+2527.4,
+1005.0
+]
+},
+{
+"id":647,
+"code":"MAR-0647",
+"name":"Mar Arábico 9",
+"center":[
+2470.9,
+1022.1
+]
+},
+{
+"id":648,
+"code":"MAR-0648",
+"name":"Mar Arábico 10",
+"center":[
+2462.5,
+1086.8
+]
+},
+{
+"id":649,
+"code":"MAR-0649",
+"name":"Mar Arábico 11",
+"center":[
+2505.8,
+1089.9
+]
+},
+{
+"id":650,
+"code":"MAR-0650",
+"name":"Mar das Laquedivas 2",
+"center":[
+2548.4,
+1107.7
+]
+},
+{
+"id":651,
+"code":"MAR-0651",
+"name":"Oceano Índico 45",
+"center":[
+2472.0,
+1141.0
+]
+},
+{
+"id":652,
+"code":"MAR-0652",
+"name":"Oceano Índico 46",
+"center":[
+2535.7,
+1180.8
+]
+},
+{
+"id":653,
+"code":"MAR-0653",
+"name":"Oceano Índico 47",
+"center":[
+2461.8,
+1210.3
+]
+},
+{
+"id":654,
+"code":"MAR-0654",
+"name":"Oceano Índico 48",
+"center":[
+2464.2,
+1252.9
+]
+},
+{
+"id":655,
+"code":"MAR-0655",
+"name":"Oceano Índico 49",
+"center":[
+2521.5,
+1254.8
+]
+},
+{
+"id":656,
+"code":"MAR-0656",
+"name":"Oceano Índico 50",
+"center":[
+2454.9,
+1301.5
+]
+},
+{
+"id":657,
+"code":"MAR-0657",
+"name":"Oceano Índico 51",
+"center":[
+2534.9,
+1334.0
+]
+},
+{
+"id":658,
+"code":"MAR-0658",
+"name":"Oceano Índico 52",
+"center":[
+2472.8,
+1356.0
+]
+},
+{
+"id":659,
+"code":"MAR-0659",
+"name":"Oceano Índico 53",
+"center":[
+2503.7,
+1451.7
+]
+},
+{
+"id":660,
+"code":"MAR-0660",
+"name":"Oceano Índico 54",
+"center":[
+2517.8,
+1542.8
+]
+},
+{
+"id":661,
+"code":"MAR-0661",
+"name":"Oceano Índico 55",
+"center":[
+2450.2,
+1546.2
+]
+},
+{
+"id":662,
+"code":"MAR-0662",
+"name":"Oceano Índico 56",
+"center":[
+2529.7,
+1592.8
+]
+},
+{
+"id":663,
+"code":"MAR-0663",
+"name":"Oceano Índico 57",
+"center":[
+2469.4,
+1638.4
+]
+},
+{
+"id":664,
+"code":"MAR-0664",
+"name":"Oceano Índico 58",
+"center":[
+2530.2,
+1662.2
+]
+},
+{
+"id":665,
+"code":"MAR-0665",
+"name":"Oceano Índico 59",
+"center":[
+2452.2,
+1701.3
+]
+},
+{
+"id":666,
+"code":"MAR-0666",
+"name":"Oceano Índico 60",
+"center":[
+2524.3,
+1736.7
+]
+},
+{
+"id":667,
+"code":"MAR-0667",
+"name":"Oceano Ártico 39",
+"center":[
+2586.6,
+23.1
+]
+},
+{
+"id":668,
+"code":"MAR-0668",
+"name":"Oceano Ártico 40",
+"center":[
+2638.1,
+23.1
+]
+},
+{
+"id":669,
+"code":"MAR-0669",
+"name":"Mar de Kara 8",
+"center":[
+2637.7,
+79.7
+]
+},
+{
+"id":670,
+"code":"MAR-0670",
+"name":"Mar de Kara 9",
+"center":[
+2586.6,
+94.2
+]
+},
+{
+"id":671,
+"code":"MAR-0671",
+"name":"Mar de Kara 10",
+"center":[
+2579.9,
+138.8
+]
+},
+{
+"id":672,
+"code":"MAR-0672",
+"name":"Mar de Kara 11",
+"center":[
+2641.2,
+138.8
+]
+},
+{
+"id":673,
+"code":"MAR-0673",
+"name":"Mar de Kara 12",
+"center":[
+2586.8,
+195.8
+]
+},
+{
+"id":674,
+"code":"MAR-0674",
+"name":"Golfo do Ienissei",
+"center":[
+2629.1,
+248.7
+]
+},
+{
+"id":675,
+"code":"MAR-0675",
+"name":"Golfo de Bengala 1",
+"center":[
+2634.9,
+972.1
+]
+},
+{
+"id":676,
+"code":"MAR-0676",
+"name":"Golfo de Bengala 2",
+"center":[
+2615.2,
+1025.0
+]
+},
+{
+"id":677,
+"code":"MAR-0677",
+"name":"Oceano Índico 61",
+"center":[
+2647.5,
+1070.8
+]
+},
+{
+"id":678,
+"code":"MAR-0678",
+"name":"Oceano Índico 62",
+"center":[
+2588.4,
+1088.3
+]
+},
+{
+"id":679,
+"code":"MAR-0679",
+"name":"Oceano Índico 63",
+"center":[
+2575.2,
+1139.2
+]
+},
+{
+"id":680,
+"code":"MAR-0680",
+"name":"Oceano Índico 64",
+"center":[
+2608.9,
+1153.9
+]
+},
+{
+"id":681,
+"code":"MAR-0681",
+"name":"Oceano Índico 65",
+"center":[
+2568.6,
+1250.4
+]
+},
+{
+"id":682,
+"code":"MAR-0682",
+"name":"Oceano Índico 66",
+"center":[
+2626.4,
+1254.0
+]
+},
+{
+"id":683,
+"code":"MAR-0683",
+"name":"Oceano Índico 67",
+"center":[
+2564.8,
+1425.2
+]
+},
+{
+"id":684,
+"code":"MAR-0684",
+"name":"Oceano Índico 68",
+"center":[
+2581.2,
+1545.7
+]
+},
+{
+"id":685,
+"code":"MAR-0685",
+"name":"Oceano Índico 69",
+"center":[
+2588.1,
+1596.2
+]
+},
+{
+"id":686,
+"code":"MAR-0686",
+"name":"Oceano Índico 70",
+"center":[
+2604.2,
+1657.1
+]
+},
+{
+"id":687,
+"code":"MAR-0687",
+"name":"Oceano Índico 71",
+"center":[
+2627.3,
+1713.2
+]
+},
+{
+"id":688,
+"code":"MAR-0688",
+"name":"Oceano Índico 72",
+"center":[
+2616.3,
+1757.2
+]
+},
+{
+"id":689,
+"code":"MAR-0689",
+"name":"Oceano Ártico 41",
+"center":[
+2686.0,
+35.7
+]
+},
+{
+"id":690,
+"code":"MAR-0690",
+"name":"Mar de Kara 13",
+"center":[
+2699.5,
+68.8
+]
+},
+{
+"id":691,
+"code":"MAR-0691",
+"name":"Mar de Kara 14",
+"center":[
+2691.8,
+150.4
+]
+},
+{
+"id":692,
+"code":"MAR-0692",
+"name":"Golfo de Bengala 3",
+"center":[
+2696.2,
+910.9
+]
+},
+{
+"id":693,
+"code":"MAR-0693",
+"name":"Golfo de Bengala 4",
+"center":[
+2691.9,
+958.0
+]
+},
+{
+"id":694,
+"code":"MAR-0694",
+"name":"Golfo de Bengala 5",
+"center":[
+2707.4,
+1009.7
+]
+},
+{
+"id":695,
+"code":"MAR-0695",
+"name":"Golfo de Bengala 6",
+"center":[
+2651.3,
+1019.6
+]
+},
+{
+"id":696,
+"code":"MAR-0696",
+"name":"Oceano Índico 73",
+"center":[
+2705.6,
+1069.6
+]
+},
+{
+"id":697,
+"code":"MAR-0697",
+"name":"Oceano Índico 74",
+"center":[
+2746.9,
+1087.1
+]
+},
+{
+"id":698,
+"code":"MAR-0698",
+"name":"Oceano Índico 75",
+"center":[
+2697.6,
+1136.0
+]
+},
+{
+"id":699,
+"code":"MAR-0699",
+"name":"Oceano Índico 76",
+"center":[
+2729.8,
+1149.4
+]
+},
+{
+"id":700,
+"code":"MAR-0700",
+"name":"Oceano Índico 77",
+"center":[
+2657.7,
+1151.2
+]
+},
+{
+"id":701,
+"code":"MAR-0701",
+"name":"Oceano Índico 78",
+"center":[
+2742.9,
+1230.1
+]
+},
+{
+"id":702,
+"code":"MAR-0702",
+"name":"Oceano Índico 79",
+"center":[
+2690.6,
+1241.7
+]
+},
+{
+"id":703,
+"code":"MAR-0703",
+"name":"Oceano Índico 80",
+"center":[
+2682.4,
+1312.5
+]
+},
+{
+"id":704,
+"code":"MAR-0704",
+"name":"Oceano Índico 81",
+"center":[
+2666.5,
+1417.7
+]
+},
+{
+"id":705,
+"code":"MAR-0705",
+"name":"Oceano Índico 82",
+"center":[
+2674.8,
+1481.5
+]
+},
+{
+"id":706,
+"code":"MAR-0706",
+"name":"Oceano Índico 83",
+"center":[
+2671.5,
+1533.2
+]
+},
+{
+"id":707,
+"code":"MAR-0707",
+"name":"Oceano Índico 84",
+"center":[
+2674.2,
+1596.2
+]
+},
+{
+"id":708,
+"code":"MAR-0708",
+"name":"Oceano Ártico 42",
+"center":[
+2758.0,
+34.8
+]
+},
+{
+"id":709,
+"code":"MAR-0709",
+"name":"Oceano Ártico 43",
+"center":[
+2815.8,
+54.3
+]
+},
+{
+"id":710,
+"code":"MAR-0710",
+"name":"Mar de Kara 15",
+"center":[
+2754.4,
+128.7
+]
+},
+{
+"id":711,
+"code":"MAR-0711",
+"name":"Mar de Andamão 1",
+"center":[
+2750.0,
+969.8
+]
+},
+{
+"id":712,
+"code":"MAR-0712",
+"name":"Golfo da Tailândia",
+"center":[
+2822.2,
+1024.3
+]
+},
+{
+"id":713,
+"code":"MAR-0713",
+"name":"Mar de Andamão 2",
+"center":[
+2757.6,
+1026.1
+]
+},
+{
+"id":714,
+"code":"MAR-0714",
+"name":"Oceano Índico 85",
+"center":[
+2762.5,
+1171.1
+]
+},
+{
+"id":715,
+"code":"MAR-0715",
+"name":"Oceano Índico 86",
+"center":[
+2819.2,
+1202.5
+]
+},
+{
+"id":716,
+"code":"MAR-0716",
+"name":"Oceano Índico 87",
+"center":[
+2807.1,
+1253.0
+]
+},
+{
+"id":717,
+"code":"MAR-0717",
+"name":"Oceano Índico 88",
+"center":[
+2815.4,
+1304.0
+]
+},
+{
+"id":718,
+"code":"MAR-0718",
+"name":"Oceano Índico 89",
+"center":[
+2757.6,
+1320.8
+]
+},
+{
+"id":719,
+"code":"MAR-0719",
+"name":"Oceano Índico 90",
+"center":[
+2794.5,
+1433.9
+]
+},
+{
+"id":720,
+"code":"MAR-0720",
+"name":"Oceano Índico 91",
+"center":[
+2847.1,
+1485.2
+]
+},
+{
+"id":721,
+"code":"MAR-0721",
+"name":"Oceano Índico 92",
+"center":[
+2815.0,
+1599.3
+]
+},
+{
+"id":722,
+"code":"MAR-0722",
+"name":"Oceano Índico 93",
+"center":[
+2793.8,
+1750.5
+]
+},
+{
+"id":723,
+"code":"MAR-0723",
+"name":"Oceano Ártico 44",
+"center":[
+2912.0,
+74.2
+]
+},
+{
+"id":724,
+"code":"MAR-0724",
+"name":"Mar de Laptev 1",
+"center":[
+2862.9,
+93.3
+]
+},
+{
+"id":725,
+"code":"MAR-0725",
+"name":"Mar da China Meridional 1",
+"center":[
+2936.2,
+913.6
+]
+},
+{
+"id":726,
+"code":"MAR-0726",
+"name":"Mar da China Meridional 2",
+"center":[
+2910.4,
+949.5
+]
+},
+{
+"id":727,
+"code":"MAR-0727",
+"name":"Mar da China Meridional 3",
+"center":[
+2909.8,
+1042.6
+]
+},
+{
+"id":728,
+"code":"MAR-0728",
+"name":"Mar da China Meridional 4",
+"center":[
+2867.3,
+1102.1
+]
+},
+{
+"id":729,
+"code":"MAR-0729",
+"name":"Mar de Java",
+"center":[
+2928.5,
+1170.0
+]
+},
+{
+"id":730,
+"code":"MAR-0730",
+"name":"Oceano Índico 94",
+"center":[
+2874.0,
+1236.5
+]
+},
+{
+"id":731,
+"code":"MAR-0731",
+"name":"Oceano Índico 95",
+"center":[
+2924.5,
+1251.0
+]
+},
+{
+"id":732,
+"code":"MAR-0732",
+"name":"Oceano Índico 96",
+"center":[
+2878.2,
+1312.1
+]
+},
+{
+"id":733,
+"code":"MAR-0733",
+"name":"Oceano Índico 97",
+"center":[
+2937.6,
+1312.1
+]
+},
+{
+"id":734,
+"code":"MAR-0734",
+"name":"Oceano Índico 98",
+"center":[
+2913.0,
+1357.6
+]
+},
+{
+"id":735,
+"code":"MAR-0735",
+"name":"Oceano Índico 99",
+"center":[
+2853.9,
+1373.2
+]
+},
+{
+"id":736,
+"code":"MAR-0736",
+"name":"Oceano Índico 100",
+"center":[
+2917.5,
+1419.4
+]
+},
+{
+"id":737,
+"code":"MAR-0737",
+"name":"Oceano Índico 101",
+"center":[
+2872.4,
+1428.4
+]
+},
+{
+"id":738,
+"code":"MAR-0738",
+"name":"Oceano Índico 102",
+"center":[
+2920.4,
+1474.4
+]
+},
+{
+"id":739,
+"code":"MAR-0739",
+"name":"Oceano Índico 103",
+"center":[
+2862.5,
+1544.8
+]
+},
+{
+"id":740,
+"code":"MAR-0740",
+"name":"Oceano Índico 104",
+"center":[
+2918.4,
+1567.8
+]
+},
+{
+"id":741,
+"code":"MAR-0741",
+"name":"Oceano Ártico 45",
+"center":[
+3004.2,
+20.2
+]
+},
+{
+"id":742,
+"code":"MAR-0742",
+"name":"Oceano Ártico 46",
+"center":[
+2985.2,
+86.4
+]
+},
+{
+"id":743,
+"code":"MAR-0743",
+"name":"Mar de Laptev 2",
+"center":[
+3036.2,
+142.3
+]
+},
+{
+"id":744,
+"code":"MAR-0744",
+"name":"Mar de Laptev 3",
+"center":[
+2981.2,
+144.9
+]
+},
+{
+"id":745,
+"code":"MAR-0745",
+"name":"Mar de Laptev 4",
+"center":[
+2956.0,
+171.7
+]
+},
+{
+"id":746,
+"code":"MAR-0746",
+"name":"Mar de Laptev 5",
+"center":[
+3008.2,
+195.3
+]
+},
+{
+"id":747,
+"code":"MAR-0747",
+"name":"Mar Amarelo",
+"center":[
+3031.6,
+724.7
+]
+},
+{
+"id":748,
+"code":"MAR-0748",
+"name":"Mar da China Oriental 1",
+"center":[
+3043.6,
+784.2
+]
+},
+{
+"id":749,
+"code":"MAR-0749",
+"name":"Mar da China Oriental 2",
+"center":[
+3012.2,
+845.1
+]
+},
+{
+"id":750,
+"code":"MAR-0750",
+"name":"Mar da China Oriental 3",
+"center":[
+3045.5,
+854.0
+]
+},
+{
+"id":751,
+"code":"MAR-0751",
+"name":"Mar da China Meridional 5",
+"center":[
+2981.5,
+895.9
+]
+},
+{
+"id":752,
+"code":"MAR-0752",
+"name":"Mar das Filipinas 1",
+"center":[
+3047.6,
+952.3
+]
+},
+{
+"id":753,
+"code":"MAR-0753",
+"name":"Mar da China Meridional 6",
+"center":[
+2971.3,
+962.1
+]
+},
+{
+"id":754,
+"code":"MAR-0754",
+"name":"Mar de Sulu 1",
+"center":[
+3017.6,
+1000.7
+]
+},
+{
+"id":755,
+"code":"MAR-0755",
+"name":"Mar de Sulu 2",
+"center":[
+2996.4,
+1036.9
+]
+},
+{
+"id":756,
+"code":"MAR-0756",
+"name":"Mar de Celebes",
+"center":[
+3028.4,
+1108.4
+]
+},
+{
+"id":757,
+"code":"MAR-0757",
+"name":"Estreito de Macáçar",
+"center":[
+2986.8,
+1118.8
+]
+},
+{
+"id":758,
+"code":"MAR-0758",
+"name":"Mar de Banda 1",
+"center":[
+3034.6,
+1191.1
+]
+},
+{
+"id":759,
+"code":"MAR-0759",
+"name":"Mar das Flores",
+"center":[
+2979.9,
+1197.9
+]
+},
+{
+"id":760,
+"code":"MAR-0760",
+"name":"Oceano Índico 105",
+"center":[
+2984.4,
+1253.0
+]
+},
+{
+"id":761,
+"code":"MAR-0761",
+"name":"Oceano Índico 106",
+"center":[
+3035.3,
+1254.1
+]
+},
+{
+"id":762,
+"code":"MAR-0762",
+"name":"Oceano Índico 107",
+"center":[
+2991.2,
+1299.5
+]
+},
+{
+"id":763,
+"code":"MAR-0763",
+"name":"Oceano Índico 108",
+"center":[
+2989.3,
+1531.5
+]
+},
+{
+"id":764,
+"code":"MAR-0764",
+"name":"Oceano Índico 109",
+"center":[
+3042.8,
+1533.2
+]
+},
+{
+"id":765,
+"code":"MAR-0765",
+"name":"Oceano Índico 110",
+"center":[
+2995.5,
+1644.6
+]
+},
+{
+"id":766,
+"code":"MAR-0766",
+"name":"Oceano Índico 111",
+"center":[
+2976.5,
+1736.4
+]
+},
+{
+"id":767,
+"code":"MAR-0767",
+"name":"Oceano Ártico 47",
+"center":[
+3145.1,
+38.1
+]
+},
+{
+"id":768,
+"code":"MAR-0768",
+"name":"Oceano Ártico 48",
+"center":[
+3149.7,
+139.5
+]
+},
+{
+"id":769,
+"code":"MAR-0769",
+"name":"Mar de Laptev 6",
+"center":[
+3092.1,
+144.6
+]
+},
+{
+"id":770,
+"code":"MAR-0770",
+"name":"Mar de Laptev 7",
+"center":[
+3120.0,
+216.4
+]
+},
+{
+"id":771,
+"code":"MAR-0771",
+"name":"Mar do Japão 1",
+"center":[
+3106.1,
+700.9
+]
+},
+{
+"id":772,
+"code":"MAR-0772",
+"name":"Estreito da Coreia",
+"center":[
+3083.1,
+774.8
+]
+},
+{
+"id":773,
+"code":"MAR-0773",
+"name":"Mar das Filipinas 2",
+"center":[
+3144.9,
+795.9
+]
+},
+{
+"id":774,
+"code":"MAR-0774",
+"name":"Mar das Filipinas 3",
+"center":[
+3113.8,
+840.6
+]
+},
+{
+"id":775,
+"code":"MAR-0775",
+"name":"Mar das Filipinas 4",
+"center":[
+3057.6,
+883.3
+]
+},
+{
+"id":776,
+"code":"MAR-0776",
+"name":"Mar das Filipinas 5",
+"center":[
+3104.9,
+895.3
+]
+},
+{
+"id":777,
+"code":"MAR-0777",
+"name":"Mar das Filipinas 6",
+"center":[
+3093.9,
+957.2
+]
+},
+{
+"id":778,
+"code":"MAR-0778",
+"name":"Mar das Filipinas 7",
+"center":[
+3102.3,
+1017.4
+]
+},
+{
+"id":779,
+"code":"MAR-0779",
+"name":"Mar das Filipinas 8",
+"center":[
+3095.9,
+1086.4
+]
+},
+{
+"id":780,
+"code":"MAR-0780",
+"name":"Mar de Banda 2",
+"center":[
+3094.5,
+1186.7
+]
+},
+{
+"id":781,
+"code":"MAR-0781",
+"name":"Mar de Timor",
+"center":[
+3080.6,
+1252.4
+]
+},
+{
+"id":782,
+"code":"MAR-0782",
+"name":"Grande Baía Australiana 1",
+"center":[
+3085.2,
+1482.3
+]
+},
+{
+"id":783,
+"code":"MAR-0783",
+"name":"Grande Baía Australiana 2",
+"center":[
+3142.6,
+1485.3
+]
+},
+{
+"id":784,
+"code":"MAR-0784",
+"name":"Grande Baía Australiana 3",
+"center":[
+3098.1,
+1525.6
+]
+},
+{
+"id":785,
+"code":"MAR-0785",
+"name":"Oceano Índico 112",
+"center":[
+3121.8,
+1640.3
+]
+},
+{
+"id":786,
+"code":"MAR-0786",
+"name":"Oceano Índico 113",
+"center":[
+3137.8,
+1714.7
+]
+},
+{
+"id":787,
+"code":"MAR-0787",
+"name":"Oceano Ártico 49",
+"center":[
+3212.0,
+80.5
+]
+},
+{
+"id":788,
+"code":"MAR-0788",
+"name":"Oceano Ártico 50",
+"center":[
+3153.7,
+88.6
+]
+},
+{
+"id":789,
+"code":"MAR-0789",
+"name":"Oceano Ártico 51",
+"center":[
+3206.3,
+138.5
+]
+},
+{
+"id":790,
+"code":"MAR-0790",
+"name":"Golfo do Yana",
+"center":[
+3170.6,
+210.3
+]
+},
+{
+"id":791,
+"code":"MAR-0791",
+"name":"Mar de Okhotsk 1",
+"center":[
+3217.9,
+478.5
+]
+},
+{
+"id":792,
+"code":"MAR-0792",
+"name":"Mar de Okhotsk 2",
+"center":[
+3239.3,
+541.6
+]
+},
+{
+"id":793,
+"code":"MAR-0793",
+"name":"Mar do Japão 2",
+"center":[
+3204.1,
+611.2
+]
+},
+{
+"id":794,
+"code":"MAR-0794",
+"name":"Mar do Japão 3",
+"center":[
+3160.8,
+673.0
+]
+},
+{
+"id":795,
+"code":"MAR-0795",
+"name":"Oceano Pacífico 196",
+"center":[
+3249.3,
+685.0
+]
+},
+{
+"id":796,
+"code":"MAR-0796",
+"name":"Mar do Japão 4",
+"center":[
+3157.0,
+726.3
+]
+},
+{
+"id":797,
+"code":"MAR-0797",
+"name":"Oceano Pacífico 197",
+"center":[
+3228.5,
+766.8
+]
+},
+{
+"id":798,
+"code":"MAR-0798",
+"name":"Mar das Filipinas 9",
+"center":[
+3176.2,
+820.2
+]
+},
+{
+"id":799,
+"code":"MAR-0799",
+"name":"Mar das Filipinas 10",
+"center":[
+3213.2,
+846.1
+]
+},
+{
+"id":800,
+"code":"MAR-0800",
+"name":"Mar das Filipinas 11",
+"center":[
+3160.3,
+898.2
+]
+},
+{
+"id":801,
+"code":"MAR-0801",
+"name":"Mar das Filipinas 12",
+"center":[
+3214.9,
+904.2
+]
+},
+{
+"id":802,
+"code":"MAR-0802",
+"name":"Mar das Filipinas 13",
+"center":[
+3153.1,
+957.5
+]
+},
+{
+"id":803,
+"code":"MAR-0803",
+"name":"Mar das Filipinas 14",
+"center":[
+3220.1,
+957.5
+]
+},
+{
+"id":804,
+"code":"MAR-0804",
+"name":"Mar das Filipinas 15",
+"center":[
+3214.7,
+1009.4
+]
+},
+{
+"id":805,
+"code":"MAR-0805",
+"name":"Mar das Filipinas 16",
+"center":[
+3164.4,
+1010.0
+]
+},
+{
+"id":806,
+"code":"MAR-0806",
+"name":"Oceano Pacífico 198",
+"center":[
+3168.6,
+1074.1
+]
+},
+{
+"id":807,
+"code":"MAR-0807",
+"name":"Oceano Pacífico 199",
+"center":[
+3229.9,
+1074.1
+]
+},
+{
+"id":808,
+"code":"MAR-0808",
+"name":"Oceano Pacífico 200",
+"center":[
+3169.6,
+1123.6
+]
+},
+{
+"id":809,
+"code":"MAR-0809",
+"name":"Mar de Arafura",
+"center":[
+3153.7,
+1198.8
+]
+},
+{
+"id":810,
+"code":"MAR-0810",
+"name":"Mar de Coral 1",
+"center":[
+3244.6,
+1248.5
+]
+},
+{
+"id":811,
+"code":"MAR-0811",
+"name":"Golfo de Carpentária",
+"center":[
+3184.6,
+1257.5
+]
+},
+{
+"id":812,
+"code":"MAR-0812",
+"name":"Grande Baía Australiana 4",
+"center":[
+3162.1,
+1530.3
+]
+},
+{
+"id":813,
+"code":"MAR-0813",
+"name":"Grande Baía Australiana 5",
+"center":[
+3221.0,
+1547.0
+]
+},
+{
+"id":814,
+"code":"MAR-0814",
+"name":"Oceano Índico 114",
+"center":[
+3204.9,
+1608.6
+]
+},
+{
+"id":815,
+"code":"MAR-0815",
+"name":"Oceano Ártico 52",
+"center":[
+3339.8,
+26.1
+]
+},
+{
+"id":816,
+"code":"MAR-0816",
+"name":"Oceano Ártico 53",
+"center":[
+3257.2,
+42.7
+]
+},
+{
+"id":817,
+"code":"MAR-0817",
+"name":"Oceano Ártico 54",
+"center":[
+3332.4,
+79.9
+]
+},
+{
+"id":818,
+"code":"MAR-0818",
+"name":"Mar Siberiano Oriental 1",
+"center":[
+3263.8,
+142.5
+]
+},
+{
+"id":819,
+"code":"MAR-0819",
+"name":"Mar Siberiano Oriental 2",
+"center":[
+3340.2,
+164.8
+]
+},
+{
+"id":820,
+"code":"MAR-0820",
+"name":"Mar Siberiano Oriental 3",
+"center":[
+3268.7,
+210.7
+]
+},
+{
+"id":821,
+"code":"MAR-0821",
+"name":"Mar Siberiano Oriental 4",
+"center":[
+3312.7,
+218.3
+]
+},
+{
+"id":822,
+"code":"MAR-0822",
+"name":"Mar de Okhotsk 3",
+"center":[
+3267.3,
+476.8
+]
+},
+{
+"id":823,
+"code":"MAR-0823",
+"name":"Mar de Okhotsk 4",
+"center":[
+3324.1,
+484.3
+]
+},
+{
+"id":824,
+"code":"MAR-0824",
+"name":"Mar de Okhotsk 5",
+"center":[
+3336.0,
+545.0
+]
+},
+{
+"id":825,
+"code":"MAR-0825",
+"name":"Mar de Okhotsk 6",
+"center":[
+3276.4,
+555.5
+]
+},
+{
+"id":826,
+"code":"MAR-0826",
+"name":"Mar de Okhotsk 7",
+"center":[
+3272.6,
+605.6
+]
+},
+{
+"id":827,
+"code":"MAR-0827",
+"name":"Oceano Pacífico 201",
+"center":[
+3338.1,
+606.7
+]
+},
+{
+"id":828,
+"code":"MAR-0828",
+"name":"Oceano Pacífico 202",
+"center":[
+3320.3,
+659.7
+]
+},
+{
+"id":829,
+"code":"MAR-0829",
+"name":"Oceano Pacífico 203",
+"center":[
+3293.4,
+707.5
+]
+},
+{
+"id":830,
+"code":"MAR-0830",
+"name":"Oceano Pacífico 204",
+"center":[
+3286.0,
+774.6
+]
+},
+{
+"id":831,
+"code":"MAR-0831",
+"name":"Oceano Pacífico 205",
+"center":[
+3340.6,
+842.4
+]
+},
+{
+"id":832,
+"code":"MAR-0832",
+"name":"Oceano Pacífico 206",
+"center":[
+3283.9,
+852.8
+]
+},
+{
+"id":833,
+"code":"MAR-0833",
+"name":"Oceano Pacífico 207",
+"center":[
+3281.1,
+897.8
+]
+},
+{
+"id":834,
+"code":"MAR-0834",
+"name":"Oceano Pacífico 208",
+"center":[
+3341.7,
+899.2
+]
+},
+{
+"id":835,
+"code":"MAR-0835",
+"name":"Oceano Pacífico 209",
+"center":[
+3329.0,
+958.2
+]
+},
+{
+"id":836,
+"code":"MAR-0836",
+"name":"Oceano Pacífico 210",
+"center":[
+3275.9,
+962.1
+]
+},
+{
+"id":837,
+"code":"MAR-0837",
+"name":"Oceano Pacífico 211",
+"center":[
+3268.5,
+1011.6
+]
+},
+{
+"id":838,
+"code":"MAR-0838",
+"name":"Oceano Pacífico 212",
+"center":[
+3329.4,
+1012.4
+]
+},
+{
+"id":839,
+"code":"MAR-0839",
+"name":"Oceano Pacífico 213",
+"center":[
+3282.8,
+1073.3
+]
+},
+{
+"id":840,
+"code":"MAR-0840",
+"name":"Oceano Pacífico 214",
+"center":[
+3338.1,
+1076.0
+]
+},
+{
+"id":841,
+"code":"MAR-0841",
+"name":"Oceano Pacífico 215",
+"center":[
+3265.0,
+1128.1
+]
+},
+{
+"id":842,
+"code":"MAR-0842",
+"name":"Oceano Pacífico 216",
+"center":[
+3328.6,
+1129.8
+]
+},
+{
+"id":843,
+"code":"MAR-0843",
+"name":"Mar de Salomão 1",
+"center":[
+3301.2,
+1186.7
+]
+},
+{
+"id":844,
+"code":"MAR-0844",
+"name":"Mar de Salomão 2",
+"center":[
+3341.7,
+1202.0
+]
+},
+{
+"id":845,
+"code":"MAR-0845",
+"name":"Mar de Coral 2",
+"center":[
+3318.8,
+1242.7
+]
+},
+{
+"id":846,
+"code":"MAR-0846",
+"name":"Mar de Coral 3",
+"center":[
+3274.6,
+1273.1
+]
+},
+{
+"id":847,
+"code":"MAR-0847",
+"name":"Mar de Coral 4",
+"center":[
+3323.0,
+1307.0
+]
+},
+{
+"id":848,
+"code":"MAR-0848",
+"name":"Mar de Coral 5",
+"center":[
+3333.8,
+1358.9
+]
+},
+{
+"id":849,
+"code":"MAR-0849",
+"name":"Mar da Tasmânia 1",
+"center":[
+3340.0,
+1472.0
+]
+},
+{
+"id":850,
+"code":"MAR-0850",
+"name":"Mar da Tasmânia 2",
+"center":[
+3293.5,
+1527.1
+]
+},
+{
+"id":851,
+"code":"MAR-0851",
+"name":"Mar da Tasmânia 3",
+"center":[
+3329.7,
+1598.3
+]
+},
+{
+"id":852,
+"code":"MAR-0852",
+"name":"Oceano Índico 115",
+"center":[
+3265.2,
+1602.7
+]
+},
+{
+"id":853,
+"code":"MAR-0853",
+"name":"Oceano Índico 116",
+"center":[
+3335.4,
+1656.9
+]
+},
+{
+"id":854,
+"code":"MAR-0854",
+"name":"Oceano Índico 117",
+"center":[
+3258.3,
+1664.2
+]
+},
+{
+"id":855,
+"code":"MAR-0855",
+"name":"Oceano Índico 118",
+"center":[
+3297.9,
+1732.2
+]
+},
+{
+"id":856,
+"code":"MAR-0856",
+"name":"Oceano Ártico 55",
+"center":[
+3398.9,
+77.9
+]
+},
+{
+"id":857,
+"code":"MAR-0857",
+"name":"Oceano Ártico 56",
+"center":[
+3394.9,
+142.1
+]
+},
+{
+"id":858,
+"code":"MAR-0858",
+"name":"Mar Siberiano Oriental 5",
+"center":[
+3442.4,
+195.7
+]
+},
+{
+"id":859,
+"code":"MAR-0859",
+"name":"Mar Siberiano Oriental 6",
+"center":[
+3388.5,
+209.8
+]
+},
+{
+"id":860,
+"code":"MAR-0860",
+"name":"Mar Siberiano Oriental 7",
+"center":[
+3353.0,
+227.3
+]
+},
+{
+"id":861,
+"code":"MAR-0861",
+"name":"Mar Siberiano Oriental 8",
+"center":[
+3449.1,
+254.5
+]
+},
+{
+"id":862,
+"code":"MAR-0862",
+"name":"Mar Siberiano Oriental 9",
+"center":[
+3415.0,
+264.7
+]
+},
+{
+"id":863,
+"code":"MAR-0863",
+"name":"Golfo de Shelikhov",
+"center":[
+3383.7,
+431.4
+]
+},
+{
+"id":864,
+"code":"MAR-0864",
+"name":"Oceano Pacífico 217",
+"center":[
+3447.2,
+558.9
+]
+},
+{
+"id":865,
+"code":"MAR-0865",
+"name":"Oceano Pacífico 218",
+"center":[
+3390.0,
+602.1
+]
+},
+{
+"id":866,
+"code":"MAR-0866",
+"name":"Oceano Pacífico 219",
+"center":[
+3446.3,
+609.1
+]
+},
+{
+"id":867,
+"code":"MAR-0867",
+"name":"Oceano Pacífico 220",
+"center":[
+3390.9,
+661.1
+]
+},
+{
+"id":868,
+"code":"MAR-0868",
+"name":"Oceano Pacífico 221",
+"center":[
+3361.9,
+708.7
+]
+},
+{
+"id":869,
+"code":"MAR-0869",
+"name":"Oceano Pacífico 222",
+"center":[
+3360.3,
+774.6
+]
+},
+{
+"id":870,
+"code":"MAR-0870",
+"name":"Oceano Pacífico 223",
+"center":[
+3411.6,
+799.3
+]
+},
+{
+"id":871,
+"code":"MAR-0871",
+"name":"Oceano Pacífico 224",
+"center":[
+3394.8,
+898.5
+]
+},
+{
+"id":872,
+"code":"MAR-0872",
+"name":"Oceano Pacífico 225",
+"center":[
+3441.5,
+904.9
+]
+},
+{
+"id":873,
+"code":"MAR-0873",
+"name":"Oceano Pacífico 226",
+"center":[
+3388.6,
+935.6
+]
+},
+{
+"id":874,
+"code":"MAR-0874",
+"name":"Oceano Pacífico 227",
+"center":[
+3446.3,
+961.5
+]
+},
+{
+"id":875,
+"code":"MAR-0875",
+"name":"Oceano Pacífico 228",
+"center":[
+3389.4,
+1008.4
+]
+},
+{
+"id":876,
+"code":"MAR-0876",
+"name":"Oceano Pacífico 229",
+"center":[
+3448.9,
+1023.3
+]
+},
+{
+"id":877,
+"code":"MAR-0877",
+"name":"Oceano Pacífico 230",
+"center":[
+3397.7,
+1077.3
+]
+},
+{
+"id":878,
+"code":"MAR-0878",
+"name":"Oceano Pacífico 231",
+"center":[
+3450.0,
+1080.4
+]
+},
+{
+"id":879,
+"code":"MAR-0879",
+"name":"Oceano Pacífico 232",
+"center":[
+3389.1,
+1127.7
+]
+},
+{
+"id":880,
+"code":"MAR-0880",
+"name":"Oceano Pacífico 233",
+"center":[
+3446.8,
+1184.3
+]
+},
+{
+"id":881,
+"code":"MAR-0881",
+"name":"Oceano Pacífico 234",
+"center":[
+3394.6,
+1186.1
+]
+},
+{
+"id":882,
+"code":"MAR-0882",
+"name":"Mar de Coral 6",
+"center":[
+3392.7,
+1256.9
+]
+},
+{
+"id":883,
+"code":"MAR-0883",
+"name":"Mar de Coral 7",
+"center":[
+3390.9,
+1307.3
+]
+},
+{
+"id":884,
+"code":"MAR-0884",
+"name":"Mar de Coral 8",
+"center":[
+3386.7,
+1363.1
+]
+},
+{
+"id":885,
+"code":"MAR-0885",
+"name":"Mar de Coral 9",
+"center":[
+3447.8,
+1368.6
+]
+},
+{
+"id":886,
+"code":"MAR-0886",
+"name":"Mar de Coral 10",
+"center":[
+3357.1,
+1409.7
+]
+},
+{
+"id":887,
+"code":"MAR-0887",
+"name":"Oceano Pacífico 235",
+"center":[
+3399.9,
+1426.2
+]
+},
+{
+"id":888,
+"code":"MAR-0888",
+"name":"Oceano Pacífico 236",
+"center":[
+3444.7,
+1428.9
+]
+},
+{
+"id":889,
+"code":"MAR-0889",
+"name":"Mar da Tasmânia 4",
+"center":[
+3445.9,
+1483.8
+]
+},
+{
+"id":890,
+"code":"MAR-0890",
+"name":"Mar da Tasmânia 5",
+"center":[
+3379.6,
+1487.0
+]
+},
+{
+"id":891,
+"code":"MAR-0891",
+"name":"Mar da Tasmânia 6",
+"center":[
+3443.0,
+1528.5
+]
+},
+{
+"id":892,
+"code":"MAR-0892",
+"name":"Mar da Tasmânia 7",
+"center":[
+3351.3,
+1549.3
+]
+},
+{
+"id":893,
+"code":"MAR-0893",
+"name":"Mar da Tasmânia 8",
+"center":[
+3449.7,
+1584.3
+]
+},
+{
+"id":894,
+"code":"MAR-0894",
+"name":"Mar da Tasmânia 9",
+"center":[
+3397.1,
+1599.8
+]
+},
+{
+"id":895,
+"code":"MAR-0895",
+"name":"Oceano Índico 119",
+"center":[
+3392.4,
+1656.6
+]
+},
+{
+"id":896,
+"code":"MAR-0896",
+"name":"Mar da Tasmânia 10",
+"center":[
+3444.1,
+1658.9
+]
+},
+{
+"id":897,
+"code":"MAR-0897",
+"name":"Oceano Índico 120",
+"center":[
+3394.5,
+1712.3
+]
+},
+{
+"id":898,
+"code":"MAR-0898",
+"name":"Oceano Índico 121",
+"center":[
+3385.7,
+1759.8
+]
+},
+{
+"id":899,
+"code":"MAR-0899",
+"name":"Oceano Ártico 57",
+"center":[
+3539.6,
+65.0
+]
+},
+{
+"id":900,
+"code":"MAR-0900",
+"name":"Oceano Ártico 58",
+"center":[
+3477.1,
+105.2
+]
+},
+{
+"id":901,
+"code":"MAR-0901",
+"name":"Oceano Ártico 59",
+"center":[
+3507.5,
+191.6
+]
+},
+{
+"id":902,
+"code":"MAR-0902",
+"name":"Mar Siberiano Oriental 10",
+"center":[
+3503.7,
+260.3
+]
+},
+{
+"id":903,
+"code":"MAR-0903",
+"name":"Mar de Bering 8",
+"center":[
+3479.7,
+443.0
+]
+},
+{
+"id":904,
+"code":"MAR-0904",
+"name":"Mar de Bering 9",
+"center":[
+3461.5,
+489.1
+]
+},
+{
+"id":905,
+"code":"MAR-0905",
+"name":"Mar de Bering 10",
+"center":[
+3513.7,
+492.4
+]
+},
+{
+"id":906,
+"code":"MAR-0906",
+"name":"Oceano Pacífico 237",
+"center":[
+3511.7,
+558.4
+]
+},
+{
+"id":907,
+"code":"MAR-0907",
+"name":"Oceano Pacífico 238",
+"center":[
+3509.5,
+625.8
+]
+},
+{
+"id":908,
+"code":"MAR-0908",
+"name":"Oceano Pacífico 239",
+"center":[
+3518.6,
+764.9
+]
+},
+{
+"id":909,
+"code":"MAR-0909",
+"name":"Oceano Pacífico 240",
+"center":[
+3465.1,
+805.0
+]
+},
+{
+"id":910,
+"code":"MAR-0910",
+"name":"Oceano Pacífico 241",
+"center":[
+3537.4,
+866.6
+]
+},
+{
+"id":911,
+"code":"MAR-0911",
+"name":"Oceano Pacífico 242",
+"center":[
+3501.4,
+955.8
+]
+},
+{
+"id":912,
+"code":"MAR-0912",
+"name":"Oceano Pacífico 243",
+"center":[
+3512.2,
+1013.5
+]
+},
+{
+"id":913,
+"code":"MAR-0913",
+"name":"Oceano Pacífico 244",
+"center":[
+3509.2,
+1065.1
+]
+},
+{
+"id":914,
+"code":"MAR-0914",
+"name":"Oceano Pacífico 245",
+"center":[
+3513.2,
+1124.8
+]
+},
+{
+"id":915,
+"code":"MAR-0915",
+"name":"Oceano Pacífico 246",
+"center":[
+3455.5,
+1134.8
+]
+},
+{
+"id":916,
+"code":"MAR-0916",
+"name":"Oceano Pacífico 247",
+"center":[
+3507.7,
+1184.3
+]
+},
+{
+"id":917,
+"code":"MAR-0917",
+"name":"Oceano Pacífico 248",
+"center":[
+3498.3,
+1229.1
+]
+},
+{
+"id":918,
+"code":"MAR-0918",
+"name":"Mar de Coral 11",
+"center":[
+3452.2,
+1246.1
+]
+},
+{
+"id":919,
+"code":"MAR-0919",
+"name":"Oceano Pacífico 249",
+"center":[
+3518.2,
+1301.2
+]
+},
+{
+"id":920,
+"code":"MAR-0920",
+"name":"Mar de Coral 12",
+"center":[
+3464.3,
+1320.3
+]
+},
+{
+"id":921,
+"code":"MAR-0921",
+"name":"Oceano Pacífico 250",
+"center":[
+3515.7,
+1368.6
+]
+},
+{
+"id":922,
+"code":"MAR-0922",
+"name":"Oceano Pacífico 251",
+"center":[
+3495.3,
+1432.6
+]
+},
+{
+"id":923,
+"code":"MAR-0923",
+"name":"Mar da Tasmânia 11",
+"center":[
+3508.1,
+1486.0
+]
+},
+{
+"id":924,
+"code":"MAR-0924",
+"name":"Mar da Tasmânia 12",
+"center":[
+3503.3,
+1538.7
+]
+},
+{
+"id":925,
+"code":"MAR-0925",
+"name":"Mar da Tasmânia 13",
+"center":[
+3485.7,
+1584.9
+]
+},
+{
+"id":926,
+"code":"MAR-0926",
+"name":"Oceano Pacífico 252",
+"center":[
+3504.5,
+1657.7
+]
+},
+{
+"id":927,
+"code":"MAR-0927",
+"name":"Oceano Índico 122",
+"center":[
+3453.4,
+1715.6
+]
+},
+{
+"id":928,
+"code":"MAR-0928",
+"name":"Oceano Pacífico 253",
+"center":[
+3511.8,
+1718.0
+]
+},
+{
+"id":929,
+"code":"MAR-0929",
+"name":"Oceano Índico 123",
+"center":[
+3450.9,
+1761.6
+]
+},
+{
+"id":930,
+"code":"MAR-0930",
+"name":"Oceano Pacífico 254",
+"center":[
+3519.6,
+1761.6
+]
+},
+{
+"id":931,
+"code":"MAR-0931",
+"name":"Oceano Ártico 60",
+"center":[
+3565.4,
+185.8
+]
+},
+{
+"id":932,
+"code":"MAR-0932",
+"name":"Mar Siberiano Oriental 11",
+"center":[
+3563.4,
+255.8
+]
+},
+{
+"id":933,
+"code":"MAR-0933",
+"name":"Mar de Bering 11",
+"center":[
+3564.6,
+416.2
+]
+},
+{
+"id":934,
+"code":"MAR-0934",
+"name":"Mar de Bering 12",
+"center":[
+3570.2,
+497.0
+]
+},
+{
+"id":935,
+"code":"MAR-0935",
+"name":"Mar de Bering 13",
+"center":[
+3553.9,
+550.2
+]
+},
+{
+"id":936,
+"code":"MAR-0936",
+"name":"Oceano Pacífico 255",
+"center":[
+3567.9,
+626.7
+]
+},
+{
+"id":937,
+"code":"MAR-0937",
+"name":"Oceano Pacífico 256",
+"center":[
+3567.9,
+942.4
+]
+},
+{
+"id":938,
+"code":"MAR-0938",
+"name":"Oceano Pacífico 257",
+"center":[
+3571.5,
+1014.6
+]
+},
+{
+"id":939,
+"code":"MAR-0939",
+"name":"Oceano Pacífico 258",
+"center":[
+3568.5,
+1070.6
+]
+},
+{
+"id":940,
+"code":"MAR-0940",
+"name":"Oceano Pacífico 259",
+"center":[
+3572.5,
+1129.4
+]
+},
+{
+"id":941,
+"code":"MAR-0941",
+"name":"Oceano Pacífico 260",
+"center":[
+3568.5,
+1189.0
+]
+},
+{
+"id":942,
+"code":"MAR-0942",
+"name":"Oceano Pacífico 261",
+"center":[
+3561.8,
+1238.3
+]
+},
+{
+"id":943,
+"code":"MAR-0943",
+"name":"Oceano Pacífico 262",
+"center":[
+3564.5,
+1296.8
+]
+},
+{
+"id":944,
+"code":"MAR-0944",
+"name":"Oceano Pacífico 263",
+"center":[
+3575.7,
+1366.5
+]
+},
+{
+"id":945,
+"code":"MAR-0945",
+"name":"Oceano Pacífico 264",
+"center":[
+3561.9,
+1432.0
+]
+},
+{
+"id":946,
+"code":"MAR-0946",
+"name":"Oceano Pacífico 265",
+"center":[
+3575.5,
+1477.3
+]
+},
+{
+"id":947,
+"code":"MAR-0947",
+"name":"Oceano Pacífico 266",
+"center":[
+3584.8,
+1538.0
+]
+},
+{
+"id":948,
+"code":"MAR-0948",
+"name":"Oceano Pacífico 267",
+"center":[
+3567.0,
+1597.0
+]
+},
+{
+"id":949,
+"code":"MAR-0949",
+"name":"Oceano Pacífico 268",
+"center":[
+3569.7,
+1650.6
+]
+},
+{
+"id":950,
+"code":"MAR-0950",
+"name":"Oceano Pacífico 269",
+"center":[
+3572.0,
+1710.7
+]
+}
+]

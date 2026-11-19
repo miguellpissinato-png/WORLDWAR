@@ -22,6 +22,15 @@ func test_whole_world_is_loaded() -> void:
 	assert_true(gs().countries.size() > 70, "mais de 70 países")
 
 
+func test_sea_zones_are_loaded() -> void:
+	assert_true(gs().sea_zones.size() > 500, "mais de 500 zonas marítimas")
+	var names := {}
+	for z in gs().sea_zones.values():
+		assert_true(z.name != "", "zona %s sem nome" % z.code)
+		names[z.name] = true
+	assert_eq(names.size(), gs().sea_zones.size(), "nomes de zona repetidos")
+
+
 func test_every_state_has_a_valid_owner() -> void:
 	var bad: Array = []
 	for s in gs().states.values():

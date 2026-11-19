@@ -6,6 +6,7 @@ var hours: int = 0                 # tempo do jogo, ver GameDate
 var scenario_name: String = ""
 var countries: Dictionary = {}     # tag -> Country
 var states: Dictionary = {}        # id -> MapState
+var sea_zones: Dictionary = {}     # id -> SeaZone
 var rng := RandomNumberGenerator.new()   # único gerador aleatório da simulação
 
 

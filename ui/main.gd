@@ -4,7 +4,7 @@ extends Node
 
 ## Horas de jogo por segundo real em cada velocidade (1 a 5).
 const HOURS_PER_SECOND := [2.0, 6.0, 12.0, 24.0, 72.0]
-const PANEL_BG := Color(0.09, 0.10, 0.11, 0.92)
+const PANEL_BG := Color(0.09, 0.10, 0.11, 0.97)
 const PANEL_BORDER := Color(0.30, 0.31, 0.33)
 const ACCENT := Color(0.80, 0.70, 0.45)
 
@@ -45,6 +45,7 @@ func _ready() -> void:
 	map.color_by_owner(sim.state)
 	map.state_clicked.connect(_on_state_clicked)
 	map.state_hovered.connect(_on_state_hovered)
+	map.sea_hovered.connect(_on_sea_hovered)
 
 	labels = MapLabels.new()
 	add_child(labels)
@@ -116,6 +117,13 @@ func _on_state_hovered(sid: int) -> void:
 		return
 	var s := sim.state.state(sid)
 	_hover_label.text = "%s — %s" % [s.name, sim.state.country(s.owner).name]
+
+
+func _on_sea_hovered(zid: int) -> void:
+	if zid != -1:
+		_hover_label.text = sim.state.sea_zones[zid].name
+	elif map.state_at(map.get_local_mouse_position()) == -1:
+		_hover_label.text = ""
 
 
 func _build_here(building: String) -> void:

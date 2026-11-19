@@ -19,7 +19,16 @@ var _cities: Node2D
 
 
 func _ready() -> void:
-	_font = ThemeDB.fallback_font
+	# Fonte em campo de distância (MSDF): continua nítida em qualquer zoom.
+	var base := ThemeDB.fallback_font
+	if base is FontFile:
+		var f: FontFile = base.duplicate()
+		f.multichannel_signed_distance_field = true
+		f.msdf_pixel_range = 16
+		f.msdf_size = 64
+		_font = f
+	else:
+		_font = base
 	_cities = Node2D.new()
 	_cities.draw.connect(_draw_cities)
 	add_child(_cities)
@@ -50,6 +59,9 @@ func build(state: GameState, map: MapView) -> void:
 
 func set_zoom(zoom: float) -> void:
 	_zoom = zoom
+	# De muito perto os nomes dos países atrapalham: ficam mais transparentes.
+	modulate.a = clampf(1.0 - (zoom - 2.5) / 3.0, 0.25, 1.0)
+	_cities.modulate.a = 1.0 / maxf(modulate.a, 0.01)
 	_cities.queue_redraw()
 
 

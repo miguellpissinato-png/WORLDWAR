@@ -35,8 +35,10 @@ Documento de design completo: `docs/design.md`.
 ## Mapa
 
 - `data/map/states.json` (dados) e `data/map/shapes.json` (contornos, só a interface usa) são gerados;
+  `sea_zones.json`, `sea_shapes.json` e `sea_depth.png` vêm de `tools/map/build_sea.py`;
   não editar à mão. O id de cada estado depende da ordem dos códigos: use sempre o `code` nos dados.
 - Donos por cenário: `data/scenarios/<ano>/owners.json`. Capitais e construções iniciais usam o `code`.
+- Na imagem de IDs, azul = 255 marca zona marítima e azul = 0 marca estado de terra.
 - O mapa é pintado por um shader que lê uma imagem de IDs; mudar o dono de um estado = chamar
   `MapView.color_by_owner()` de novo (não precisa redesenhar polígonos).
 

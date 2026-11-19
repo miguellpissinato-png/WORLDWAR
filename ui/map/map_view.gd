@@ -10,8 +10,11 @@ extends Node2D
 
 signal state_clicked(state_id: int)
 signal state_hovered(state_id: int)
+signal sea_hovered(zone_id: int)   # -1 quando o mouse sai do mar
 
 const SHAPES_PATH := "res://data/map/shapes.json"
+const SEA_SHAPES_PATH := "res://data/map/sea_shapes.json"
+const DEPTH_PATH := "res://data/map/sea_depth.png"
 const ID_SCALE := 2.0      # resolução da imagem de IDs em relação às coordenadas do mapa
 const LOOKUP_WIDTH := 4096
 const CELL := 40.0         # tamanho da célula da grade de busca (clique)
@@ -21,6 +24,9 @@ var map_size := Vector2.ZERO
 var _rings := {}           # state_id -> Array[PackedVector2Array]
 var _grid := {}            # Vector2i -> Array[state_id]
 var _area := {}            # state_id -> área aproximada (desempate em enclaves)
+var _sea_rings := {}       # zone_id -> Array[PackedVector2Array]
+var _sea_grid := {}        # Vector2i -> Array[zone_id]
+var _hovered_sea := -1
 var _state: GameState
 var _selected := -1
 var _hovered := -1
@@ -52,6 +58,22 @@ func load_shapes() -> void:
 	holder.scale = Vector2(ID_SCALE, ID_SCALE)
 	_id_viewport.add_child(holder)
 
+	# Zonas marítimas primeiro (azul = 255 marca "mar"); a terra é desenhada por cima.
+	var sea: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(SEA_SHAPES_PATH)).shapes
+	for key in sea:
+		var zid := int(key)
+		var rings: Array = []
+		for flat in sea[key]:
+			var pts := _to_points(flat)
+			rings.append(pts)
+			_add_to_grid(_sea_grid, zid, _bounds(pts))
+			var p := Polygon2D.new()
+			p.polygon = pts
+			p.color = Color8(zid % 256, zid / 256, 255)
+			p.antialiased = false
+			holder.add_child(p)
+		_sea_rings[zid] = rings
+
 	var order: Array = []
 	for key in shapes:
 		var sid := int(key)
@@ -59,10 +81,7 @@ func load_shapes() -> void:
 		var rect := Rect2()
 		var area := 0.0
 		for flat in shapes[key]:
-			var pts := PackedVector2Array()
-			pts.resize(flat.size() / 2)
-			for i in pts.size():
-				pts[i] = Vector2(flat[2 * i], flat[2 * i + 1])
+			var pts := _to_points(flat)
 			rings.append(pts)
 			var r := _bounds(pts)
 			rect = r if rect.size == Vector2.ZERO else rect.merge(r)
@@ -70,7 +89,7 @@ func load_shapes() -> void:
 		_rings[sid] = rings
 		_area[sid] = area
 		order.append(sid)
-		_add_to_grid(sid, rect)
+		_add_to_grid(_grid, sid, rect)
 	# Maiores primeiro: enclaves (ex.: Lesoto) ficam por cima.
 	order.sort_custom(func(a, b): return _area[a] > _area[b])
 	# 1ª passada: contornos levemente expandidos, que tapam frestas entre vizinhos
@@ -103,6 +122,7 @@ func load_shapes() -> void:
 	_material.set_shader_parameter("land_noise", _noise(3, 0.012, 7))
 	_material.set_shader_parameter("detail_noise", _noise(11, 0.05, 4))
 	_material.set_shader_parameter("sea_noise", _noise(23, 0.008, 5))
+	_material.set_shader_parameter("depth_tex", load(DEPTH_PATH))
 
 	_sprite = Sprite2D.new()
 	_sprite.texture = _id_viewport.get_texture()
@@ -145,6 +165,9 @@ func select(state_id: int) -> void:
 func set_zoom(zoom: float) -> void:
 	_material.set_shader_parameter("texels_per_px", ID_SCALE / zoom)
 	_material.set_shader_parameter("state_border_alpha", clampf((zoom - 0.6) / 1.4, 0.0, 0.6))
+	# Detalhes do mar (contraste da profundidade, linhas das zonas, curva da plataforma)
+	# aparecem aos poucos conforme o zoom aumenta.
+	_material.set_shader_parameter("sea_detail", clampf((zoom - 0.5) / 2.0, 0.0, 1.0))
 
 
 ## Estado sob um ponto do mapa (coordenadas locais), ou -1.
@@ -158,6 +181,15 @@ func state_at(point: Vector2) -> int:
 	return best
 
 
+## Zona marítima sob um ponto do mapa, ou -1. Só faz sentido onde não há terra.
+func sea_at(point: Vector2) -> int:
+	for zid in _sea_grid.get(_cell(point), []):
+		for pts in _sea_rings[zid]:
+			if Geometry2D.is_point_in_polygon(point, pts):
+				return zid
+	return -1
+
+
 func rings_of(state_id: int) -> Array:
 	return _rings.get(state_id, [])
 
@@ -168,10 +200,15 @@ func area_of(state_id: int) -> float:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
-		var sid := state_at(get_local_mouse_position())
+		var pos := get_local_mouse_position()
+		var sid := state_at(pos)
 		if sid != _hovered:
 			_hovered = sid
 			state_hovered.emit(sid)
+		var zid := -1 if sid != -1 else sea_at(pos)
+		if zid != _hovered_sea:
+			_hovered_sea = zid
+			sea_hovered.emit(zid)
 	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var sid := state_at(get_local_mouse_position())
 		if sid != -1:
@@ -192,13 +229,21 @@ func _noise(seed: int, frequency: float, octaves: int) -> NoiseTexture2D:
 	return t
 
 
-func _add_to_grid(sid: int, rect: Rect2) -> void:
+func _add_to_grid(grid: Dictionary, id: int, rect: Rect2) -> void:
 	for x in range(int(floor(rect.position.x / CELL)), int(floor(rect.end.x / CELL)) + 1):
 		for y in range(int(floor(rect.position.y / CELL)), int(floor(rect.end.y / CELL)) + 1):
 			var key := Vector2i(x, y)
-			if not _grid.has(key):
-				_grid[key] = []
-			_grid[key].append(sid)
+			if not grid.has(key):
+				grid[key] = []
+			grid[key].append(id)
+
+
+static func _to_points(flat: Array) -> PackedVector2Array:
+	var pts := PackedVector2Array()
+	pts.resize(flat.size() / 2)
+	for i in pts.size():
+		pts[i] = Vector2(flat[2 * i], flat[2 * i + 1])
+	return pts
 
 
 func _cell(p: Vector2) -> Vector2i:

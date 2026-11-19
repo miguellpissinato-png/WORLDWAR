@@ -16,9 +16,12 @@ Feito no Godot 4.5 com GDScript.
   (Prússia Oriental, leste da Polônia, Manchukuo, Coreia e Taiwan japonesas, Fiume e Ístria etc.)
 - Visual: terreno com textura, cores dos países translúcidas, fronteiras grossas com faixa clara,
   linhas finas entre estados, oceano escuro, nomes curvos sobre os países e capitais com estrela
+- Mar com profundidade real (batimetria do Natural Earth): plataforma continental mais clara perto da
+  costa, mar aberto mais escuro, linhas de profundidade e 950 zonas marítimas demarcadas e com nome
+  (ex.: "Mar do Norte 3"); os detalhes aparecem conforme o zoom
 - Clique num estado para ver os dados e construir (só nos seus estados)
 - Relógio do jogo com pausa e 5 velocidades; fila de construção; tudo via comandos
-- 19 testes automáticos
+- 20 testes automáticos
 
 Controles: roda do mouse = zoom, botão direito = arrastar, WASD = mover, espaço = pausar, 1–5 = velocidade.
 
@@ -26,7 +29,8 @@ Os números de fábricas e os líderes de países menores ainda são provisório
 
 ## Mapa
 
-Os arquivos `data/map/` são gerados por `tools/map/build_map.py` a partir do Natural Earth.
+Os arquivos `data/map/` são gerados a partir do Natural Earth: `tools/map/build_map.py` (estados) e
+`tools/map/build_sea.py` (profundidade e zonas marítimas).
 Os donos de cada estado em 1936 ficam em `data/scenarios/1936/owners.json` (regras por país moderno
 e exceções por estado), e podem ser editados sem programar.
 

@@ -49,6 +49,11 @@ static func load_scenario(scenario: String) -> GameState:
 		gs.states[st.id] = st
 		by_code[st.code] = st
 
+	# Zonas marítimas (iguais em todos os cenários).
+	for d in read_json(MAP_DIR + "/sea_zones.json"):
+		var z := SeaZone.from_dict(d)
+		gs.sea_zones[z.id] = z
+
 	# Países.
 	for c in read_json(dir + "/countries.json"):
 		var country := Country.from_dict(c)
