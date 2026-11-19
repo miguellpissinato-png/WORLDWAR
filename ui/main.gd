@@ -34,7 +34,9 @@ var _flag: ColorRect
 var _country_label: Label
 var _money_label: Label
 var _resource_labels := {}
-var _country_info: RichTextLabel
+var _nav_buttons := {}     # id -> Button do menu lateral
+var _panels := {}          # id -> janela
+var _queue_box: VBoxContainer
 var _state_panel: PanelContainer
 var _state_info: RichTextLabel
 var _build_box: VBoxContainer
@@ -180,24 +182,31 @@ func _refresh_top_bar() -> void:
 
 func _refresh_country_panel() -> void:
 	var c := sim.state.country(player_tag)
-	var a := UiStyle.ACCENT_HEX
-	var t := "[color=%s]Líder:[/color] %s\n" % [a, c.leader if c.leader != "" else "a definir"]
+	var tip := "%s\nLíder: %s" % [c.name, c.leader if c.leader != "" else "a definir"]
 	if c.ideology != "":
-		t += "[color=%s]Ideologia:[/color] %s\n" % [a, c.ideology]
-	t += "[color=%s]Capital:[/color] %s\n" % [a, c.capital_city]
-	t += "[color=%s]Estados:[/color] %d\n" % [a, sim.state.states_of(player_tag).size()]
-	t += "[color=%s]Fábricas civis:[/color] %d\n" % [a, sim.state.civil_factories(player_tag)]
-	t += "[color=%s]Fábricas militares:[/color] %d\n" % [a, sim.state.military_factories(player_tag)]
-	t += "[color=%s]Renda de ontem:[/color] %s\n" % [a, UiStyle.money(c.last_income, sim.defs.currency)]
-	t += "[color=%s]Pesquisas:[/color] %d de %d vagas\n" % [a, c.research.size(), c.research_slots]
-	t += "\n[b]Fila de construção[/b]\n"
-	if c.construction_queue.is_empty():
-		t += "[color=#888](vazia — clique num estado seu no mapa)[/color]\n"
+		tip += "\nIdeologia: %s" % c.ideology
+	tip += "\nCapital: %s\nEstados: %d\nFábricas: %d civis, %d militares\nRenda de ontem: %s" % [
+		c.capital_city, sim.state.states_of(player_tag).size(), sim.state.civil_factories(player_tag),
+		sim.state.military_factories(player_tag), UiStyle.money(c.last_income, sim.defs.currency)]
+	_country_label.tooltip_text = tip
+	_flag.tooltip_text = tip
+	for b in _nav_buttons:
+		var p: Control = _panels[b]
+		_nav_buttons[b].modulate = UiStyle.ACCENT if p.visible else Color(1, 1, 1)
+	# Obras: só aparece quando há algo na fila.
+	UiStyle.clear(_queue_box)
+	_queue_box.visible = not c.construction_queue.is_empty()
+	if _queue_box.visible:
+		_queue_box.add_child(UiStyle.section("Obras"))
 	for item in c.construction_queue:
 		var def := ConstructionSystem.definition(sim.defs, item.building)
-		t += "%s — %s  [color=%s]%d%%[/color]\n" % [def.name, sim.state.state(item.state_id).name, a,
-			int(100.0 * item.progress / float(def.cost))]
-	_country_info.text = t
+		var l := Label.new()
+		l.text = "%s  %d%%" % [def.name, int(100.0 * item.progress / float(def.cost))]
+		l.tooltip_text = "%s em %s" % [def.name, sim.state.state(item.state_id).name]
+		l.mouse_filter = Control.MOUSE_FILTER_STOP
+		l.clip_text = true
+		l.add_theme_font_size_override("font_size", 13)
+		_queue_box.add_child(l)
 
 
 # ---------------------------------------------------------------- mapa
@@ -234,33 +243,24 @@ func _refresh_state_panel() -> void:
 	var s := sim.state.state(selected_state)
 	var owner := sim.state.country(s.owner)
 	var mine := s.owner == player_tag
-	var a := UiStyle.ACCENT_HEX
-	var st := "[b][font_size=18]%s[/font_size][/b]\n" % s.name
-	st += "[color=%s]Dono:[/color] %s\n" % [a, owner.name]
-	st += "[color=%s]Área:[/color] %s km²\n" % [a, UiStyle.num(s.area_km2)]
+	var st := "[b][font_size=18]%s[/font_size][/b]\n[color=#999]%s · %s km²[/color]\n" % [s.name, owner.name, UiStyle.num(s.area_km2)]
 	if mine:
-		st += "[color=%s]Vagas de fábrica:[/color] %d\n" % [a, s.building_slots]
-		for b in sim.defs.buildings:
-			st += "[color=%s]%s:[/color] %d\n" % [a, sim.defs.buildings[b].name, s.level(b)]
-		var res_lines := ""
+		st += UiStyle.kv("Fábricas", "%d de %d vagas" % [s.level("factory"), s.building_slots])
+		st += "   " + UiStyle.kv("Infraestrutura", "%d" % s.level("infrastructure")) + "\n"
 		for r in sim.defs.resources:
 			if int(s.resources.get(r.id, 0)) > 0:
-				var lvl := s.level("extraction_" + r.id)
-				var max_lvl := s.max_extraction_levels(r.id, float(sim.defs.extraction.deposit_factor))
-				res_lines += "[color=%s]%s:[/color] %d/dia (extração nível %d de %d)\n" % [r.color, r.name, s.extraction(r.id), lvl, max_lvl]
-		if res_lines != "":
-			st += "\n[b]Jazidas[/b]\n" + res_lines
+				st += "[color=%s]%s[/color] %d/dia\n" % [r.color, r.name, s.extraction(r.id)]
 	else:
-		st += "\n[color=#888]Construções, jazidas e produção deste estado são informação de outro país.[/color]\n"
 		var rep: Dictionary = sim.state.country(player_tag).intel_reports.get(s.owner, {})
-		if not rep.is_empty():
-			st += "\n" + _intel.report_text(s.owner, rep)
+		if rep.is_empty():
+			st += "[color=#888]Dados de outro país. Investigue para ver produção e estoques.[/color]\n"
 		else:
-			st += "[color=#888]Sem relatório de inteligência sobre %s.[/color]\n" % owner.name
+			st += "[color=#888]Relatório de inteligência de %s:[/color]\n" % GameDate.format(rep.hours).split(",")[0]
+			st += UiStyle.kv("Tesouro", "~" + UiStyle.money(rep.money, sim.defs.currency)) + "   "
+			st += UiStyle.kv("Fábricas", "~%d civis, ~%d militares" % [rep.civilian_factories, rep.military_factories]) + "\n"
 	_state_info.text = st
 
-	for c in _build_box.get_children():
-		c.queue_free()
+	UiStyle.clear(_build_box)
 	_spy_button.visible = not mine
 	_spy_button.text = "Investigar %s" % owner.name
 	if not mine:
@@ -273,7 +273,11 @@ func _refresh_state_panel() -> void:
 	for b in options:
 		var def := ConstructionSystem.definition(sim.defs, b)
 		var btn := Button.new()
-		btn.text = "Construir: %s (%s)" % [def.name, UiStyle.money(float(def.get("money_cost", 0)), cur)]
+		btn.text = "Construir %s  ·  %s" % [str(def.name).to_lower(), UiStyle.money(float(def.get("money_cost", 0)), cur)]
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var reason: String = QueueConstructionCommand.create(player_tag, selected_state, b).validate(sim.state, sim.defs)
+		btn.disabled = reason != ""
+		btn.tooltip_text = reason if reason != "" else "Leva o trabalho das fábricas civis; custa %s na hora." % UiStyle.money(float(def.get("money_cost", 0)), cur)
 		var building: String = b
 		btn.pressed.connect(func():
 			submit(QueueConstructionCommand.create(player_tag, selected_state, building))
@@ -323,7 +327,6 @@ func _build_ui() -> void:
 	_root.add_child(_game_ui)
 
 	_build_top_bar()
-	_build_side_panels()
 
 	_economy = EconomyPanel.new()
 	_economy.setup(self)
@@ -340,6 +343,7 @@ func _build_ui() -> void:
 	_production = ProductionPanel.new()
 	_production.setup(self)
 	_game_ui.add_child(_production)
+	_build_side_panels()
 
 	_hover_label = Label.new()
 	_hover_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -374,8 +378,10 @@ func _build_top_bar() -> void:
 	top.add_child(bar)
 	_flag = ColorRect.new()
 	_flag.custom_minimum_size = Vector2(46, 28)
+	_flag.mouse_filter = Control.MOUSE_FILTER_STOP
 	bar.add_child(_flag)
 	_country_label = Label.new()
+	_country_label.mouse_filter = Control.MOUSE_FILTER_STOP
 	_country_label.add_theme_font_size_override("font_size", 20)
 	_country_label.add_theme_color_override("font_color", UiStyle.ACCENT)
 	bar.add_child(_country_label)
@@ -420,39 +426,41 @@ func _build_top_bar() -> void:
 
 
 func _build_side_panels() -> void:
-	# País (esquerda)
+	# Menu lateral: um botão por janela; o botão da janela aberta fica dourado.
+	_panels = {"economy": _economy, "market": _market, "production": _production,
+		"research": _research, "intel": _intel}
 	var left := UiStyle.panel()
 	left.position = Vector2(10, 58)
-	left.custom_minimum_size = Vector2(300, 0)
+	left.custom_minimum_size = Vector2(140, 0)
 	_game_ui.add_child(left)
 	var lv := VBoxContainer.new()
-	lv.add_theme_constant_override("separation", 8)
+	lv.add_theme_constant_override("separation", 6)
 	left.add_child(lv)
-	for row in [[["Economia", "economy"], ["Mercado", "market"], ["Inteligência", "intel"]],
-			[["Pesquisa", "research"], ["Produção", "production"]]]:
-		var buttons := HBoxContainer.new()
-		lv.add_child(buttons)
-		for pair in row:
-			var b := Button.new()
-			b.text = pair[0]
-			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			var which: String = pair[1]
-			b.pressed.connect(func():
-				var p: Control = {"economy": _economy, "market": _market, "intel": _intel,
-					"research": _research, "production": _production}[which]
-				_only_one_panel(p)
-				p.toggle())
-			buttons.add_child(b)
-	_country_info = RichTextLabel.new()
-	_country_info.bbcode_enabled = true
-	_country_info.fit_content = true
-	_country_info.custom_minimum_size = Vector2(270, 0)
-	lv.add_child(_country_info)
+	for pair in [["Economia", "economy"], ["Mercado", "market"], ["Produção", "production"],
+			["Pesquisa", "research"], ["Inteligência", "intel"]]:
+		var b := Button.new()
+		b.text = pair[0]
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		var which: String = pair[1]
+		b.pressed.connect(func():
+			var p: Control = _panels[which]
+			_only_one_panel(p)
+			p.toggle()
+			_refresh_country_panel())
+		lv.add_child(b)
+		_nav_buttons[which] = b
+		_panels[which].visibility_changed.connect(func():
+			if started:
+				_refresh_country_panel.call_deferred())
+	_queue_box = VBoxContainer.new()
+	_queue_box.custom_minimum_size = Vector2(120, 0)
+	_queue_box.add_theme_constant_override("separation", 2)
+	lv.add_child(_queue_box)
 
 	# Estado selecionado (direita)
 	_state_panel = UiStyle.panel()
 	_state_panel.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_state_panel.offset_left = -350
+	_state_panel.offset_left = -330
 	_state_panel.offset_right = -10
 	_state_panel.offset_top = 58
 	_state_panel.grow_horizontal = Control.GROW_DIRECTION_BEGIN
@@ -463,7 +471,7 @@ func _build_side_panels() -> void:
 	_state_info = RichTextLabel.new()
 	_state_info.bbcode_enabled = true
 	_state_info.fit_content = true
-	_state_info.custom_minimum_size = Vector2(320, 0)
+	_state_info.custom_minimum_size = Vector2(300, 0)
 	rv.add_child(_state_info)
 	_build_box = VBoxContainer.new()
 	rv.add_child(_build_box)
@@ -500,14 +508,16 @@ func _build_side_panels() -> void:
 	var bottom := UiStyle.panel()
 	bottom.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
 	bottom.offset_left = 10
-	bottom.offset_right = 520
-	bottom.offset_top = -130
+	bottom.offset_right = 470
+	bottom.offset_top = -100
 	bottom.offset_bottom = -10
 	bottom.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_game_ui.add_child(bottom)
 	_log = RichTextLabel.new()
 	_log.bbcode_enabled = true
 	_log.scroll_following = true
+	_log.add_theme_font_size_override("normal_font_size", 13)
+	_log.add_theme_font_size_override("bold_font_size", 13)
 	bottom.add_child(_log)
 
 	var help := Label.new()

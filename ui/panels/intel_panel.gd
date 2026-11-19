@@ -1,63 +1,64 @@
 class_name IntelPanel
 extends PanelContainer
-## Agência de inteligência: investir em espionagem e contraespionagem, mandar investigar
-## países e ler os relatórios (congelados na data em que foram feitos).
+## Agência de inteligência: nível de espionagem e contraespionagem, investigar um país e ler os
+## relatórios (congelados na data em que foram feitos). Detalhes de cada relatório ficam recolhidos.
 
 var _main
-var _agency: RichTextLabel
+var _off_info: RichTextLabel
+var _def_info: RichTextLabel
 var _up_off: Button
 var _up_def: Button
 var _target: OptionButton
 var _go: Button
-var _ops: RichTextLabel
-var _reports: RichTextLabel
+var _ops: VBoxContainer
+var _reports: VBoxContainer
+var _open_report := ""
 
 
 func setup(main) -> void:
 	_main = main
-	add_theme_stylebox_override("panel", UiStyle.panel().get_theme_stylebox("panel"))
-	set_anchors_preset(Control.PRESET_CENTER_TOP)
-	offset_left = -330
-	offset_right = 430
-	offset_top = 70
-	visible = false
-
+	UiStyle.place(self, 620)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 8)
 	add_child(v)
-	v.add_child(UiStyle.header("Agência de inteligência", func(): visible = false))
-	_agency = RichTextLabel.new()
-	_agency.bbcode_enabled = true
-	_agency.fit_content = true
-	v.add_child(_agency)
-	var ah := HBoxContainer.new()
-	v.add_child(ah)
-	_up_off = Button.new()
-	_up_off.pressed.connect(func(): _main.submit(UpgradeIntelligenceCommand.create(_main.player_tag, "offense")))
-	ah.add_child(_up_off)
-	_up_def = Button.new()
-	_up_def.pressed.connect(func(): _main.submit(UpgradeIntelligenceCommand.create(_main.player_tag, "defense")))
-	ah.add_child(_up_def)
+	UiStyle.window_header(v, "Inteligência", "Só espiões revelam produção, estoques e tesouro de outros países.",
+		func(): visible = false,
+		"Investigações levam dias e geram um relatório com a data em que foi feito: os números mudam depois.\n"
+		+ "A contraespionagem do alvo pode barrar seus agentes na entrada ou prendê-los durante a missão.")
+	for which in ["offense", "defense"]:
+		var h := HBoxContainer.new()
+		v.add_child(h)
+		var info := UiStyle.rich()
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		info.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		h.add_child(info)
+		var b := Button.new()
+		b.custom_minimum_size = Vector2(170, 0)
+		var w: String = which
+		b.pressed.connect(func(): _main.submit(UpgradeIntelligenceCommand.create(_main.player_tag, w)))
+		h.add_child(b)
+		if which == "offense":
+			_off_info = info
+			_up_off = b
+		else:
+			_def_info = info
+			_up_def = b
 
-	v.add_child(UiStyle.section("Nova investigação"))
+	v.add_child(UiStyle.section("Investigar"))
 	var th := HBoxContainer.new()
 	v.add_child(th)
 	_target = OptionButton.new()
-	_target.custom_minimum_size = Vector2(260, 0)
+	_target.custom_minimum_size = Vector2(250, 0)
 	th.add_child(_target)
 	_go = Button.new()
 	_go.pressed.connect(func(): investigate(_target.get_item_metadata(_target.selected)))
 	th.add_child(_go)
-
-	v.add_child(UiStyle.section("Operações em andamento"))
-	_ops = RichTextLabel.new()
-	_ops.bbcode_enabled = true
-	_ops.fit_content = true
+	_ops = VBoxContainer.new()
 	v.add_child(_ops)
+
 	v.add_child(UiStyle.section("Relatórios"))
-	_reports = RichTextLabel.new()
-	_reports.bbcode_enabled = true
-	_reports.custom_minimum_size = Vector2(0, 220)
+	_reports = VBoxContainer.new()
+	_reports.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	v.add_child(_reports)
 
 	var tags: Array = main.sim.state.countries.keys()
@@ -70,9 +71,8 @@ func setup(main) -> void:
 func investigate(tag: String) -> void:
 	var cmd := StartInvestigationCommand.create(_main.player_tag, tag)
 	_main.submit(cmd)
-	var name_of: String = _main.sim.state.country(tag).name
 	if cmd.result == "iniciada":
-		_main.write_log("Agentes enviados para investigar %s." % name_of)
+		_main.write_log("Agentes enviados para investigar %s." % _main.sim.state.country(tag).name)
 	refresh()
 
 
@@ -95,49 +95,77 @@ func refresh() -> void:
 	var st := sim.state
 	var me: Country = st.country(_main.player_tag)
 	var cur: String = sim.defs.currency
-	var a := UiStyle.ACCENT_HEX
 	var max_level := int(sim.defs.intelligence.get("max_level", 5))
 	var days := IntelligenceSystem.investigation_days(sim.defs, me.intel_offense)
 	var err := float(sim.defs.intelligence.investigation.noise_base) / me.intel_offense * 100.0
-	_agency.text = "[color=%s]Espionagem:[/color] nível %d de %d — investigações levam %d dias, erro de até ±%d%%\n" % [a, me.intel_offense, max_level, days, int(err)]
-	_agency.text += "[color=%s]Contraespionagem:[/color] nível %d de %d — barra infiltrações e prende agentes inimigos" % [a, me.intel_defense, max_level]
-	for pair in [[_up_off, me.intel_offense, "espionagem"], [_up_def, me.intel_defense, "contraespionagem"]]:
+	_off_info.text = UiStyle.kv("Espionagem", "nível %d de %d" % [me.intel_offense, max_level])
+	_off_info.tooltip_text = "Investigações levam %d dias; os números têm erro de até ±%d%%." % [days, int(err)]
+	_def_info.text = UiStyle.kv("Contraespionagem", "nível %d de %d" % [me.intel_defense, max_level])
+	_def_info.tooltip_text = "Barra infiltrações e prende agentes inimigos."
+	for pair in [[_up_off, me.intel_offense], [_up_def, me.intel_defense]]:
 		var b: Button = pair[0]
 		if pair[1] >= max_level:
-			b.text = "%s no máximo" % pair[2].capitalize()
+			b.text = "No máximo"
 			b.disabled = true
 		else:
 			var cost := IntelligenceSystem.upgrade_cost(sim.defs, pair[1])
-			b.text = "Investir em %s (%s)" % [pair[2], UiStyle.money(cost, cur)]
+			b.text = "Melhorar  ·  %s" % UiStyle.money(cost, cur)
 			b.disabled = me.money < cost
-	_go.text = "Investigar (%s, %d dias)" % [UiStyle.money(float(sim.defs.intelligence.investigation.cost), cur), days]
+	_go.text = "Investigar  ·  %s, %d dias" % [UiStyle.money(float(sim.defs.intelligence.investigation.cost), cur), days]
 
-	var ops := ""
+	UiStyle.clear(_ops)
 	for op in st.operations.values():
-		if op.owner == _main.player_tag:
-			ops += "Investigando [b]%s[/b] — dia %d de %d\n" % [st.country(op.target).name, op.days_done, op.days_total]
-	_ops.text = ops if ops != "" else "[color=#888]Nenhuma.[/color]"
+		if op.owner != _main.player_tag:
+			continue
+		var h := HBoxContainer.new()
+		var l := Label.new()
+		l.text = "Investigando %s" % st.country(op.target).name
+		l.custom_minimum_size = Vector2(250, 0)
+		h.add_child(l)
+		var bar := ProgressBar.new()
+		bar.max_value = float(op.days_total)
+		bar.value = float(op.days_done)
+		bar.show_percentage = false
+		bar.custom_minimum_size = Vector2(200, 12)
+		bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		h.add_child(bar)
+		var left := Label.new()
+		left.text = "  faltam %d dias" % (op.days_total - op.days_done)
+		h.add_child(left)
+		_ops.add_child(h)
 
-	var rep := ""
+	# Relatórios: uma linha por país; clicar abre os números.
+	UiStyle.clear(_reports)
 	var tags: Array = me.intel_reports.keys()
 	tags.sort_custom(func(x, y): return me.intel_reports[x].hours > me.intel_reports[y].hours)
+	if tags.is_empty():
+		_reports.add_child(UiStyle.dim_label("Nenhum relatório ainda."))
 	for tag in tags:
-		rep += report_text(tag, me.intel_reports[tag]) + "\n"
-	_reports.text = rep if rep != "" else "[color=#888]Nenhum relatório ainda. Investigue um país para conhecer a produção, os estoques e o tesouro dele.[/color]"
+		var r: Dictionary = me.intel_reports[tag]
+		var b := Button.new()
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.text = "%s  ·  relatório de %s" % [st.country(tag).name, GameDate.format(r.hours).split(",")[0]]
+		var t: String = tag
+		b.pressed.connect(func():
+			_open_report = "" if _open_report == t else t
+			refresh())
+		_reports.add_child(b)
+		if _open_report == tag:
+			var body := UiStyle.rich()
+			body.text = report_text(tag, r)
+			_reports.add_child(body)
 
 
 func report_text(tag: String, r: Dictionary) -> String:
 	var sim: Simulation = _main.sim
-	var a := UiStyle.ACCENT_HEX
-	var t := "[b]%s[/b] — relatório de %s [color=#888](erro de até ±%d%%)[/color]\n" % [
-		sim.state.country(tag).name, GameDate.format(r.hours).split(",")[0], int(r.error * 100)]
-	t += "[color=%s]Tesouro:[/color] ~%s   [color=%s]Fábricas:[/color] ~%d civis, ~%d militares\n" % [
-		a, UiStyle.money(r.money, sim.defs.currency), a, r.civilian_factories, r.military_factories]
+	var t := UiStyle.kv("Tesouro:", "~" + UiStyle.money(r.money, sim.defs.currency)) + "     "
+	t += UiStyle.kv("Fábricas:", "~%d civis, ~%d militares" % [r.civilian_factories, r.military_factories])
+	t += "   [color=#888](erro de até ±%d%%)[/color]\n" % int(r.error * 100)
 	var parts: Array = []
 	for res in sim.defs.resources:
 		var p: int = r.production.get(res.id, 0)
 		var s: int = r.stock.get(res.id, 0)
 		if p > 0 or s > 0:
-			parts.append("[color=%s]%s[/color] %d/dia (estoque %s)" % [res.color, res.name, p, UiStyle.num(s)])
-	t += ("   ".join(parts) if not parts.is_empty() else "[color=#888]Sem produção nem estoque de recursos.[/color]") + "\n"
+			parts.append("[color=%s]%s[/color] %d/dia, estoque %s" % [res.color, res.name, p, UiStyle.num(s)])
+	t += "\n".join(parts) if not parts.is_empty() else "[color=#888]Sem produção nem estoque de recursos.[/color]"
 	return t

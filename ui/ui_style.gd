@@ -73,6 +73,67 @@ static func header(text: String, on_close: Callable = Callable()) -> HBoxContain
 	return h
 
 
+## Posição padrão das janelas: logo à direita do menu lateral, abaixo da barra de cima.
+const PANEL_X := 160
+const PANEL_Y := 58
+
+
+static func place(p: Control, width: float) -> void:
+	p.add_theme_stylebox_override("panel", panel().get_theme_stylebox("panel"))
+	p.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	p.offset_left = PANEL_X
+	p.offset_top = PANEL_Y
+	p.offset_right = PANEL_X + width
+	p.visible = false
+
+
+## Cabeçalho de janela: título, uma linha curta de ajuda (opcional) e Fechar.
+## A explicação longa vai no tooltip do título, para não poluir a tela.
+static func window_header(parent: Control, title: String, subtitle: String, on_close: Callable, help: String = "") -> void:
+	var h := header(title, on_close)
+	if help != "":
+		h.get_child(0).mouse_filter = Control.MOUSE_FILTER_STOP
+		h.get_child(0).tooltip_text = help
+	parent.add_child(h)
+	if subtitle != "":
+		parent.add_child(dim_label(subtitle))
+
+
+## Bloco recolhível: um botão "Mais detalhes" que mostra/esconde o conteúdo.
+static func details(parent: Control, closed_text: String = "Mais detalhes", open_text: String = "Menos detalhes") -> VBoxContainer:
+	var b := Button.new()
+	b.text = closed_text
+	b.flat = true
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.add_theme_color_override("font_color", ACCENT)
+	parent.add_child(b)
+	var box := VBoxContainer.new()
+	box.visible = false
+	parent.add_child(box)
+	b.pressed.connect(func():
+		box.visible = not box.visible
+		b.text = open_text if box.visible else closed_text)
+	return box
+
+
+## Texto "rótulo valor" com o rótulo em dourado (para RichTextLabel).
+static func kv(label: String, value: String) -> String:
+	return "[color=%s]%s[/color] %s" % [ACCENT_HEX, label, value]
+
+
+static func rich(min_width: float = 0.0) -> RichTextLabel:
+	var r := RichTextLabel.new()
+	r.bbcode_enabled = true
+	r.fit_content = true
+	r.custom_minimum_size = Vector2(min_width, 0)
+	return r
+
+
+static func clear(box: Node) -> void:
+	for c in box.get_children():
+		c.queue_free()
+
+
 static func section(text: String) -> Label:
 	var l := Label.new()
 	l.text = text

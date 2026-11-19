@@ -6,27 +6,26 @@ extends PanelContainer
 
 var _main
 var _area := "armas"
+var _show_foreign := false
+var _foreign_toggle: CheckBox
 var _selected := ""
 var _area_buttons := {}
 var _slots: VBoxContainer
 var _list: VBoxContainer
 var _detail: RichTextLabel
+var _sheet: RichTextLabel
 var _go: Button
 
 
 func setup(main) -> void:
 	_main = main
-	add_theme_stylebox_override("panel", UiStyle.panel().get_theme_stylebox("panel"))
-	set_anchors_preset(Control.PRESET_CENTER_TOP)
-	offset_left = -330
-	offset_right = 610
-	offset_top = 64
-	visible = false
-
+	UiStyle.place(self, 900)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 8)
 	add_child(v)
-	v.add_child(UiStyle.header("Pesquisa", func(): visible = false))
+	UiStyle.window_header(v, "Pesquisa", "", func(): visible = false,
+		"Cada vaga pesquisa uma tecnologia por vez.\nAntes do ano histórico leva mais tempo (até 2 anos antes).\n"
+		+ "Projetos de outros países também levam mais tempo.")
 	_slots = VBoxContainer.new()
 	_slots.add_theme_constant_override("separation", 4)
 	v.add_child(_slots)
@@ -43,12 +42,21 @@ func setup(main) -> void:
 			refresh())
 		tabs.add_child(b)
 		_area_buttons[id] = b
+	var sp := Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tabs.add_child(sp)
+	_foreign_toggle = CheckBox.new()
+	_foreign_toggle.text = "Projetos de outros países"
+	_foreign_toggle.toggled.connect(func(on):
+		_show_foreign = on
+		refresh())
+	tabs.add_child(_foreign_toggle)
 
 	var body := HBoxContainer.new()
 	body.add_theme_constant_override("separation", 12)
 	v.add_child(body)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size = Vector2(450, 400)
+	scroll.custom_minimum_size = Vector2(420, 400)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body.add_child(scroll)
 	_list = VBoxContainer.new()
@@ -57,11 +65,9 @@ func setup(main) -> void:
 	scroll.add_child(_list)
 
 	var right := VBoxContainer.new()
+	right.add_theme_constant_override("separation", 8)
 	body.add_child(right)
-	_detail = RichTextLabel.new()
-	_detail.bbcode_enabled = true
-	_detail.custom_minimum_size = Vector2(440, 360)
-	_detail.meta_clicked.connect(func(meta): OS.shell_open(str(meta)))
+	_detail = UiStyle.rich(440)
 	right.add_child(_detail)
 	_go = Button.new()
 	_go.clip_text = true
@@ -70,6 +76,17 @@ func setup(main) -> void:
 		if _selected != "":
 			_main.submit(StartResearchCommand.create(_main.player_tag, _selected)))
 	right.add_child(_go)
+	var full := UiStyle.details(right, "Ficha completa (dados históricos e fontes)", "Esconder ficha")
+	var fscroll := ScrollContainer.new()
+	fscroll.custom_minimum_size = Vector2(440, 210)
+	fscroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	full.add_child(fscroll)
+	_sheet = RichTextLabel.new()
+	_sheet.bbcode_enabled = true
+	_sheet.fit_content = true
+	_sheet.custom_minimum_size = Vector2(420, 0)
+	_sheet.meta_clicked.connect(func(meta): OS.shell_open(str(meta)))
+	fscroll.add_child(_sheet)
 
 
 func toggle() -> void:
@@ -89,14 +106,15 @@ func refresh() -> void:
 	# Vagas
 	for ch in _slots.get_children():
 		ch.queue_free()
-	var head := UiStyle.section("Vagas de pesquisa: %d de %d em uso" % [c.research.size(), c.research_slots])
-	_slots.add_child(head)
+	if c.research.is_empty():
+		_slots.add_child(UiStyle.dim_label("%d vagas livres. Escolha uma tecnologia." % c.research_slots))
 	for r in c.research:
 		var t := ResearchSystem.tech(sim.defs, r.tech)
 		var h := HBoxContainer.new()
 		var name_l := Label.new()
 		name_l.text = t.get("name", r.tech)
 		name_l.custom_minimum_size = Vector2(300, 0)
+		name_l.clip_text = true
 		h.add_child(name_l)
 		var bar := ProgressBar.new()
 		bar.max_value = float(r.days)
@@ -106,8 +124,8 @@ func refresh() -> void:
 		bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		h.add_child(bar)
 		var left := Label.new()
-		left.text = "  faltam %d dias" % maxi(0, int(ceil(float(r.days) - float(r.progress))))
-		left.custom_minimum_size = Vector2(130, 0)
+		left.text = "  %d dias" % maxi(0, int(ceil(float(r.days) - float(r.progress))))
+		left.custom_minimum_size = Vector2(80, 0)
 		h.add_child(left)
 		var cancel := Button.new()
 		cancel.text = "Cancelar"
@@ -121,14 +139,20 @@ func refresh() -> void:
 		ch.queue_free()
 	var ids: Array = []
 	var techs: Dictionary = sim.defs.research.techs
+	var own := 0
 	for id in techs:
-		if techs[id].area == _area:
+		if techs[id].area == _area and not ResearchSystem.is_foreign(techs[id], c.tag):
+			own += 1
+	# Sem projetos próprios na área (países menores), a lista mostra os estrangeiros.
+	var foreign_ok := _show_foreign or own == 0
+	for id in techs:
+		if techs[id].area == _area and (foreign_ok or not ResearchSystem.is_foreign(techs[id], c.tag)):
 			ids.append(id)
 	ids.sort_custom(func(a, b):
 		var ya := int(techs[a].year)
 		var yb := int(techs[b].year)
 		return ya < yb if ya != yb else str(techs[a].name) < str(techs[b].name))
-	if _selected == "" and not ids.is_empty():
+	if (_selected == "" or not _selected in ids) and not ids.is_empty():
 		_selected = ids[0]
 	for id in ids:
 		_list.add_child(_row(id, techs[id], c))
@@ -151,7 +175,7 @@ func _row(id: String, t: Dictionary, c: Country) -> Button:
 	b.clip_text = true
 	var st := _status(id, c)
 	var origin := ""
-	if not t.get("origin", []).is_empty():
+	if ResearchSystem.is_foreign(t, c.tag):
 		origin = " (%s)" % t.origin[0]
 	var tail := st
 	if st == "":
@@ -160,8 +184,8 @@ func _row(id: String, t: Dictionary, c: Country) -> Button:
 			tail = "a partir de %d" % (int(t.year) - max_ahead)
 		else:
 			tail = "%d dias" % ResearchSystem.days_needed(sim.state, sim.defs, c.tag, id)
-	b.text = "%d  %s%s  ·  %s" % [int(t.year), t.name, origin, tail]
-	b.tooltip_text = b.text
+	b.text = "%s%s  ·  %s" % [t.name, origin, tail]
+	b.tooltip_text = "%s (%d)" % [t.name, int(t.year)]
 	if st == "pesquisada":
 		b.modulate = UiStyle.GOOD
 	elif st == "" and ResearchSystem.can_start(sim.state, sim.defs, c.tag, id) not in ["", "todas as vagas de pesquisa estão ocupadas", "dinheiro insuficiente"]:
@@ -180,44 +204,59 @@ func _show_detail() -> void:
 	var a := UiStyle.ACCENT_HEX
 	if _selected == "":
 		_detail.text = ""
+		_sheet.text = ""
 		_go.visible = false
 		return
 	var t := ResearchSystem.tech(sim.defs, _selected)
-	var s := "[font_size=17][color=%s]%s[/color][/font_size]\n" % [a, t.name]
-	var meta := "Ano histórico: %d" % int(t.year)
-	if "year" in t.get("estimated", []):
-		meta += " (a conferir)"
-	if not t.get("origin", []).is_empty():
-		var oc: Country = sim.state.country(t.origin[0])
-		meta += "   ·   Projeto: %s" % (oc.name if oc else t.origin[0])
-	s += "[color=#999]%s[/color]\n" % meta
-	if t.has("desc"):
-		s += t.desc + "\n"
-	var reqs: Array = t.get("requires", [])
-	if not reqs.is_empty():
-		var names: Array = []
-		for r in reqs:
-			var ok := c.has_tech(r)
-			names.append("[color=%s]%s[/color]" % ["#8c8" if ok else "#d88", ResearchSystem.tech(sim.defs, r).get("name", r)])
-		s += "Requer: %s\n" % ", ".join(names)
+	var s := "[font_size=18][color=%s]%s[/color][/font_size]\n" % [a, t.name]
 	var days := ResearchSystem.days_needed(sim.state, sim.defs, c.tag, _selected)
+	s += "[font_size=16]%d dias  ·  %s[/font_size]\n" % [days, UiStyle.money(float(t.money_cost), sim.defs.currency)]
 	var notes: Array = []
 	var ahead := ResearchSystem.years_ahead(sim.state, t)
 	if ahead > 0:
-		notes.append("%d ano(s) antes da época" % ahead)
+		notes.append("antes da época (%d)" % int(t.year))
 	if ResearchSystem.is_foreign(t, c.tag):
-		notes.append("projeto estrangeiro")
-	s += "Tempo: [color=%s]%d dias[/color] (base %d%s)   Custo: [color=%s]%s[/color]\n" % [
-		a, days, int(t.days), (": " + ", ".join(notes)) if not notes.is_empty() else "",
-		a, UiStyle.money(float(t.money_cost), sim.defs.currency)]
+		var oc: Country = sim.state.country(t.origin[0])
+		notes.append("projeto de %s" % (oc.name if oc else t.origin[0]))
+	if not notes.is_empty():
+		s += "[color=#999]Mais lento: %s[/color]\n" % ", ".join(notes)
+	var missing: Array = []
+	for r in t.get("requires", []):
+		if not c.has_tech(r):
+			missing.append(ResearchSystem.tech(sim.defs, r).get("name", r))
+	if not missing.is_empty():
+		s += "[color=#d88]Antes pesquise: %s[/color]\n" % ", ".join(missing)
+	if t.has("desc"):
+		s += "\n" + t.desc + "\n"
+	var sheet := ""
 	for eq in t.get("unlocks_equipment", []):
-		s += "\n" + equipment_sheet(sim.defs, eq)
+		s += "\n" + key_stats(sim.defs, eq)
+		sheet += equipment_sheet(sim.defs, eq)
 	_detail.text = s
+	_sheet.text = sheet if sheet != "" else "[color=#888]Sem ficha técnica (é uma especialização de tropa).[/color]"
 	var st := _status(_selected, c)
 	_go.visible = st == ""
 	var why := ResearchSystem.can_start(sim.state, sim.defs, c.tag, _selected)
 	_go.disabled = why != ""
 	_go.text = "Pesquisar" if why == "" else "Pesquisar (%s)" % why
+
+
+## Os 3 números que mais importam de cada tipo de equipamento.
+const KEY_STATS := {
+	"rifle": ["soft_attack", "close_attack", "range_m"], "sniper": ["soft_attack", "close_attack", "range_m"],
+	"smg": ["soft_attack", "close_attack", "range_m"], "tank": ["hard_attack", "armour", "speed_kmh"],
+	"fighter": ["air_attack", "speed_kmh"], "attack": ["ground_attack", "speed_kmh"],
+	"bomber": ["ground_attack", "speed_kmh", "range_km"], "artillery": ["soft_attack", "casualty_radius_m", "range_km"],
+}
+
+
+static func key_stats(defs: Dictionary, eq: String) -> String:
+	var e: Dictionary = defs.equipment.get(eq, {})
+	var parts: Array = []
+	for k in KEY_STATS.get(e.category, []):
+		if e.stats.has(k):
+			parts.append("%s [b]%s[/b]" % [STAT_NAMES.get(k, k), _fmt(e.stats[k])])
+	return "[color=%s]%s[/color]\n%s\n" % [UiStyle.ACCENT_HEX, e.category_name, "\n".join(parts)]
 
 
 const STAT_NAMES := {
