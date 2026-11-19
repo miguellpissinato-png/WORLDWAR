@@ -14,6 +14,8 @@ var population: int = 0
 var building_slots: int = 0  # vagas para fábricas (civis + militares)
 ## Nível de cada construção, ex.: {"civilian_factory": 3, "infrastructure": 2}
 var buildings: Dictionary = {}
+## Produção de recursos por dia, ex.: {"oil": 12}
+var resources: Dictionary = {}
 
 
 func level(building: String) -> int:
@@ -35,4 +37,6 @@ static func from_dict(d: Dictionary) -> MapState:
 	s.building_slots = int(d.get("building_slots", 0))
 	for k in d.get("buildings", {}):
 		s.buildings[k] = int(d.buildings[k])
+	for k in d.get("resources", {}):
+		s.resources[k] = int(d.resources[k])
 	return s

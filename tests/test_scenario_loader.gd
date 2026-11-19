@@ -68,3 +68,14 @@ func test_buildings_in_states_are_defined() -> void:
 	for s in gs().states.values():
 		for b in s.buildings:
 			assert_true(defs.buildings.has(b), "construção %s em %s" % [b, s.name])
+
+
+func test_resources_are_where_expected() -> void:
+	assert_true(gs().resource_production("EUA", "oil") > 50, "EUA produz muito petróleo")
+	assert_true(gs().resource_production("ALE", "coal") > 30, "Alemanha produz carvão")
+	assert_eq(gs().resource_production("ALE", "rubber"), 0, "Alemanha sem borracha")
+	assert_true(gs().resource_production("RUN", "rubber") > 20, "Malásia britânica")
+	var defs := ScenarioLoader.load_defs()
+	for s in gs().states.values():
+		for r in s.resources:
+			assert_true(r in defs.resource_ids, "recurso %s em %s" % [r, s.name])

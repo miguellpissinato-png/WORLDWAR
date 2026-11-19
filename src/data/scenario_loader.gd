@@ -18,9 +18,13 @@ static func read_json(path: String) -> Variant:
 	return JSON.parse_string(text)
 
 
-## Definições gerais: {"buildings": {...}, "construction": {...}}
+## Definições gerais: {"buildings", "construction", "resources" (lista), "resource_ids", "trade"}
 static func load_defs() -> Dictionary:
 	var d: Dictionary = read_json(COMMON_DIR + "/buildings.json")
+	var r: Dictionary = read_json(COMMON_DIR + "/resources.json")
+	d["resources"] = r.resources
+	d["resource_ids"] = r.resources.map(func(x): return x.id)
+	d["trade"] = r.trade
 	return d
 
 
@@ -48,6 +52,18 @@ static func load_scenario(scenario: String) -> GameState:
 		st.building_slots = default_slots
 		gs.states[st.id] = st
 		by_code[st.code] = st
+
+	# Recursos (geografia: iguais em todos os cenários).
+	var res: Dictionary = read_json(COMMON_DIR + "/state_resources.json")
+	for code in res:
+		if code.begins_with("_"):
+			continue
+		var st: MapState = by_code.get(code)
+		if st == null:
+			push_error("Estado %s de state_resources.json não existe no mapa" % code)
+			continue
+		for k in res[code]:
+			st.resources[k] = int(res[code][k])
 
 	# Zonas marítimas (iguais em todos os cenários).
 	for d in read_json(MAP_DIR + "/sea_zones.json"):

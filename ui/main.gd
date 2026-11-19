@@ -32,12 +32,20 @@ var _state_info: RichTextLabel
 var _build_buttons := {}
 var _hover_label: Label
 var _log: RichTextLabel
+var _resource_labels := {}       # id -> Label
+var _trade_panel: PanelContainer
+var _trade_resource: OptionButton
+var _trade_list: VBoxContainer
+var _trade_contracts: VBoxContainer
+var _trade_info: Label
+var _map_mode := "political"
 
 
 func _ready() -> void:
 	sim = Simulation.new(ScenarioLoader.load_scenario("1936"), ScenarioLoader.load_defs())
 	sim.command_rejected.connect(func(_c, reason): _write_log("Ordem recusada: " + reason))
 	sim.day_passed.connect(func(_h): _refresh_panels())
+	sim.command_applied.connect(func(_c): _refresh_panels.call_deferred())
 
 	map = MapView.new()
 	add_child(map)
@@ -97,6 +105,10 @@ func _set_speed(s: int) -> void:
 
 func _select_country(tag: String) -> void:
 	player_tag = tag
+	if _country_picker != null:
+		for i in _country_picker.item_count:
+			if _country_picker.get_item_metadata(i) == tag:
+				_country_picker.select(i)
 	var c := sim.state.country(tag)
 	_flag.color = c.color
 	_country_label.text = c.name
@@ -126,8 +138,15 @@ func _on_sea_hovered(zid: int) -> void:
 		_hover_label.text = ""
 
 
+## Envia uma ordem. Com o jogo pausado ela vale na hora.
+func _submit(cmd: Command) -> void:
+	sim.submit(cmd)
+	if paused:
+		sim.apply_pending()
+
+
 func _build_here(building: String) -> void:
-	sim.submit(QueueConstructionCommand.create(player_tag, selected_state, building))
+	_submit(QueueConstructionCommand.create(player_tag, selected_state, building))
 	_write_log("Ordem: %s em %s." % [sim.defs.buildings[building].name, sim.state.state(selected_state).name])
 	_refresh_panels.call_deferred()
 
@@ -139,7 +158,12 @@ func _refresh_panels() -> void:
 		t += "[color=#c9b37a]Ideologia:[/color] %s\n" % c.ideology
 	t += "[color=#c9b37a]Capital:[/color] %s\n" % c.capital_city
 	t += "[color=#c9b37a]Estados:[/color] %d\n" % sim.state.states_of(player_tag).size()
-	t += "[color=#c9b37a]Fábricas civis:[/color] %d\n" % sim.state.total_building(player_tag, "civilian_factory")
+	t += "[color=#c9b37a]Fábricas civis:[/color] %d" % sim.state.total_building(player_tag, "civilian_factory")
+	var paid := sim.state.factories_paid(player_tag)
+	var got := sim.state.factories_received(player_tag)
+	if paid > 0 or got > 0:
+		t += "  [color=#888](livres: %d)[/color]" % sim.state.available_civilian_factories(player_tag)
+	t += "\n"
 	t += "[color=#c9b37a]Fábricas militares:[/color] %d\n" % sim.state.total_building(player_tag, "military_factory")
 	t += "\n[b]Fila de construção[/b]\n"
 	if c.construction_queue.is_empty():
@@ -149,6 +173,11 @@ func _refresh_panels() -> void:
 		t += "%s — %s  [color=#c9b37a]%d%%[/color]\n" % [def.name, sim.state.state(item.state_id).name,
 			int(100.0 * item.progress / float(def.cost))]
 	_country_info.text = t
+	_refresh_resource_bar()
+	if _trade_panel != null and _trade_panel.visible:
+		_refresh_trade_panel()
+	if _map_mode == "resources":
+		_apply_map_mode()
 
 	if selected_state == -1:
 		return
@@ -160,11 +189,132 @@ func _refresh_panels() -> void:
 	st += "[color=#c9b37a]Vagas de fábrica:[/color] %d\n" % s.building_slots
 	for b in sim.defs.buildings:
 		st += "[color=#c9b37a]%s:[/color] %d\n" % [sim.defs.buildings[b].name, s.level(b)]
+	if not s.resources.is_empty():
+		st += "\n[b]Recursos por dia[/b]\n"
+		for r in sim.defs.resources:
+			if s.resources.has(r.id):
+				st += "[color=%s]●[/color] %s: %d\n" % [r.color, r.name, s.resources[r.id]]
 	_state_info.text = st
 	var mine := s.owner == player_tag
 	for b in _build_buttons:
 		_build_buttons[b].disabled = not mine
 		_build_buttons[b].tooltip_text = "" if mine else "Só dá para construir nos seus estados"
+
+
+func _refresh_resource_bar() -> void:
+	for r in sim.defs.resources:
+		var prod := sim.state.resource_production(player_tag, r.id)
+		var imp := sim.state.resource_imports(player_tag, r.id)
+		var ex := sim.state.resource_exports(player_tag, r.id)
+		var bal := prod + imp - ex
+		var l: Label = _resource_labels[r.id]
+		l.text = "%s %d" % [r.short, bal]
+		l.modulate = Color(1, 1, 1) if bal > 0 else Color(1, 1, 1, 0.4)
+		l.tooltip_text = "%s\nProdução: %d/dia\nImportação: +%d\nExportação: -%d\nSaldo: %d" % [r.name, prod, imp, ex, bal]
+
+
+# ---------------------------------------------------------------- comércio
+
+func _toggle_trade_panel() -> void:
+	_trade_panel.visible = not _trade_panel.visible
+	if _trade_panel.visible:
+		_refresh_trade_panel()
+
+
+func _refresh_trade_panel() -> void:
+	var res_id: String = _trade_resource.get_item_metadata(_trade_resource.selected)
+	var share := TradeSystem.max_export_share(sim.defs)
+	var per := int(sim.defs.trade.units_per_factory)
+	_trade_info.text = "Fábricas civis livres para pagar: %d   ·   1 fábrica compra %d unidades/dia" % [
+		sim.state.available_civilian_factories(player_tag), per]
+	for c in _trade_list.get_children():
+		c.queue_free()
+	var sellers: Array = []
+	for tag in sim.state.countries:
+		if tag == player_tag:
+			continue
+		var n := sim.state.exportable(tag, res_id, share)
+		if n > 0:
+			sellers.append([tag, n])
+	sellers.sort_custom(func(a, b): return a[1] > b[1])
+	if sellers.is_empty():
+		var none := Label.new()
+		none.text = "Ninguém tem excedente deste recurso para vender."
+		none.modulate = Color(1, 1, 1, 0.6)
+		_trade_list.add_child(none)
+	for pair in sellers.slice(0, 12):
+		var tag: String = pair[0]
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		var flag := ColorRect.new()
+		flag.color = sim.state.country(tag).color
+		flag.custom_minimum_size = Vector2(18, 12)
+		flag.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		row.add_child(flag)
+		var seller_label := Label.new()
+		seller_label.text = "%s — tem %d" % [sim.state.country(tag).name, pair[1]]
+		seller_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(seller_label)
+		var spin := SpinBox.new()
+		spin.min_value = 1
+		spin.max_value = pair[1]
+		spin.value = mini(per, pair[1])
+		row.add_child(spin)
+		var buy := Button.new()
+		buy.text = "Comprar"
+		buy.pressed.connect(func():
+			_submit(CreateTradeCommand.create(player_tag, tag, res_id, int(spin.value)))
+			_refresh_panels())
+		row.add_child(buy)
+		_trade_list.add_child(row)
+	for c in _trade_contracts.get_children():
+		c.queue_free()
+	var mine := sim.state.trades.values().filter(func(t): return t.buyer == player_tag or t.seller == player_tag)
+	if mine.is_empty():
+		var none := Label.new()
+		none.text = "Nenhum contrato."
+		none.modulate = Color(1, 1, 1, 0.6)
+		_trade_contracts.add_child(none)
+	for tr in mine:
+		var row := HBoxContainer.new()
+		var l := Label.new()
+		var rname: String = sim.defs.resources[sim.defs.resource_ids.find(tr.resource)].name
+		if tr.buyer == player_tag:
+			l.text = "Compra de %s: +%d/dia de %s (paga %d fáb.)" % [rname, tr.amount, sim.state.country(tr.seller).name, tr.factories]
+		else:
+			l.text = "Venda de %s: -%d/dia para %s (recebe %d fáb.)" % [rname, tr.amount, sim.state.country(tr.buyer).name, tr.factories]
+		l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(l)
+		var cancel := Button.new()
+		cancel.text = "Cancelar"
+		var id: int = tr.id
+		cancel.pressed.connect(func():
+			_submit(CancelTradeCommand.create(player_tag, id))
+			_refresh_panels())
+		row.add_child(cancel)
+		_trade_contracts.add_child(row)
+
+
+# ---------------------------------------------------------------- modos de mapa
+
+func _set_map_mode(mode: String) -> void:
+	_map_mode = mode
+	_apply_map_mode()
+
+
+func _apply_map_mode() -> void:
+	if _map_mode == "resources":
+		var colors := {}
+		for r in sim.defs.resources:
+			colors[r.id] = Color(r.color)
+		map.color_states(sim.state, func(s: MapState):
+			var best := ""
+			for r in s.resources:
+				if best == "" or s.resources[r] > s.resources[best]:
+					best = r
+			return colors[best] if best != "" else Color(0.32, 0.33, 0.34))
+	else:
+		map.color_by_owner(sim.state)
 
 
 func _write_log(line: String) -> void:
@@ -207,9 +357,26 @@ func _build_ui() -> void:
 	_country_label.add_theme_color_override("font_color", ACCENT)
 	bar.add_child(_country_label)
 	var title := Label.new()
-	title.text = "   WorldWar · %s" % sim.state.scenario_name
+	title.text = "  %s   " % sim.state.scenario_name
 	title.modulate = Color(1, 1, 1, 0.5)
 	bar.add_child(title)
+	var res_box := HBoxContainer.new()
+	res_box.add_theme_constant_override("separation", 14)
+	bar.add_child(res_box)
+	for r in sim.defs.resources:
+		var dot := Label.new()
+		dot.text = "●"
+		dot.add_theme_color_override("font_color", Color(r.color))
+		res_box.add_child(dot)
+		var l := Label.new()
+		l.mouse_filter = Control.MOUSE_FILTER_STOP
+		res_box.add_child(l)
+		_resource_labels[r.id] = l
+		dot.tooltip_text = r.name
+	var trade_btn := Button.new()
+	trade_btn.text = "Comércio"
+	trade_btn.pressed.connect(_toggle_trade_panel)
+	bar.add_child(trade_btn)
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bar.add_child(spacer)
@@ -283,6 +450,73 @@ func _build_ui() -> void:
 		rv.add_child(btn)
 		_build_buttons[b] = btn
 
+	# Painel de comércio (centro)
+	_trade_panel = _panel()
+	_trade_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_trade_panel.offset_left = -330
+	_trade_panel.offset_right = 330
+	_trade_panel.offset_top = 70
+	_trade_panel.visible = false
+	root.add_child(_trade_panel)
+	var tv := VBoxContainer.new()
+	tv.add_theme_constant_override("separation", 8)
+	_trade_panel.add_child(tv)
+	var th := HBoxContainer.new()
+	tv.add_child(th)
+	var tt := Label.new()
+	tt.text = "Comércio de recursos"
+	tt.add_theme_font_size_override("font_size", 18)
+	tt.add_theme_color_override("font_color", ACCENT)
+	tt.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	th.add_child(tt)
+	var close := Button.new()
+	close.text = "Fechar"
+	close.pressed.connect(_toggle_trade_panel)
+	th.add_child(close)
+	var rh := HBoxContainer.new()
+	tv.add_child(rh)
+	var rl := Label.new()
+	rl.text = "Comprar:"
+	rh.add_child(rl)
+	_trade_resource = OptionButton.new()
+	for i in sim.defs.resources.size():
+		_trade_resource.add_item(sim.defs.resources[i].name)
+		_trade_resource.set_item_metadata(i, sim.defs.resources[i].id)
+	_trade_resource.item_selected.connect(func(_i): _refresh_trade_panel())
+	rh.add_child(_trade_resource)
+	_trade_info = Label.new()
+	_trade_info.modulate = Color(1, 1, 1, 0.65)
+	_trade_info.add_theme_font_size_override("font_size", 13)
+	tv.add_child(_trade_info)
+	_trade_list = VBoxContainer.new()
+	tv.add_child(_trade_list)
+	var cl := Label.new()
+	cl.text = "Seus contratos"
+	cl.add_theme_color_override("font_color", ACCENT)
+	tv.add_child(cl)
+	_trade_contracts = VBoxContainer.new()
+	tv.add_child(_trade_contracts)
+
+	# Modos de mapa (embaixo, à direita)
+	var modes := _panel()
+	modes.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	modes.offset_left = -230
+	modes.offset_right = -10
+	modes.offset_top = -110
+	modes.offset_bottom = -60
+	modes.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	modes.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	root.add_child(modes)
+	var mh := HBoxContainer.new()
+	modes.add_child(mh)
+	for pair in [["Político", "political"], ["Recursos", "resources"]]:
+		var b := Button.new()
+		b.text = pair[0]
+		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var mode: String = pair[1]
+		b.pressed.connect(func(): _set_map_mode(mode))
+		mh.add_child(b)
+
 	# Registro (embaixo, à esquerda) e nome sob o mouse
 	var bottom := _panel()
 	bottom.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
@@ -301,8 +535,8 @@ func _build_ui() -> void:
 	_hover_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	_hover_label.offset_left = -420
 	_hover_label.offset_right = -12
-	_hover_label.offset_top = -52
-	_hover_label.offset_bottom = -30
+	_hover_label.offset_top = -140
+	_hover_label.offset_bottom = -118
 	_hover_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_hover_label.add_theme_color_override("font_outline_color", Color.BLACK)
 	_hover_label.add_theme_constant_override("outline_size", 4)

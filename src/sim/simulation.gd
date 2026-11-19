@@ -5,6 +5,7 @@ extends RefCounted
 
 signal day_passed(hours: int)
 signal command_rejected(command: Command, reason: String)
+signal command_applied(command: Command)
 
 var state: GameState
 var defs: Dictionary          # definições de data/common (construções, regras)
@@ -26,15 +27,22 @@ func advance_hours(n: int) -> void:
 		_tick_hour()
 
 
-func _tick_hour() -> void:
+## Aplica já os comandos pendentes, sem avançar o tempo. Usado com o jogo pausado
+## (no multiplayer, só o host chama, e a ordem dos comandos continua a mesma).
+func apply_pending() -> void:
 	var batch := _pending
 	_pending = []
 	for cmd: Command in batch:
 		var reason: String = cmd.validate(state, defs)
 		if reason == "":
 			cmd.apply(state, defs)
+			command_applied.emit(cmd)
 		else:
 			command_rejected.emit(cmd, reason)
+
+
+func _tick_hour() -> void:
+	apply_pending()
 	state.hours += 1
 	if state.hours % 24 == 0:
 		_daily_update()
@@ -42,4 +50,5 @@ func _tick_hour() -> void:
 
 
 func _daily_update() -> void:
+	TradeSystem.daily_update(state, defs)
 	ConstructionSystem.daily_update(state, defs)

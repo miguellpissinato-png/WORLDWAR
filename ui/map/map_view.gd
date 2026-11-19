@@ -120,6 +120,7 @@ func load_shapes() -> void:
 	_material = ShaderMaterial.new()
 	_material.shader = load("res://ui/map/map.gdshader")
 	_material.set_shader_parameter("lookup", _lookup)
+	_material.set_shader_parameter("id_tex", _id_viewport.get_texture())
 	_material.set_shader_parameter("tex_size", map_size * ID_SCALE)
 	_material.set_shader_parameter("land_noise", _noise(3, 0.012, 7))
 	_material.set_shader_parameter("detail_noise", _noise(11, 0.05, 4))
@@ -137,8 +138,14 @@ func load_shapes() -> void:
 
 ## Atualiza a tabela id -> dono. Chamar quando estados mudarem de dono.
 func color_by_owner(state: GameState) -> void:
+	color_states(state, func(s: MapState): return state.country(s.owner).color)
+
+
+## Modo de mapa genérico: `color_of(MapState) -> Color` decide a cor de cada estado.
+## As fronteiras continuam sendo as dos países donos.
+func color_states(state: GameState, color_of: Callable) -> void:
 	_state = state
-	var i := 1
+	var i := _owner_index.size() + 1
 	for tag in state.countries:
 		if not _owner_index.has(tag):
 			_owner_index[tag] = i
@@ -149,7 +156,7 @@ func color_by_owner(state: GameState) -> void:
 		if s == null or state.country(s.owner) == null:
 			continue
 		var idx: int = _owner_index[s.owner]
-		_lookup_image.set_pixel(sid, 0, state.country(s.owner).color)
+		_lookup_image.set_pixel(sid, 0, color_of.call(s))
 		_lookup_image.set_pixel(sid, 1, Color8(idx % 256, idx / 256, 255 if sid == _selected else 0))
 	_lookup.update(_lookup_image)
 

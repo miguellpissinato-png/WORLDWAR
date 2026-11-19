@@ -42,6 +42,15 @@ Documento de design completo: `docs/design.md`.
 - O mapa é pintado por um shader que lê uma imagem de IDs; mudar o dono de um estado = chamar
   `MapView.color_by_owner()` de novo (não precisa redesenhar polígonos).
 
+## Recursos e comércio
+
+- Definições em `data/common/resources.json`; produção por estado em `data/common/state_resources.json`
+  (por `code`, igual em todos os cenários).
+- `GameState.trades` guarda os `TradeContract`; o pagamento em fábricas civis entra em
+  `available_civilian_factories()`, que é o que a construção usa.
+- `TradeSystem.daily_update` cancela contratos que deixaram de ser possíveis.
+- Com o jogo pausado, a interface chama `Simulation.apply_pending()` para a ordem valer na hora.
+
 ## Testes
 
 Rodar sempre depois de mudar algo em `src/`:

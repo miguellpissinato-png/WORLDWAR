@@ -7,6 +7,7 @@
 //   plataforma continental, mais visíveis com o zoom
 shader_type canvas_item;
 
+uniform sampler2D id_tex : filter_nearest;   // a imagem de IDs
 uniform sampler2D lookup : filter_nearest;
 uniform sampler2D land_noise : repeat_enable, filter_linear;
 uniform sampler2D detail_noise : repeat_enable, filter_linear;
@@ -57,7 +58,7 @@ vec3 sea_color(float depth, float zoom_t) {
 
 void fragment() {
 	vec2 texel = 1.0 / tex_size;
-	int id = id_at(TEXTURE, UV);
+	int id = id_at(id_tex, UV);
 	bool land = id > 0;
 
 	const vec2 DIRS[8] = vec2[8](vec2(1.0, 0.0), vec2(-1.0, 0.0), vec2(0.0, 1.0), vec2(0.0, -1.0),
@@ -73,10 +74,10 @@ void fragment() {
 	float glow = 0.0;
 	float sea_glow = 0.0;
 	for (int i = 0; i < 8; i++) {
-		int n1 = id_at(TEXTURE, UV + DIRS[i] * r_line * texel);
-		int n0 = id_at(TEXTURE, UV + DIRS[i] * r_state * texel);
-		int n2 = id_at(TEXTURE, UV + DIRS[i] * r_glow * texel);
-		int nm = id_at(TEXTURE, UV + DIRS[i] * r_glow * 0.5 * texel);
+		int n1 = id_at(id_tex, UV + DIRS[i] * r_line * texel);
+		int n0 = id_at(id_tex, UV + DIRS[i] * r_state * texel);
+		int n2 = id_at(id_tex, UV + DIRS[i] * r_glow * texel);
+		int nm = id_at(id_tex, UV + DIRS[i] * r_glow * 0.5 * texel);
 		if (land) {
 			if (n1 <= 0) coast = true;
 			else if (owner_index(n1) != me) country_edge = true;

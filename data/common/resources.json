@@ -1,0 +1,15 @@
+{
+  "_nota": "Recursos estratégicos e regras de comércio. Valores de exemplo, a balancear.",
+  "resources": [
+    { "id": "oil", "name": "Petróleo", "short": "PET", "color": "#c9a24a" },
+    { "id": "coal", "name": "Carvão", "short": "CAR", "color": "#9a8f86" },
+    { "id": "iron", "name": "Ferro", "short": "FER", "color": "#c06a4a" },
+    { "id": "rubber", "name": "Borracha", "short": "BOR", "color": "#7fae5c" },
+    { "id": "bauxite", "name": "Bauxita", "short": "BAU", "color": "#d98c5f" },
+    { "id": "rare_metals", "name": "Metais raros", "short": "MET", "color": "#9b9be0" }
+  ],
+  "trade": {
+    "units_per_factory": 5,
+    "max_export_share": 0.75
+  }
+}

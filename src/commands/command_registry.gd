@@ -5,6 +5,8 @@ extends RefCounted
 
 const TYPES := {
 	"queue_construction": preload("res://src/commands/queue_construction_command.gd"),
+	"create_trade": preload("res://src/commands/create_trade_command.gd"),
+	"cancel_trade": preload("res://src/commands/cancel_trade_command.gd"),
 }
 
 

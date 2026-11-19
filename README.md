@@ -19,9 +19,14 @@ Feito no Godot 4.5 com GDScript.
 - Mar com profundidade real (batimetria do Natural Earth): plataforma continental mais clara perto da
   costa, mar aberto mais escuro, linhas de profundidade e 950 zonas marítimas demarcadas e com nome
   (ex.: "Mar do Norte 3"); os detalhes aparecem conforme o zoom
+- Recursos estratégicos (petróleo, carvão, ferro, borracha, bauxita, metais raros) nas regiões produtoras
+  da época; saldo na barra superior e modo de mapa "Recursos"
+- Comércio: compre o excedente de outros países pagando com fábricas civis (quem vende ganha as fábricas
+  para construir); contratos são cancelados sozinhos se o vendedor perder a produção
+- Com o jogo pausado, as ordens valem na hora
 - Clique num estado para ver os dados e construir (só nos seus estados)
 - Relógio do jogo com pausa e 5 velocidades; fila de construção; tudo via comandos
-- 20 testes automáticos
+- 31 testes automáticos
 
 Controles: roda do mouse = zoom, botão direito = arrastar, WASD = mover, espaço = pausar, 1–5 = velocidade.
 

@@ -62,3 +62,11 @@ func test_same_commands_same_result() -> void:
 		sim.submit(QueueConstructionCommand.create("AAA", 1, "infrastructure"))
 		sim.advance_hours(24 * 30)
 	assert_eq(a.state.state(1).buildings, b.state.state(1).buildings)
+
+
+func test_apply_pending_without_time() -> void:
+	var sim := make_world()
+	sim.submit(QueueConstructionCommand.create("AAA", 1, "civilian_factory"))
+	sim.apply_pending()
+	assert_eq(sim.state.country("AAA").construction_queue.size(), 1)
+	assert_eq(sim.state.hours, 0, "o tempo não andou")
