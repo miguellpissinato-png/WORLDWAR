@@ -138,9 +138,18 @@ def artillery(it):
     return stats, r1(1 + 1.5 * t), {"iron": r2(0.08 * t), "rare_metals": 0.01}
 
 
+# Escala geral do tempo de pesquisa (feedback do Miguel em 19/11/2026: estava lento demais; 0,5 = metade).
+RESEARCH_SCALE = 0.5
+
+
 def research_days(it):
-    """Dias de pesquisa: fuzil 60, submetralhadora 70, fuzil de precisão 50, tanque 60 + 2 por tonelada,
-    caça 120, ataque ao solo 110, bombardeiro 100 + 20 por motor, artilharia 60 + calibre/3."""
+    """Dias de pesquisa (antes da escala): fuzil 60, submetralhadora 70, fuzil de precisão 50,
+    tanque 60 + 2 por tonelada, caça 120, ataque ao solo 110, bombardeiro 100 + 20 por motor,
+    artilharia 60 + calibre/3. O resultado é multiplicado por RESEARCH_SCALE."""
+    return max(1, round(_base_days(it) * RESEARCH_SCALE))
+
+
+def _base_days(it):
     c = it["category"]
     if c == "rifle":
         return 60
@@ -189,15 +198,16 @@ def main():
         }
         days = research_days(it)
         techs["tech_" + it["id"]] = {
-            "name": it["name"], "area": AREA_OF[cat], "year": it["year"], "days": days, "money_cost": days * 2,
+            "name": it["name"], "area": AREA_OF[cat], "year": it["year"], "days": days, "money_cost": _base_days(it) * 2,
             "origin": [it["origin"]], "unlocks_equipment": [it["id"]],
             "requires": [("tech_" + r if not r.startswith("t_") else r) for r in requires.get(it["id"], [])]
                         + (["t_tanquistas"] if cat == "tank" else []),
             "estimated": ["year"] if "year" in it.get("estimado", []) else [],
         }
     for t in table["troops"]:
+        tdays = round(t["days"] * RESEARCH_SCALE)
         techs[t["id"]] = {
-            "name": t["name"], "area": "tropas", "year": t["year"], "days": t["days"], "money_cost": t["days"] * 2,
+            "name": t["name"], "area": "tropas", "year": t["year"], "days": tdays, "money_cost": t["days"] * 2,
             "origin": [], "unlocks_unit": [t["id"].removeprefix("t_")], "requires": t.get("requires", []),
             "desc": t["desc"], "estimated": t.get("estimado", []),
         }
@@ -209,8 +219,8 @@ def main():
         f.write("\n")
     with open(OUT_RS, "w", encoding="utf-8") as f:
         json.dump({"_nota": "GERADO por tools/data/gen_equipment.py. Regras de pesquisa em 'rules'.",
-                   "rules": {"slots": 3, "max_years_ahead": 2, "ahead_penalty_per_year": 0.5,
-                             "foreign_design_penalty": 0.75, "_foreign": "Projeto de outro país: +75% de tempo "
+                   "rules": {"slots": 3, "max_years_ahead": 2, "ahead_penalty_per_year": 0.35,
+                             "foreign_design_penalty": 0.5, "_foreign": "Projeto de outro país: +50% de tempo "
                              "(provisório, até existirem licenças na diplomacia)."},
                    "areas": AREAS, "techs": techs}, f, ensure_ascii=False, indent=1)
         f.write("\n")

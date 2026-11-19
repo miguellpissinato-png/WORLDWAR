@@ -21,7 +21,7 @@
   "industry": {
     "_nota": "As fábricas são uma só reserva. civil_share decide quantas trabalham para a economia civil (bens de consumo e construção); o resto é militar (linhas de produção). Mudar a divisão leva tempo: a parte civil anda conversion_per_day por dia até o alvo.",
     "default_civil_share": 0.7,
-    "conversion_per_day": 0.02
+    "conversion_per_day": 0.05
   },
   "military_production": {
     "_nota": "Linhas de produção: eficiência começa em efficiency_start e sobe efficiency_gain_per_day por dia de trabalho até efficiency_max. Faltando recurso, a linha anda no mínimo a shortage_floor da velocidade.",

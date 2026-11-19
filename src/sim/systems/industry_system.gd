@@ -6,7 +6,7 @@ extends RefCounted
 
 
 static func daily_update(state: GameState, defs: Dictionary) -> void:
-	var step := float(defs.get("industry", {}).get("conversion_per_day", 0.02))
+	var step := float(defs.get("industry", {}).get("conversion_per_day", 0.05))
 	for c: Country in state.countries.values():
 		var diff := c.civil_share_target - c.civil_share
 		if absf(diff) <= step:
@@ -17,5 +17,5 @@ static func daily_update(state: GameState, defs: Dictionary) -> void:
 
 ## Quantos dias faltam para a divisão chegar ao alvo.
 static func days_to_target(c: Country, defs: Dictionary) -> int:
-	var step := float(defs.get("industry", {}).get("conversion_per_day", 0.02))
+	var step := float(defs.get("industry", {}).get("conversion_per_day", 0.05))
 	return ceili(absf(c.civil_share_target - c.civil_share) / step - 0.0001)

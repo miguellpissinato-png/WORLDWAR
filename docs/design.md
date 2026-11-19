@@ -57,10 +57,10 @@ Critérios de "pronto" por fase:
 ## Militar — parte 1: indústria, pesquisa e produção (decidido em 19/11/2026)
 
 - Fábricas são uma só reserva, divididas entre uso civil e militar por um controle deslizante.
-  Mais militar = menos bens de consumo (dinheiro) e menos construção. A conversão leva dias.
+  Mais militar = menos bens de consumo (dinheiro) e menos construção. A conversão leva dias (5% das fábricas por dia).
 - Pesquisa em 5 áreas: armas de infantaria, tropas e especializações, blindados, aviação, artilharia.
-  Cada país tem 3 vagas. Pesquisar antes do ano histórico custa +50% de tempo por ano (máximo de 2 anos
-  adiantado); projeto de outro país custa +75% (provisório, até existirem licenças na diplomacia).
+  Cada país tem 3 vagas. Pesquisar antes do ano histórico custa +35% de tempo por ano (máximo de 2 anos
+  adiantado); projeto de outro país custa +50% (provisório, até existirem licenças na diplomacia).
 - Equipamento real com dados históricos e fontes (ver `docs/fontes-equipamento.md`); os valores de jogo
   saem de fórmulas documentadas em `tools/data/gen_equipment.py`.
 - Linhas de produção usam fábricas militares, ganham eficiência com o tempo e gastam recursos do estoque;

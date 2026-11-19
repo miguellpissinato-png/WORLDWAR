@@ -3,9 +3,9 @@
  "rules": {
   "slots": 3,
   "max_years_ahead": 2,
-  "ahead_penalty_per_year": 0.5,
-  "foreign_design_penalty": 0.75,
-  "_foreign": "Projeto de outro país: +75% de tempo (provisório, até existirem licenças na diplomacia)."
+  "ahead_penalty_per_year": 0.35,
+  "foreign_design_penalty": 0.5,
+  "_foreign": "Projeto de outro país: +50% de tempo (provisório, até existirem licenças na diplomacia)."
  },
  "areas": [
   {
@@ -34,7 +34,7 @@
    "name": "Karabiner 98k",
    "area": "armas",
    "year": 1935,
-   "days": 60,
+   "days": 30,
    "money_cost": 120,
    "origin": [
     "ALE"
@@ -49,7 +49,7 @@
    "name": "Kar 98k com luneta ZF39",
    "area": "armas",
    "year": 1939,
-   "days": 50,
+   "days": 25,
    "money_cost": 100,
    "origin": [
     "ALE"
@@ -67,7 +67,7 @@
    "name": "MP 40",
    "area": "armas",
    "year": 1940,
-   "days": 70,
+   "days": 35,
    "money_cost": 140,
    "origin": [
     "ALE"
@@ -82,7 +82,7 @@
    "name": "Mosin-Nagant M91/30",
    "area": "armas",
    "year": 1930,
-   "days": 60,
+   "days": 30,
    "money_cost": 120,
    "origin": [
     "URS"
@@ -97,7 +97,7 @@
    "name": "Mosin M91/30 com luneta PU",
    "area": "armas",
    "year": 1942,
-   "days": 50,
+   "days": 25,
    "money_cost": 100,
    "origin": [
     "URS"
@@ -117,7 +117,7 @@
    "name": "PPSh-41",
    "area": "armas",
    "year": 1941,
-   "days": 70,
+   "days": 35,
    "money_cost": 140,
    "origin": [
     "URS"
@@ -132,7 +132,7 @@
    "name": "M1 Garand",
    "area": "armas",
    "year": 1936,
-   "days": 60,
+   "days": 30,
    "money_cost": 120,
    "origin": [
     "EUA"
@@ -147,7 +147,7 @@
    "name": "Springfield M1903A4",
    "area": "armas",
    "year": 1943,
-   "days": 50,
+   "days": 25,
    "money_cost": 100,
    "origin": [
     "EUA"
@@ -164,7 +164,7 @@
    "name": "Thompson M1928A1",
    "area": "armas",
    "year": 1938,
-   "days": 70,
+   "days": 35,
    "money_cost": 140,
    "origin": [
     "EUA"
@@ -181,7 +181,7 @@
    "name": "Thompson M1A1",
    "area": "armas",
    "year": 1942,
-   "days": 70,
+   "days": 35,
    "money_cost": 140,
    "origin": [
     "EUA"
@@ -200,7 +200,7 @@
    "name": "Lee-Enfield No. 4 Mk I",
    "area": "armas",
    "year": 1941,
-   "days": 60,
+   "days": 30,
    "money_cost": 120,
    "origin": [
     "RUN"
@@ -215,7 +215,7 @@
    "name": "Panzer II (Ausf. a–C)",
    "area": "blindados",
    "year": 1936,
-   "days": 78,
+   "days": 39,
    "money_cost": 156,
    "origin": [
     "ALE"
@@ -232,7 +232,7 @@
    "name": "Panzer III Ausf. J",
    "area": "blindados",
    "year": 1941,
-   "days": 106,
+   "days": 53,
    "money_cost": 212,
    "origin": [
     "ALE"
@@ -250,7 +250,7 @@
    "name": "Panzer IV Ausf. F2",
    "area": "blindados",
    "year": 1942,
-   "days": 106,
+   "days": 53,
    "money_cost": 212,
    "origin": [
     "ALE"
@@ -268,7 +268,7 @@
    "name": "Panzer IV Ausf. H",
    "area": "blindados",
    "year": 1943,
-   "days": 110,
+   "days": 55,
    "money_cost": 220,
    "origin": [
     "ALE"
@@ -286,7 +286,7 @@
    "name": "Panzer V Panther",
    "area": "blindados",
    "year": 1943,
-   "days": 150,
+   "days": 75,
    "money_cost": 300,
    "origin": [
     "ALE"
@@ -304,7 +304,7 @@
    "name": "Tiger I (Ausf. H1, depois Ausf. E)",
    "area": "blindados",
    "year": 1942,
-   "days": 168,
+   "days": 84,
    "money_cost": 336,
    "origin": [
     "ALE"
@@ -322,7 +322,7 @@
    "name": "Tiger II (Königstiger)",
    "area": "blindados",
    "year": 1944,
-   "days": 200,
+   "days": 100,
    "money_cost": 400,
    "origin": [
     "ALE"
@@ -340,7 +340,7 @@
    "name": "T-26 (mod. 1933)",
    "area": "blindados",
    "year": 1933,
-   "days": 79,
+   "days": 40,
    "money_cost": 158,
    "origin": [
     "URS"
@@ -357,7 +357,7 @@
    "name": "BT-7 (mod. 1937)",
    "area": "blindados",
    "year": 1935,
-   "days": 88,
+   "days": 44,
    "money_cost": 176,
    "origin": [
     "URS"
@@ -375,7 +375,7 @@
    "name": "T-34/76 (mod. 1941)",
    "area": "blindados",
    "year": 1941,
-   "days": 113,
+   "days": 56,
    "money_cost": 226,
    "origin": [
     "URS"
@@ -393,7 +393,7 @@
    "name": "M4 Sherman (75 mm)",
    "area": "blindados",
    "year": 1942,
-   "days": 121,
+   "days": 60,
    "money_cost": 242,
    "origin": [
     "EUA"
@@ -410,7 +410,7 @@
    "name": "Messerschmitt Bf 109 E-3",
    "area": "aviacao",
    "year": 1939,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [
     "ALE"
@@ -425,7 +425,7 @@
    "name": "Focke-Wulf Fw 190 A-8",
    "area": "aviacao",
    "year": 1944,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [
     "ALE"
@@ -444,7 +444,7 @@
    "name": "Hawker Hurricane Mk I",
    "area": "aviacao",
    "year": 1937,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [
     "RUN"
@@ -459,7 +459,7 @@
    "name": "Supermarine Spitfire Mk I",
    "area": "aviacao",
    "year": 1938,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [
     "RUN"
@@ -474,7 +474,7 @@
    "name": "North American P-51D Mustang",
    "area": "aviacao",
    "year": 1944,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [
     "EUA"
@@ -491,7 +491,7 @@
    "name": "Mitsubishi A6M2 Zero",
    "area": "aviacao",
    "year": 1940,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [
     "JAP"
@@ -506,7 +506,7 @@
    "name": "Yakovlev Yak-1",
    "area": "aviacao",
    "year": 1941,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [
     "URS"
@@ -523,7 +523,7 @@
    "name": "Junkers Ju 87 Stuka",
    "area": "aviacao",
    "year": 1937,
-   "days": 110,
+   "days": 55,
    "money_cost": 220,
    "origin": [
     "ALE"
@@ -540,7 +540,7 @@
    "name": "Ilyushin Il-2 Sturmovik",
    "area": "aviacao",
    "year": 1941,
-   "days": 110,
+   "days": 55,
    "money_cost": 220,
    "origin": [
     "URS"
@@ -555,7 +555,7 @@
    "name": "Heinkel He 111 H",
    "area": "aviacao",
    "year": 1937,
-   "days": 140,
+   "days": 70,
    "money_cost": 280,
    "origin": [
     "ALE"
@@ -572,7 +572,7 @@
    "name": "Junkers Ju 88 A-4",
    "area": "aviacao",
    "year": 1940,
-   "days": 140,
+   "days": 70,
    "money_cost": 280,
    "origin": [
     "ALE"
@@ -591,7 +591,7 @@
    "name": "Boeing B-17 Flying Fortress",
    "area": "aviacao",
    "year": 1938,
-   "days": 180,
+   "days": 90,
    "money_cost": 360,
    "origin": [
     "EUA"
@@ -606,7 +606,7 @@
    "name": "Avro Lancaster",
    "area": "aviacao",
    "year": 1942,
-   "days": 180,
+   "days": 90,
    "money_cost": 360,
    "origin": [
     "RUN"
@@ -623,7 +623,7 @@
    "name": "10,5 cm leFH 18",
    "area": "artilharia",
    "year": 1935,
-   "days": 95,
+   "days": 48,
    "money_cost": 190,
    "origin": [
     "ALE"
@@ -638,7 +638,7 @@
    "name": "15 cm sFH 18",
    "area": "artilharia",
    "year": 1934,
-   "days": 110,
+   "days": 55,
    "money_cost": 220,
    "origin": [
     "ALE"
@@ -653,7 +653,7 @@
    "name": "Obuseiro M2A1 de 105 mm",
    "area": "artilharia",
    "year": 1941,
-   "days": 95,
+   "days": 48,
    "money_cost": 190,
    "origin": [
     "EUA"
@@ -668,7 +668,7 @@
    "name": "QF 25-pounder",
    "area": "artilharia",
    "year": 1940,
-   "days": 89,
+   "days": 44,
    "money_cost": 178,
    "origin": [
     "RUN"
@@ -683,7 +683,7 @@
    "name": "Canhão divisional ZiS-3 de 76 mm",
    "area": "artilharia",
    "year": 1942,
-   "days": 85,
+   "days": 42,
    "money_cost": 170,
    "origin": [
     "URS"
@@ -698,7 +698,7 @@
    "name": "Obuseiro M-30 de 122 mm",
    "area": "artilharia",
    "year": 1939,
-   "days": 101,
+   "days": 50,
    "money_cost": 202,
    "origin": [
     "URS"
@@ -741,7 +741,7 @@
    "name": "Tanquistas",
    "area": "tropas",
    "year": 1936,
-   "days": 60,
+   "days": 30,
    "money_cost": 120,
    "origin": [],
    "unlocks_unit": [
@@ -757,7 +757,7 @@
    "name": "Atiradores de elite",
    "area": "tropas",
    "year": 1936,
-   "days": 50,
+   "days": 25,
    "money_cost": 100,
    "origin": [],
    "unlocks_unit": [
@@ -773,7 +773,7 @@
    "name": "Tropas de choque",
    "area": "tropas",
    "year": 1936,
-   "days": 70,
+   "days": 35,
    "money_cost": 140,
    "origin": [],
    "unlocks_unit": [
@@ -789,7 +789,7 @@
    "name": "Paraquedistas",
    "area": "tropas",
    "year": 1938,
-   "days": 120,
+   "days": 60,
    "money_cost": 240,
    "origin": [],
    "unlocks_unit": [
@@ -807,7 +807,7 @@
    "name": "Tropas de desembarque",
    "area": "tropas",
    "year": 1937,
-   "days": 100,
+   "days": 50,
    "money_cost": 200,
    "origin": [],
    "unlocks_unit": [
@@ -825,7 +825,7 @@
    "name": "Assalto anfíbio em grande escala (Dia D)",
    "area": "tropas",
    "year": 1943,
-   "days": 160,
+   "days": 80,
    "money_cost": 320,
    "origin": [],
    "unlocks_unit": [
