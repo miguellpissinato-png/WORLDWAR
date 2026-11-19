@@ -5,5 +5,5 @@
   "seed": 1936,
   "default_building_slots": 4,
   "capital_building_slots": 12,
-  "default_capital_buildings": { "civilian_factory": 1, "infrastructure": 2 }
+  "default_capital_buildings": { "factory": 1, "infrastructure": 2 }
 }

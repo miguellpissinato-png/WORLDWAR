@@ -12,7 +12,7 @@ var area_km2: int
 var owner: String = ""       # tag do país dono
 var population: int = 0
 var building_slots: int = 0  # vagas para fábricas (civis + militares)
-## Nível de cada construção, ex.: {"civilian_factory": 3, "infrastructure": 2}
+## Nível de cada construção, ex.: {"factory": 3, "infrastructure": 2}
 var buildings: Dictionary = {}
 ## Produção de recursos por dia em 1936 (a "jazida explorada"), ex.: {"oil": 12}.
 ## A extração atual soma os níveis das construções de extração (ver extraction()).

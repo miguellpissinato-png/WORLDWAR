@@ -12,7 +12,7 @@ static func daily_update(state: GameState, defs: Dictionary) -> void:
 	var ids: Array = defs.get("resource_ids", [])
 	for tag in state.countries:
 		var c: Country = state.countries[tag]
-		var capacity := state.total_building(tag, "civilian_factory") * per_factory
+		var capacity := state.civil_factories(tag) * per_factory
 		var produced := {}
 		var wanted := {}
 		var wanted_total := 0.0

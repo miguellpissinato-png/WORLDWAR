@@ -58,6 +58,22 @@ Documento de design completo: `docs/design.md`.
   (`GameState.human_tags`) respondem com `RespondTradeCommand`. Doação: `DonateResourcesCommand`.
 - Construções custam dinheiro (`money_cost`) além do trabalho das fábricas civis.
 
+## Indústria, pesquisa e produção militar
+
+- Fábricas são uma construção só (`factory`). `Country.civil_share` divide entre civis (bens de consumo e
+  construção) e militares (linhas de produção): `GameState.civil_factories()` / `military_factories()`.
+  `SetCivilShareCommand` muda o alvo; `IndustrySystem` converte `industry.conversion_per_day` por dia.
+  Nunca usar `total_building(tag, "factory")` para economia ou produção: usar as funções civil/militar.
+- Equipamento: dados históricos com fontes em `tools/data/equipment_table.json`; `tools/data/gen_equipment.py`
+  gera `data/common/equipment.json` e `data/common/research.json` (não editar à mão). Campos sem fonte
+  vão em `estimado` e aparecem "a conferir" na interface. Fontes listadas em `docs/fontes-equipamento.md`.
+- Pesquisa (`ResearchSystem`): 5 áreas, vagas por país, penalidade por ano adiantado (limite
+  `max_years_ahead`) e por projeto estrangeiro (`origin`). Começo do cenário: `data/scenarios/<ano>/research.json`.
+- Produção (`ProductionSystem`): linhas pegam fábricas militares em ordem; eficiência sobe por dia;
+  recursos saem do estoque e a falta reduz a velocidade até `shortage_floor` (estoque nunca negativo).
+  Regras em `military_production` de `data/common/buildings.json`.
+- Eventos para o jogador: `GameState.add_event(tags, texto, tipo)`; o tipo vira o prefixo no registro.
+
 ## Inteligência
 
 - `data/common/intelligence.json`. Cada país tem espionagem (`intel_offense`) e contraespionagem
@@ -71,7 +87,8 @@ Documento de design completo: `docs/design.md`.
 
 ## Interface
 
-- `ui/main.gd` orquestra; painéis em `ui/panels/` (escolha de país, economia, mercado, inteligência);
+- `ui/main.gd` orquestra; painéis em `ui/panels/` (escolha de país, economia, mercado, inteligência,
+  pesquisa, produção); a ficha de equipamento é `ResearchPanel.equipment_sheet()`;
   estilo comum em `ui/ui_style.gd` (painéis escuros com detalhes dourados `#c9b37a`).
 - A fonte da versão web não tem símbolos como ● ▶ ❚: usar texto ou `ColorRect`.
 

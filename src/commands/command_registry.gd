@@ -12,6 +12,12 @@ const TYPES := {
 	"claim_country": preload("res://src/commands/claim_country_command.gd"),
 	"start_investigation": preload("res://src/commands/start_investigation_command.gd"),
 	"upgrade_intelligence": preload("res://src/commands/upgrade_intelligence_command.gd"),
+	"set_civil_share": preload("res://src/commands/set_civil_share_command.gd"),
+	"start_research": preload("res://src/commands/start_research_command.gd"),
+	"cancel_research": preload("res://src/commands/cancel_research_command.gd"),
+	"add_production_line": preload("res://src/commands/add_production_line_command.gd"),
+	"set_line_factories": preload("res://src/commands/set_line_factories_command.gd"),
+	"remove_production_line": preload("res://src/commands/remove_production_line_command.gd"),
 }
 
 

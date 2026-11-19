@@ -42,6 +42,16 @@ static func theme() -> Theme:
 		th.set_stylebox("disabled", type, disabled)
 		th.set_color("font_color", type, Color(0.88, 0.86, 0.80))
 	th.set_color("font_color", "Label", Color(0.88, 0.88, 0.86))
+	var bar_bg := StyleBoxFlat.new()
+	bar_bg.bg_color = Color(0.16, 0.17, 0.18)
+	bar_bg.border_color = Color(0.36, 0.34, 0.28)
+	bar_bg.set_border_width_all(1)
+	bar_bg.set_corner_radius_all(2)
+	var bar_fill := StyleBoxFlat.new()
+	bar_fill.bg_color = ACCENT
+	bar_fill.set_corner_radius_all(2)
+	th.set_stylebox("background", "ProgressBar", bar_bg)
+	th.set_stylebox("fill", "ProgressBar", bar_fill)
 	th.set_color("default_color", "RichTextLabel", Color(0.86, 0.86, 0.84))
 	return th
 

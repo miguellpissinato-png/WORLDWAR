@@ -25,6 +25,8 @@ var _start: StartScreen
 var _economy: EconomyPanel
 var _market: MarketPanel
 var _intel: IntelPanel
+var _research: ResearchPanel
+var _production: ProductionPanel
 var _date_label: Label
 var _pause_button: Button
 var _speed_buttons: Array = []
@@ -143,7 +145,7 @@ func _on_day() -> void:
 		var e: Dictionary = sim.state.events[_events_seen]
 		_events_seen += 1
 		if player_tag in e.tags:
-			write_log("[color=#e0c070]Inteligência:[/color] " + e.text)
+			write_log("[color=#e0c070]%s:[/color] %s" % [e.get("kind", "Inteligência"), e.text])
 	_refresh_all()
 
 
@@ -156,6 +158,8 @@ func _refresh_all() -> void:
 	_economy.refresh()
 	_market.refresh()
 	_intel.refresh()
+	_research.refresh()
+	_production.refresh()
 	if _map_mode == "resources":
 		_apply_map_mode()
 
@@ -182,9 +186,10 @@ func _refresh_country_panel() -> void:
 		t += "[color=%s]Ideologia:[/color] %s\n" % [a, c.ideology]
 	t += "[color=%s]Capital:[/color] %s\n" % [a, c.capital_city]
 	t += "[color=%s]Estados:[/color] %d\n" % [a, sim.state.states_of(player_tag).size()]
-	t += "[color=%s]Fábricas civis:[/color] %d\n" % [a, sim.state.total_building(player_tag, "civilian_factory")]
-	t += "[color=%s]Fábricas militares:[/color] %d\n" % [a, sim.state.total_building(player_tag, "military_factory")]
+	t += "[color=%s]Fábricas civis:[/color] %d\n" % [a, sim.state.civil_factories(player_tag)]
+	t += "[color=%s]Fábricas militares:[/color] %d\n" % [a, sim.state.military_factories(player_tag)]
 	t += "[color=%s]Renda de ontem:[/color] %s\n" % [a, UiStyle.money(c.last_income, sim.defs.currency)]
+	t += "[color=%s]Pesquisas:[/color] %d de %d vagas\n" % [a, c.research.size(), c.research_slots]
 	t += "\n[b]Fila de construção[/b]\n"
 	if c.construction_queue.is_empty():
 		t += "[color=#888](vazia — clique num estado seu no mapa)[/color]\n"
@@ -329,6 +334,12 @@ func _build_ui() -> void:
 	_intel = IntelPanel.new()
 	_intel.setup(self)
 	_game_ui.add_child(_intel)
+	_research = ResearchPanel.new()
+	_research.setup(self)
+	_game_ui.add_child(_research)
+	_production = ProductionPanel.new()
+	_production.setup(self)
+	_game_ui.add_child(_production)
 
 	_hover_label = Label.new()
 	_hover_label.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -348,7 +359,7 @@ func _build_ui() -> void:
 
 
 func _only_one_panel(p: Control) -> void:
-	for other in [_economy, _market, _intel]:
+	for other in [_economy, _market, _intel, _research, _production]:
 		if other != p:
 			other.visible = false
 
@@ -417,18 +428,21 @@ func _build_side_panels() -> void:
 	var lv := VBoxContainer.new()
 	lv.add_theme_constant_override("separation", 8)
 	left.add_child(lv)
-	var buttons := HBoxContainer.new()
-	lv.add_child(buttons)
-	for pair in [["Economia", "economy"], ["Mercado", "market"], ["Inteligência", "intel"]]:
-		var b := Button.new()
-		b.text = pair[0]
-		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var which: String = pair[1]
-		b.pressed.connect(func():
-			var p: Control = {"economy": _economy, "market": _market, "intel": _intel}[which]
-			_only_one_panel(p)
-			p.toggle())
-		buttons.add_child(b)
+	for row in [[["Economia", "economy"], ["Mercado", "market"], ["Inteligência", "intel"]],
+			[["Pesquisa", "research"], ["Produção", "production"]]]:
+		var buttons := HBoxContainer.new()
+		lv.add_child(buttons)
+		for pair in row:
+			var b := Button.new()
+			b.text = pair[0]
+			b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			var which: String = pair[1]
+			b.pressed.connect(func():
+				var p: Control = {"economy": _economy, "market": _market, "intel": _intel,
+					"research": _research, "production": _production}[which]
+				_only_one_panel(p)
+				p.toggle())
+			buttons.add_child(b)
 	_country_info = RichTextLabel.new()
 	_country_info.bbcode_enabled = true
 	_country_info.fit_content = true

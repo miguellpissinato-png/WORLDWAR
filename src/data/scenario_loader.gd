@@ -27,6 +27,8 @@ static func load_defs() -> Dictionary:
 	for k in ["currency", "extraction", "economy", "market"]:
 		d[k] = r.get(k, {})
 	d["intelligence"] = read_json(COMMON_DIR + "/intelligence.json")
+	d["equipment"] = read_json(COMMON_DIR + "/equipment.json").equipment
+	d["research"] = read_json(COMMON_DIR + "/research.json")
 	MapState.extraction_step_share = float(d.extraction.get("step_share", 0.1))
 	return d
 
@@ -84,6 +86,9 @@ static func load_scenario(scenario: String, defs: Dictionary = {}) -> GameState:
 		else:
 			country.capital_state = cap.id
 			cap.building_slots = int(info.get("capital_building_slots", default_slots))
+		if not c.has("civil_share"):
+			country.civil_share = float(defs.get("industry", {}).get("default_civil_share", 0.7))
+			country.civil_share_target = country.civil_share
 		gs.countries[country.tag] = country
 
 	# Economia inicial: dinheiro, divisão padrão e preços de mercado.
@@ -111,6 +116,16 @@ static func load_scenario(scenario: String, defs: Dictionary = {}) -> GameState:
 			continue
 		for b in start_buildings[code]:
 			st.buildings[b] = int(start_buildings[code][b])
+	# Pesquisas já concluídas no início do cenário.
+	var start_research: Dictionary = read_json(dir + "/research.json")
+	var slots := int(defs.get("research", {}).get("rules", {}).get("slots", 3))
+	for country in gs.countries.values():
+		country.research_slots = slots
+		for id in start_research.get("_todos", []) + start_research.get(country.tag, []):
+			if ResearchSystem.tech(defs, id).is_empty():
+				push_error("Tecnologia %s de research.json não existe" % id)
+			elif not id in country.researched:
+				country.researched.append(id)
 	for rdef in defs.resources:
 		gs.prices[rdef.id] = MarketSystem.target_price(gs, defs, rdef)
 	return gs

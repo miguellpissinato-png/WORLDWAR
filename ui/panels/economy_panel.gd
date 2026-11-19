@@ -92,7 +92,7 @@ func refresh() -> void:
 		row.to_stock.text = "+%s" % UiStyle.num(prod - goods)
 		row.stock.text = UiStyle.num(c.stock(r.id))
 		row.price.text = "%s %s" % [sim.defs.currency, UiStyle.price(sim.state.price(r.id))]
-	var cap: float = sim.state.total_building(_main.player_tag, "civilian_factory") * float(sim.defs.economy.goods_per_factory)
+	var cap: float = sim.state.civil_factories(_main.player_tag) * float(sim.defs.economy.goods_per_factory)
 	var used := 0.0
 	for r in c.last_goods:
 		used += c.last_goods[r]

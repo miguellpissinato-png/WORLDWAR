@@ -27,7 +27,7 @@ static func daily_update(state: GameState, defs: Dictionary) -> void:
 	var cap := int(rules.get("max_factories_per_project", 15))
 	for tag in state.countries:
 		var country: Country = state.countries[tag]
-		var free_factories := state.total_building(tag, "civilian_factory")
+		var free_factories := state.civil_factories(tag)
 		var finished: Array = []
 		for item in country.construction_queue:
 			if free_factories <= 0:

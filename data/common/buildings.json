@@ -5,17 +5,11 @@
     "max_factories_per_project": 15
   },
   "buildings": {
-    "civilian_factory": {
-      "name": "Fábrica civil",
+    "factory": {
+      "name": "Fábrica",
       "cost": 8000,
       "uses_slot": true,
       "money_cost": 300
-    },
-    "military_factory": {
-      "name": "Fábrica militar",
-      "cost": 6000,
-      "uses_slot": true,
-      "money_cost": 250
     },
     "infrastructure": {
       "name": "Infraestrutura",
@@ -23,5 +17,18 @@
       "max_level": 5,
       "money_cost": 100
     }
+  },
+  "industry": {
+    "_nota": "As fábricas são uma só reserva. civil_share decide quantas trabalham para a economia civil (bens de consumo e construção); o resto é militar (linhas de produção). Mudar a divisão leva tempo: a parte civil anda conversion_per_day por dia até o alvo.",
+    "default_civil_share": 0.7,
+    "conversion_per_day": 0.02
+  },
+  "military_production": {
+    "_nota": "Linhas de produção: eficiência começa em efficiency_start e sobe efficiency_gain_per_day por dia de trabalho até efficiency_max. Faltando recurso, a linha anda no mínimo a shortage_floor da velocidade.",
+    "efficiency_start": 0.3,
+    "efficiency_gain_per_day": 0.01,
+    "efficiency_max": 1.0,
+    "shortage_floor": 0.25,
+    "max_factories_per_line": 15
   }
 }

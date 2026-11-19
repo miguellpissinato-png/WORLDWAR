@@ -47,7 +47,7 @@ func test_every_capital_belongs_to_its_country() -> void:
 
 func test_every_country_can_build() -> void:
 	for tag in gs().countries:
-		assert_true(gs().total_building(tag, "civilian_factory") > 0, "fábrica civil em " + tag)
+		assert_true(gs().civil_factories(tag) > 0, "fábrica civil em " + tag)
 
 
 func test_1936_border_exceptions() -> void:

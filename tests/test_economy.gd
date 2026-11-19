@@ -1,6 +1,6 @@
 extends TestCase
 # Mundo de teste (test_case.gd): AAA 2 fábricas civis, sem recursos, $1000.
-# BBB 1 fábrica civil, 20 de petróleo/dia, $1000. Petróleo a $10. Metade vira bens (0,5).
+# BBB 1 fábrica (civil), 20 de petróleo/dia, $1000. Petróleo a $10. Metade vira bens (0,5).
 
 
 func test_goods_and_stock() -> void:

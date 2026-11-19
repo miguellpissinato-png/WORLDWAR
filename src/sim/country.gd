@@ -20,6 +20,23 @@ var last_income: float = 0.0        # renda do último dia (para a interface)
 var last_goods: Dictionary = {}     # recurso -> unidades transformadas em bens no último dia
 
 
+# Indústria: as fábricas são uma só reserva, divididas entre uso civil e militar.
+var civil_share: float = 0.7        # fração atual das fábricas em uso civil
+var civil_share_target: float = 0.7 # alvo escolhido pelo jogador (a conversão leva dias)
+
+# Pesquisa
+var researched: Array = []          # ids de tecnologias concluídas
+var research: Array = []            # [{tech, progress, days}] pesquisas em andamento (uma por vaga)
+var research_slots: int = 3
+
+# Produção militar
+var production_lines: Array = []    # [{id, equipment, factories, efficiency, progress}]
+var next_line_id: int = 1
+var equipment: Dictionary = {}      # equipamento -> unidades prontas no depósito
+var last_production: Dictionary = {} # equipamento -> unidades feitas no último dia
+var last_shortage: Dictionary = {}  # recurso -> quanto faltou no último dia
+
+
 # Inteligência
 var intel_offense: int = 1          # nível de espionagem
 var intel_defense: int = 1          # nível de contraespionagem
@@ -30,6 +47,14 @@ func stock(resource: String) -> float:
 	return float(stockpile.get(resource, 0.0))
 
 
+func equipment_count(eq: String) -> float:
+	return float(equipment.get(eq, 0.0))
+
+
+func has_tech(tech: String) -> bool:
+	return tech in researched
+
+
 static func from_dict(d: Dictionary) -> Country:
 	var c := Country.new()
 	c.tag = d.tag
@@ -38,6 +63,9 @@ static func from_dict(d: Dictionary) -> Country:
 	c.ideology = d.get("ideology", "")
 	c.color = Color(d.get("color", "#888888"))
 	c.capital_city = d.get("capital_city", "")
+	if d.has("civil_share"):
+		c.civil_share = float(d.civil_share)
+		c.civil_share_target = c.civil_share
 	# Nos cenários a capital vem como código do mapa e o ScenarioLoader resolve o id.
 	var cap = d.get("capital_state", -1)
 	c.capital_state = -1 if cap is String else int(cap)

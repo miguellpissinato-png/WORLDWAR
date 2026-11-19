@@ -1,0 +1,11 @@
+{
+  "_nota": "Tecnologias já conhecidas em 1º/01/1936. '_todos' vale para todos os países. Equipamentos só entram aqui se já estavam em serviço ou produção antes de 1936 (ver o ano em tools/data/equipment_table.json).",
+  "_todos": ["t_infantaria", "t_artilharia"],
+  "ALE": ["t_tanquistas", "tech_kar98k", "tech_panzer_ii", "tech_lefh18", "tech_sfh18"],
+  "URS": ["t_tanquistas", "tech_mosin_9130", "tech_t26", "tech_bt7"],
+  "EUA": ["t_tanquistas", "t_desembarque"],
+  "RUN": ["t_tanquistas", "t_desembarque"],
+  "FRA": ["t_tanquistas"],
+  "ITA": ["t_tanquistas"],
+  "JAP": ["t_desembarque"]
+}

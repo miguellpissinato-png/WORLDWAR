@@ -104,7 +104,7 @@ func select(tag: String) -> void:
 	t += "[color=%s]Líder:[/color] %s     [color=%s]Ideologia:[/color] %s\n" % [a, c.leader if c.leader != "" else "a definir", a, c.ideology if c.ideology != "" else "a definir"]
 	t += "[color=%s]Capital:[/color] %s     [color=%s]Estados:[/color] %d\n" % [a, c.capital_city, a, st.states_of(tag).size()]
 	t += "[color=%s]Fábricas civis:[/color] %d     [color=%s]Fábricas militares:[/color] %d     [color=%s]Tesouro:[/color] %s\n\n" % [
-		a, st.total_building(tag, "civilian_factory"), a, st.total_building(tag, "military_factory"), a, UiStyle.money(c.money, sim.defs.currency)]
+		a, st.civil_factories(tag), a, st.military_factories(tag), a, UiStyle.money(c.money, sim.defs.currency)]
 	t += "[b]Produção de recursos (por dia)[/b]\n[table=4]"
 	t += "[cell][color=%s]Recurso[/color]   [/cell][cell][color=%s]Produção[/color]   [/cell][cell][color=%s]Mundo[/color]   [/cell][cell][color=%s]Participação[/color][/cell]" % [a, a, a, a]
 	for r in sim.defs.resources:

@@ -39,6 +39,21 @@ func total_building(tag: String, building: String) -> int:
 	return total
 
 
+## Fábricas do país (uma só reserva) e a divisão entre uso civil e militar.
+func factories(tag: String) -> int:
+	return total_building(tag, "factory")
+
+
+func civil_factories(tag: String) -> int:
+	var c := country(tag)
+	var n := factories(tag)
+	return n if c == null else clampi(roundi(n * c.civil_share), 0, n)
+
+
+func military_factories(tag: String) -> int:
+	return factories(tag) - civil_factories(tag)
+
+
 ## Extração diária de um recurso somando os estados do país.
 func resource_production(tag: String, resource: String) -> int:
 	var total := 0
@@ -62,8 +77,8 @@ func is_human(tag: String) -> bool:
 	return tag in human_tags
 
 
-func add_event(tags: Array, text: String) -> void:
-	events.append({"hours": hours, "tags": tags, "text": text})
+func add_event(tags: Array, text: String, kind: String = "Inteligência") -> void:
+	events.append({"hours": hours, "tags": tags, "text": text, "kind": kind})
 	if events.size() > MAX_EVENTS:
 		events.pop_front()
 

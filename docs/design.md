@@ -54,6 +54,20 @@ Critérios de "pronto" por fase:
 - Dados de outros países só na tela de escolha ou por relatório de inteligência (congelado na data).
 - Contraespionagem barra infiltrações e prende agentes; os dois lados são avisados.
 
+## Militar — parte 1: indústria, pesquisa e produção (decidido em 19/11/2026)
+
+- Fábricas são uma só reserva, divididas entre uso civil e militar por um controle deslizante.
+  Mais militar = menos bens de consumo (dinheiro) e menos construção. A conversão leva dias.
+- Pesquisa em 5 áreas: armas de infantaria, tropas e especializações, blindados, aviação, artilharia.
+  Cada país tem 3 vagas. Pesquisar antes do ano histórico custa +50% de tempo por ano (máximo de 2 anos
+  adiantado); projeto de outro país custa +75% (provisório, até existirem licenças na diplomacia).
+- Equipamento real com dados históricos e fontes (ver `docs/fontes-equipamento.md`); os valores de jogo
+  saem de fórmulas documentadas em `tools/data/gen_equipment.py`.
+- Linhas de produção usam fábricas militares, ganham eficiência com o tempo e gastam recursos do estoque;
+  faltando recurso, andam mais devagar (mínimo de 25%).
+- Próximas partes: exército (grupos, até 5 por general, habilidades) e depois movimento, combate de
+  vários dias e apoio aéreo de bombardeiros saindo de bases.
+
 ## Multiplayer
 
 Host autoritativo: a simulação roda no host; o outro jogador envia comandos e recebe o estado.

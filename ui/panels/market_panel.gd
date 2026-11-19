@@ -147,7 +147,7 @@ func refresh() -> void:
 	for tag in st.countries:
 		if tag == _main.player_tag or st.is_human(tag):
 			continue
-		var need := st.total_building(tag, "civilian_factory") * float(res_def.demand_per_factory) - st.resource_production(tag, res)
+		var need := st.civil_factories(tag) * float(res_def.demand_per_factory) - st.resource_production(tag, res)
 		var can_pay := int(st.country(tag).money / maxf(bid, 0.01))
 		var qty := mini(int(need * 30.0), can_pay)
 		if qty >= 5:

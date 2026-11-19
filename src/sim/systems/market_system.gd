@@ -9,7 +9,7 @@ static func target_price(state: GameState, defs: Dictionary, res: Dictionary) ->
 	var m: Dictionary = defs.get("market", {})
 	var factories := 0
 	for tag in state.countries:
-		factories += state.total_building(tag, "civilian_factory")
+		factories += state.civil_factories(tag)
 	var demand := factories * float(res.get("demand_per_factory", 1.0))
 	var supply := float(state.world_production(res.id))
 	var ratio := (demand + 1.0) / (supply + 1.0)

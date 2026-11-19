@@ -82,6 +82,6 @@ static func make_report(state: GameState, defs: Dictionary, target: String, offe
 		"production": production,
 		"stock": stock,
 		"money": roundi(blur.call(c.money)),
-		"civilian_factories": roundi(blur.call(float(state.total_building(target, "civilian_factory")))),
-		"military_factories": roundi(blur.call(float(state.total_building(target, "military_factory")))),
+		"civilian_factories": roundi(blur.call(float(state.civil_factories(target)))),
+		"military_factories": roundi(blur.call(float(state.military_factories(target)))),
 	}
