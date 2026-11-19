@@ -86,7 +86,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _toggle_pause() -> void:
 	paused = not paused
-	_pause_button.text = "▶" if paused else "❚❚"
+	_pause_button.text = "Continuar" if paused else "Pausar"
 
 
 func _set_speed(s: int) -> void:
@@ -217,8 +217,8 @@ func _build_ui() -> void:
 	_date_label.add_theme_font_size_override("font_size", 18)
 	bar.add_child(_date_label)
 	_pause_button = Button.new()
-	_pause_button.text = "▶"
-	_pause_button.custom_minimum_size = Vector2(40, 0)
+	_pause_button.text = "Continuar"
+	_pause_button.custom_minimum_size = Vector2(96, 0)
 	_pause_button.tooltip_text = "Pausar / continuar (espaço)"
 	_pause_button.pressed.connect(_toggle_pause)
 	bar.add_child(_pause_button)

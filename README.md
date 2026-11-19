@@ -34,6 +34,13 @@ Os arquivos `data/map/` são gerados a partir do Natural Earth: `tools/map/build
 Os donos de cada estado em 1936 ficam em `data/scenarios/1936/owners.json` (regras por país moderno
 e exceções por estado), e podem ser editados sem programar.
 
+## Versão web
+
+Jogue no navegador: https://miguellpissinato-png.github.io/Minha-jornada/
+
+A versão web fica no ramo `gh-pages` e é uma cópia congelada; para atualizar, exporte o preset
+"Web" (`godot --headless --export-release "Web" ../webbuild/index.html`) e publique a pasta nesse ramo.
+
 ## Testes
 
 ```

@@ -15,11 +15,13 @@ signal sea_hovered(zone_id: int)   # -1 quando o mouse sai do mar
 const SHAPES_PATH := "res://data/map/shapes.json"
 const SEA_SHAPES_PATH := "res://data/map/sea_shapes.json"
 const DEPTH_PATH := "res://data/map/sea_depth.png"
-const ID_SCALE := 2.0      # resolução da imagem de IDs em relação às coordenadas do mapa
 const LOOKUP_WIDTH := 4096
 const CELL := 40.0         # tamanho da célula da grade de busca (clique)
 const GAP_FILL := 0.8      # quanto expandir os contornos na passada que tapa frestas
 
+## Resolução da imagem de IDs em relação às coordenadas do mapa (menor no navegador, que tem
+## limite de memória de vídeo mais apertado).
+var ID_SCALE := 1.5 if OS.has_feature("web") else 2.0
 var map_size := Vector2.ZERO
 var _rings := {}           # state_id -> Array[PackedVector2Array]
 var _grid := {}            # Vector2i -> Array[state_id]
