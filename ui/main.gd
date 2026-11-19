@@ -193,7 +193,7 @@ func _refresh_panels() -> void:
 		st += "\n[b]Recursos por dia[/b]\n"
 		for r in sim.defs.resources:
 			if s.resources.has(r.id):
-				st += "[color=%s]●[/color] %s: %d\n" % [r.color, r.name, s.resources[r.id]]
+				st += "[color=%s]%s:[/color] %d\n" % [r.color, r.name, s.resources[r.id]]
 	_state_info.text = st
 	var mine := s.owner == player_tag
 	for b in _build_buttons:
@@ -364,9 +364,11 @@ func _build_ui() -> void:
 	res_box.add_theme_constant_override("separation", 14)
 	bar.add_child(res_box)
 	for r in sim.defs.resources:
-		var dot := Label.new()
-		dot.text = "●"
-		dot.add_theme_color_override("font_color", Color(r.color))
+		var dot := ColorRect.new()   # quadrado de cor (a fonte da versão web não tem "●")
+		dot.color = Color(r.color)
+		dot.custom_minimum_size = Vector2(9, 9)
+		dot.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		dot.mouse_filter = Control.MOUSE_FILTER_STOP
 		res_box.add_child(dot)
 		var l := Label.new()
 		l.mouse_filter = Control.MOUSE_FILTER_STOP
