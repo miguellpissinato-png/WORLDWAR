@@ -50,5 +50,8 @@ func _tick_hour() -> void:
 
 
 func _daily_update() -> void:
+	MarketSystem.daily_update(state, defs)
+	EconomySystem.daily_update(state, defs)
 	TradeSystem.daily_update(state, defs)
+	IntelligenceSystem.daily_update(state, defs)
 	ConstructionSystem.daily_update(state, defs)

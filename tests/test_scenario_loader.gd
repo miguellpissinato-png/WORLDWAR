@@ -71,11 +71,19 @@ func test_buildings_in_states_are_defined() -> void:
 
 
 func test_resources_are_where_expected() -> void:
-	assert_true(gs().resource_production("EUA", "oil") > 50, "EUA produz muito petróleo")
-	assert_true(gs().resource_production("ALE", "coal") > 30, "Alemanha produz carvão")
-	assert_eq(gs().resource_production("ALE", "rubber"), 0, "Alemanha sem borracha")
-	assert_true(gs().resource_production("RUN", "rubber") > 20, "Malásia britânica")
+	assert_true(gs().resource_production("EUA", "oil") > 100, "EUA: maior produtor de petróleo")
+	assert_true(gs().resource_production("ALE", "coal") > 40, "Alemanha: muito carvão")
+	assert_eq(gs().resource_production("ALE", "rubber"), 0, "Alemanha sem borracha natural")
+	assert_true(gs().resource_production("RUN", "rubber") > 30, "Malásia britânica")
+	assert_true(gs().resource_production("BRA", "iron") == 0 and gs().resource_production("BRA", "coal") > 0, "Brasil 1936")
 	var defs := ScenarioLoader.load_defs()
 	for s in gs().states.values():
 		for r in s.resources:
 			assert_true(r in defs.resource_ids, "recurso %s em %s" % [r, s.name])
+
+
+func test_economy_starts_ready() -> void:
+	for tag in gs().countries:
+		assert_true(gs().country(tag).money > 0.0, "dinheiro inicial de " + tag)
+	for r in ["oil", "coal", "iron", "rubber", "bauxite", "rare_metals"]:
+		assert_true(gs().price(r) > 0.0, "preço de " + r)

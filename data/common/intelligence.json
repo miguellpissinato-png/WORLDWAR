@@ -1,0 +1,22 @@
+{
+  "_nota": "Agência de inteligência. Valores de jogo, a balancear jogando.",
+  "max_level": 5,
+  "upgrade_cost": [0, 800, 1600, 3200, 6400],
+  "_upgrade_cost": "custo para subir do nível N para N+1 (índice = nível atual - 1; o primeiro valor não é usado)",
+  "investigation": {
+    "cost": 400,
+    "base_days": 24,
+    "days_per_level": 4,
+    "min_days": 6,
+    "_bloqueio": "chance de a contraespionagem barrar a infiltração logo no início",
+    "block_per_defense": 0.12,
+    "block_per_offense": 0.06,
+    "block_max": 0.6,
+    "_deteccao": "chance diária de os agentes serem descobertos e presos",
+    "detect_per_defense": 0.012,
+    "detect_per_offense": 0.006,
+    "detect_min": 0.002,
+    "_erro": "erro máximo dos números do relatório: noise_base / nível de espionagem",
+    "noise_base": 0.3
+  }
+}

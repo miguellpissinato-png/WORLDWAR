@@ -45,6 +45,15 @@ Critérios de "pronto" por fase:
 4. Duas IAs travam uma guerra sozinhas.
 5. Partida completa 1936–1945 jogável do início ao fim.
 
+## Economia e inteligência (decidido em 19/11/2026)
+
+- Recursos com produção real de 1936 por país (com fontes); jazidas limitam a extração.
+- Divisão por recurso: % para bens de consumo (dinheiro) e o resto para o estoque.
+- Estoque serve para produção militar, venda, doação a aliados e, futuramente, negociação de paz.
+- Mercado mundial por oferta e demanda; cada negócio tem preço negociado, com teto acima do mercado.
+- Dados de outros países só na tela de escolha ou por relatório de inteligência (congelado na data).
+- Contraespionagem barra infiltrações e prende agentes; os dois lados são avisados.
+
 ## Multiplayer
 
 Host autoritativo: a simulação roda no host; o outro jogador envia comandos e recebe o estado.

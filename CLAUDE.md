@@ -10,8 +10,9 @@ Documento de design completo: `docs/design.md`.
    input ou UI. A simulação é feita de classes `RefCounted` e roda igual com ou sem tela.
 2. **Só comandos mudam a simulação.** Toda ação de jogador ou da IA é um `Command`
    (`src/commands/`). Ele é enviado com `Simulation.submit()` e aplicado no início da próxima
-   hora do jogo. A interface nunca altera `GameState` diretamente. Isso é o que permite multiplayer,
-   salvar/carregar e replays.
+   hora do jogo, ou na hora com `Simulation.apply_pending()` (a interface do jogo solo faz isso em
+   `main.submit()`; no multiplayer só o host aplica). A interface nunca altera `GameState`
+   diretamente. Isso é o que permite multiplayer, salvar/carregar e replays.
 3. **Todo comando é serializável** (`to_dict()` / `CommandRegistry.from_dict()`), porque vai
    passar pela rede no multiplayer.
 4. **Conteúdo em dados, não em código.** Países, estados, construções, tecnologias e cenários
@@ -42,14 +43,37 @@ Documento de design completo: `docs/design.md`.
 - O mapa é pintado por um shader que lê uma imagem de IDs; mudar o dono de um estado = chamar
   `MapView.color_by_owner()` de novo (não precisa redesenhar polígonos).
 
-## Recursos e comércio
+## Economia e recursos
 
-- Definições em `data/common/resources.json`; produção por estado em `data/common/state_resources.json`
-  (por `code`, igual em todos os cenários).
-- `GameState.trades` guarda os `TradeContract`; o pagamento em fábricas civis entra em
-  `available_civilian_factories()`, que é o que a construção usa.
-- `TradeSystem.daily_update` cancela contratos que deixaram de ser possíveis.
-- Com o jogo pausado, a interface chama `Simulation.apply_pending()` para a ordem valer na hora.
+- Recursos, extração, economia e mercado: `data/common/resources.json`. Produção de 1936 por estado:
+  `data/common/state_resources.json`, gerada por `tools/data/gen_deposits.py` a partir de dados reais
+  (fontes em `docs/fontes-recursos.md`). Nunca inventar números: novos dados vêm com fonte.
+- Extração = produção de 1936 + níveis da construção `extraction_<recurso>` (10% cada), até a jazida
+  (2x a produção de 1936). Construções de extração são geradas em `ConstructionSystem.definition()`.
+- Por dia (`EconomySystem`): a extração de cada recurso se divide por `Country.goods_share` entre bens de
+  consumo (viram dinheiro, limitados por fábricas civis x `goods_per_factory`) e estoque (`stockpile`).
+- Preço mundial (`MarketSystem`): demanda (fábricas civis do mundo) / oferta (extração mundial).
+- Comércio = propostas de lote único (`ProposeTradeCommand`), preço por unidade com teto de
+  mercado + `max_markup`. A IA responde na hora (`TradeSystem.ai_accepts`); jogadores humanos
+  (`GameState.human_tags`) respondem com `RespondTradeCommand`. Doação: `DonateResourcesCommand`.
+- Construções custam dinheiro (`money_cost`) além do trabalho das fábricas civis.
+
+## Inteligência
+
+- `data/common/intelligence.json`. Cada país tem espionagem (`intel_offense`) e contraespionagem
+  (`intel_defense`), níveis 1–5, comprados com dinheiro.
+- `StartInvestigationCommand`: custa dinheiro, pode ser barrada na infiltração; depois, a cada dia,
+  os agentes podem ser presos (`IntelligenceSystem`). Ao terminar, gera um relatório **congelado**
+  (com erro que cai com o nível) em `Country.intel_reports[alvo]`. Avisos vão para `GameState.events`.
+- **Regra de interface:** produção, estoques, jazidas e dinheiro de outros países só aparecem na tela
+  de escolha de país (`ui/panels/start_screen.gd`) ou via relatório de inteligência. O mercado mostra
+  apenas lotes à venda e preços.
+
+## Interface
+
+- `ui/main.gd` orquestra; painéis em `ui/panels/` (escolha de país, economia, mercado, inteligência);
+  estilo comum em `ui/ui_style.gd` (painéis escuros com detalhes dourados `#c9b37a`).
+- A fonte da versão web não tem símbolos como ● ▶ ❚: usar texto ou `ColorRect`.
 
 ## Testes
 

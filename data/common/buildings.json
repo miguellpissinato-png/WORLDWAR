@@ -5,8 +5,23 @@
     "max_factories_per_project": 15
   },
   "buildings": {
-    "civilian_factory": { "name": "Fábrica civil", "cost": 8000, "uses_slot": true },
-    "military_factory": { "name": "Fábrica militar", "cost": 6000, "uses_slot": true },
-    "infrastructure": { "name": "Infraestrutura", "cost": 3000, "max_level": 5 }
+    "civilian_factory": {
+      "name": "Fábrica civil",
+      "cost": 8000,
+      "uses_slot": true,
+      "money_cost": 300
+    },
+    "military_factory": {
+      "name": "Fábrica militar",
+      "cost": 6000,
+      "uses_slot": true,
+      "money_cost": 250
+    },
+    "infrastructure": {
+      "name": "Infraestrutura",
+      "cost": 3000,
+      "max_level": 5,
+      "money_cost": 100
+    }
   }
 }

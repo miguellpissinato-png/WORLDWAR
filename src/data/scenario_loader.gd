@@ -24,11 +24,16 @@ static func load_defs() -> Dictionary:
 	var r: Dictionary = read_json(COMMON_DIR + "/resources.json")
 	d["resources"] = r.resources
 	d["resource_ids"] = r.resources.map(func(x): return x.id)
-	d["trade"] = r.trade
+	for k in ["currency", "extraction", "economy", "market"]:
+		d[k] = r.get(k, {})
+	d["intelligence"] = read_json(COMMON_DIR + "/intelligence.json")
+	MapState.extraction_step_share = float(d.extraction.get("step_share", 0.1))
 	return d
 
 
-static func load_scenario(scenario: String) -> GameState:
+static func load_scenario(scenario: String, defs: Dictionary = {}) -> GameState:
+	if defs.is_empty():
+		defs = load_defs()
 	var dir := SCENARIOS_DIR + "/" + scenario
 	var info: Dictionary = read_json(dir + "/scenario.json")
 	var gs := GameState.new()
@@ -81,6 +86,14 @@ static func load_scenario(scenario: String) -> GameState:
 			cap.building_slots = int(info.get("capital_building_slots", default_slots))
 		gs.countries[country.tag] = country
 
+	# Economia inicial: dinheiro, divisão padrão e preços de mercado.
+	var eco: Dictionary = defs.get("economy", {})
+	for country in gs.countries.values():
+		country.money = float(eco.get("start_money", 3000))
+		for r in defs.resource_ids:
+			country.goods_share[r] = float(eco.get("default_goods_share", 0.7))
+			country.stockpile[r] = 0.0
+
 	# Construções iniciais.
 	var start_buildings: Dictionary = read_json(dir + "/buildings.json")
 	var default_capital: Dictionary = info.get("default_capital_buildings", {})
@@ -98,4 +111,6 @@ static func load_scenario(scenario: String) -> GameState:
 			continue
 		for b in start_buildings[code]:
 			st.buildings[b] = int(start_buildings[code][b])
+	for rdef in defs.resources:
+		gs.prices[rdef.id] = MarketSystem.target_price(gs, defs, rdef)
 	return gs

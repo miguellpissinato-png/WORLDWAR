@@ -7,8 +7,15 @@ var scenario_name: String = ""
 var countries: Dictionary = {}     # tag -> Country
 var states: Dictionary = {}        # id -> MapState
 var sea_zones: Dictionary = {}     # id -> SeaZone
-var trades: Dictionary = {}        # id -> TradeContract
-var next_trade_id: int = 1
+var offers: Dictionary = {}        # id -> TradeOffer (propostas aguardando resposta)
+var next_offer_id: int = 1
+var prices: Dictionary = {}        # recurso -> preço no mercado mundial
+var human_tags: Array = []         # países controlados por jogadores (a IA não responde por eles)
+var operations: Dictionary = {}    # id -> IntelOperation
+var next_operation_id: int = 1
+var events: Array = []             # [{hours, tags, text}] avisos para os países envolvidos
+
+const MAX_EVENTS := 300
 var rng := RandomNumberGenerator.new()   # único gerador aleatório da simulação
 
 
@@ -32,61 +39,33 @@ func total_building(tag: String, building: String) -> int:
 	return total
 
 
-## Produção diária de um recurso somando os estados do país.
+## Extração diária de um recurso somando os estados do país.
 func resource_production(tag: String, resource: String) -> int:
 	var total := 0
 	for s in states_of(tag):
-		total += int(s.resources.get(resource, 0))
+		total += s.extraction(resource)
 	return total
 
 
-func resource_imports(tag: String, resource: String) -> int:
+func world_production(resource: String) -> int:
 	var total := 0
-	for t in trades.values():
-		if t.buyer == tag and t.resource == resource:
-			total += t.amount
+	for s in states.values():
+		total += s.extraction(resource)
 	return total
 
 
-func resource_exports(tag: String, resource: String) -> int:
-	var total := 0
-	for t in trades.values():
-		if t.seller == tag and t.resource == resource:
-			total += t.amount
-	return total
+func price(resource: String) -> float:
+	return float(prices.get(resource, 0.0))
 
 
-## Saldo diário: produção + importação - exportação. (O consumo pela produção militar virá depois.)
-func resource_balance(tag: String, resource: String) -> int:
-	return resource_production(tag, resource) + resource_imports(tag, resource) - resource_exports(tag, resource)
+func is_human(tag: String) -> bool:
+	return tag in human_tags
 
 
-## Quanto ainda dá para exportar, respeitando a fatia máxima de exportação.
-func exportable(tag: String, resource: String, max_share: float) -> int:
-	return maxi(0, int(floor(resource_production(tag, resource) * max_share)) - resource_exports(tag, resource))
-
-
-## Fábricas civis cedidas como pagamento de importações.
-func factories_paid(tag: String) -> int:
-	var total := 0
-	for t in trades.values():
-		if t.buyer == tag:
-			total += t.factories
-	return total
-
-
-## Fábricas civis recebidas como pagamento de exportações.
-func factories_received(tag: String) -> int:
-	var total := 0
-	for t in trades.values():
-		if t.seller == tag:
-			total += t.factories
-	return total
-
-
-## Fábricas civis que o país pode usar para construir.
-func available_civilian_factories(tag: String) -> int:
-	return total_building(tag, "civilian_factory") - factories_paid(tag) + factories_received(tag)
+func add_event(tags: Array, text: String) -> void:
+	events.append({"hours": hours, "tags": tags, "text": text})
+	if events.size() > MAX_EVENTS:
+		events.pop_front()
 
 
 func date_text() -> String:

@@ -5,8 +5,13 @@ extends RefCounted
 
 const TYPES := {
 	"queue_construction": preload("res://src/commands/queue_construction_command.gd"),
-	"create_trade": preload("res://src/commands/create_trade_command.gd"),
-	"cancel_trade": preload("res://src/commands/cancel_trade_command.gd"),
+	"set_goods_share": preload("res://src/commands/set_goods_share_command.gd"),
+	"propose_trade": preload("res://src/commands/propose_trade_command.gd"),
+	"respond_trade": preload("res://src/commands/respond_trade_command.gd"),
+	"donate_resources": preload("res://src/commands/donate_resources_command.gd"),
+	"claim_country": preload("res://src/commands/claim_country_command.gd"),
+	"start_investigation": preload("res://src/commands/start_investigation_command.gd"),
+	"upgrade_intelligence": preload("res://src/commands/upgrade_intelligence_command.gd"),
 }
 
 

@@ -1,15 +1,36 @@
 {
-  "_nota": "Recursos estratégicos e regras de comércio. Valores de exemplo, a balancear.",
+  "_nota": "Recursos, extração, economia e mercado. Valores de jogo, a balancear jogando.",
+  "currency": "$",
   "resources": [
-    { "id": "oil", "name": "Petróleo", "short": "PET", "color": "#c9a24a" },
-    { "id": "coal", "name": "Carvão", "short": "CAR", "color": "#9a8f86" },
-    { "id": "iron", "name": "Ferro", "short": "FER", "color": "#c06a4a" },
-    { "id": "rubber", "name": "Borracha", "short": "BOR", "color": "#7fae5c" },
-    { "id": "bauxite", "name": "Bauxita", "short": "BAU", "color": "#d98c5f" },
-    { "id": "rare_metals", "name": "Metais raros", "short": "MET", "color": "#9b9be0" }
+    { "id": "oil", "name": "Petróleo", "short": "PET", "color": "#c9a24a", "base_price": 12, "demand_per_factory": 1.5, "extraction": "Poços de petróleo" },
+    { "id": "coal", "name": "Carvão", "short": "CAR", "color": "#9a8f86", "base_price": 4, "demand_per_factory": 4.0, "extraction": "Minas de carvão" },
+    { "id": "iron", "name": "Ferro", "short": "FER", "color": "#c06a4a", "base_price": 6, "demand_per_factory": 2.0, "extraction": "Minas de ferro" },
+    { "id": "rubber", "name": "Borracha", "short": "BOR", "color": "#7fae5c", "base_price": 20, "demand_per_factory": 0.6, "extraction": "Seringais" },
+    { "id": "bauxite", "name": "Bauxita", "short": "BAU", "color": "#d98c5f", "base_price": 10, "demand_per_factory": 0.4, "extraction": "Minas de bauxita" },
+    { "id": "rare_metals", "name": "Metais raros", "short": "MET", "color": "#9b9be0", "base_price": 30, "demand_per_factory": 0.6, "extraction": "Minas de metais" }
   ],
-  "trade": {
-    "units_per_factory": 5,
-    "max_export_share": 0.75
+  "extraction": {
+    "_nota": "Cada nível de extração soma 10% da produção de 1936 (mínimo 1). A jazida limita a extração a deposit_factor vezes a produção de 1936.",
+    "step_share": 0.1,
+    "deposit_factor": 2.0,
+    "cost": 2500,
+    "money_cost": 150
+  },
+  "economy": {
+    "_nota": "Cada fábrica civil transforma até goods_per_factory unidades/dia de recurso em bens de consumo; cada unidade rende o preço de mercado x goods_value.",
+    "goods_per_factory": 10,
+    "goods_value": 1.5,
+    "start_money": 3000,
+    "default_goods_share": 0.7
+  },
+  "market": {
+    "_nota": "Preço = preço base x (demanda/oferta)^elasticity, limitado entre min e max vezes o preço base; anda price_speed por dia em direção ao alvo. O vendedor pode pedir no máximo max_markup acima do mercado.",
+    "elasticity": 0.5,
+    "min_factor": 0.4,
+    "max_factor": 3.0,
+    "price_speed": 0.05,
+    "max_markup": 0.25,
+    "ai_accept_buy_below": 1.10,
+    "ai_accept_sell_above": 0.95
   }
 }
