@@ -1,12 +1,31 @@
-# MENE
+# WorldWar
 
-O Enem, ao contrário: um acampamento de estudos em pixel art para o 2º dia do Enem 2026 (15/11).
+Jogo de grande estratégia em tempo real com pausa, ambientado na Segunda Guerra Mundial (1936–1945).
+Feito no Godot 4.5 com GDScript.
 
-- **Início:** cena noturna com a fogueira, contagem regressiva até o dia da prova, busca e catálogo de matérias.
-- **Matérias:** Biologia, Química, Matemática e Física, com os temas do que mais cai ao que menos cai, explicações e canais do YouTube.
-- **Cronômetro:** o esqueleto anda pela trilha enquanto você estuda; na pausa, descansa na fogueira.
-- **Relatório:** horas de hoje e da semana, matérias e temas estudados, e o que falta para se garantir.
+## Como abrir
 
-Na primeira visita, um questionário rápido define o seu foco. Cada pessoa tem a própria jornada, salva no navegador do aparelho. Não precisa de login.
+1. Instale o [Godot 4.5](https://godotengine.org/download) (versão padrão, não a .NET).
+2. No Godot, clique em **Importar** e escolha o arquivo `project.godot` desta pasta.
+3. Aperte **F5** para rodar.
 
-Arquivo único: `index.html`.
+## Estado atual (Fase 1, início)
+
+- Relógio do jogo com pausa e 5 velocidades (espaço e teclas 1–5)
+- Cenário de 1936 com 8 países de exemplo, cada um com um estado (a capital)
+- Fila de construção: fábricas civis, militares e infraestrutura
+- Todas as ações passam por comandos (base para o multiplayer)
+- 15 testes automáticos
+
+Ainda não tem mapa: a tela atual é provisória. Os números em `data/` são valores de exemplo.
+
+## Testes
+
+```
+tests/run.sh                      # usa o comando "godot" do sistema
+GODOT=/caminho/do/godot tests/run.sh
+```
+
+No Windows, sem bash: `godot --headless -s tests/run_tests.gd`
+
+Regras de arquitetura e convenções: veja `CLAUDE.md`. Design completo: `docs/design.md`.

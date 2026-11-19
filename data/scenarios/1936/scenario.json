@@ -1,0 +1,6 @@
+{
+  "name": "Rearmamento",
+  "description": "Janeiro de 1936. O mundo se arma, mas a guerra ainda não começou.",
+  "start": { "year": 1936, "month": 1, "day": 1, "hour": 0 },
+  "seed": 1936
+}

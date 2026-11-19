@@ -1,0 +1,10 @@
+[
+  { "tag": "GER", "name": "Alemanha", "leader": "Adolf Hitler", "ideology": "fascismo", "color": "#5a5a5a", "capital_state": 1 },
+  { "tag": "SOV", "name": "União Soviética", "leader": "Josef Stalin", "ideology": "comunismo", "color": "#8c2a2a", "capital_state": 2 },
+  { "tag": "USA", "name": "Estados Unidos", "leader": "Franklin D. Roosevelt", "ideology": "democracia", "color": "#3a6ea5", "capital_state": 3 },
+  { "tag": "ENG", "name": "Reino Unido", "leader": "Stanley Baldwin", "ideology": "democracia", "color": "#b5463c", "capital_state": 4 },
+  { "tag": "FRA", "name": "França", "leader": "Albert Sarraut", "ideology": "democracia", "color": "#3d5fa8", "capital_state": 5 },
+  { "tag": "ITA", "name": "Itália", "leader": "Benito Mussolini", "ideology": "fascismo", "color": "#4f8a4a", "capital_state": 6 },
+  { "tag": "JAP", "name": "Japão", "leader": "Keisuke Okada", "ideology": "não alinhado", "color": "#c9a53a", "capital_state": 7 },
+  { "tag": "BRA", "name": "Brasil", "leader": "Getúlio Vargas", "ideology": "não alinhado", "color": "#3f9a5c", "capital_state": 8 }
+]

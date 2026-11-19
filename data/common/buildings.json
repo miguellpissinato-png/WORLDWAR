@@ -1,0 +1,12 @@
+{
+  "_nota": "Valores de exemplo para a Fase 1; serão balanceados depois.",
+  "construction": {
+    "output_per_factory": 5.0,
+    "max_factories_per_project": 15
+  },
+  "buildings": {
+    "civilian_factory": { "name": "Fábrica civil", "cost": 8000, "uses_slot": true },
+    "military_factory": { "name": "Fábrica militar", "cost": 6000, "uses_slot": true },
+    "infrastructure": { "name": "Infraestrutura", "cost": 3000, "max_level": 5 }
+  }
+}
