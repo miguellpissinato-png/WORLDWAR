@@ -110,6 +110,10 @@ Documento de design completo: `docs/design.md`.
   Grupos, Recursos (abre tabela com estoque, variação de ontem e preço), sino de Avisos
   (`GameState.events` do jogador + falta de recurso na produção), data, pausa e 5 barras de velocidade.
   As caixas abertas são uma só (`_drop` em `main.gd`); Esc ou clique fora fecham.
+- Menu inicial (`ui/panels/main_menu.gd`, modelo "cartaz central" escolhido pelo Miguel): imagem de
+  cartazes `ui/menu/menu_bg.jpg`, título na fonte de estêncil Big Shoulders (OFL), Single player (vai para a
+  escolha de país), Multiplayer (aviso de "em breve" até existir a rede), Configurações (opções a definir)
+  e Sair (some na versão web). A escolha de país tem "Voltar ao menu".
 - As fontes não têm símbolos como ● ▶ ❚: usar ícones (`ui/icons`) ou `UiStyle.dot()`.
 - Tropas no mapa (`ui/units/`): bonecos 3D numa camada 3D por cima do mapa 2D (`UnitLayer`). Modelos:
   `SoldierModel` (articulado, uniforme de `data/common/uniforms.json`), `TankModel`, `PlaneModel`,
@@ -136,3 +140,6 @@ Todo sistema novo da simulação vem com testes.
 Mecânicas do gênero e fatos históricos podem ser usados. Não copiar nada de Hearts of Iron
 ou de outros jogos: nomes, textos, arte, ícones, valores de arquivos de dados.
 Os números em `data/` hoje são valores de exemplo, não dados históricos conferidos.
+A imagem do menu (`ui/menu/menu_bg.jpg`) foi enviada pelo Miguel: o cartaz da direita (Nações Unidas,
+governo dos EUA, 1943) é domínio público; o soviético da esquerda precisa ser conferido; o do meio
+("D-Day") parece ilustração moderna com autor. Antes de distribuir o jogo, obter permissão ou trocar.

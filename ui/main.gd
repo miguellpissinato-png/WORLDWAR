@@ -23,6 +23,7 @@ var units: UnitLayer
 var _root: Control
 var _game_ui: Control
 var _start: StartScreen
+var _menu: MainMenu
 var _economy: EconomyPanel
 var _market: MarketPanel
 var _intel: IntelPanel
@@ -568,7 +569,21 @@ func _build_ui() -> void:
 	_start = StartScreen.new()
 	_start.setup(self)
 	_start.country_chosen.connect(_start_game)
+	_start.back_requested.connect(func():
+		_start.visible = false
+		_menu.visible = true)
+	_start.visible = false
 	_root.add_child(_start)
+
+	# Menu inicial: a primeira tela do jogo
+	_menu = MainMenu.new()
+	_menu.single_player_chosen.connect(func():
+		_menu.visible = false
+		_start.visible = true)
+	_menu.multiplayer_chosen.connect(func(): _menu.show_dialog("Multiplayer",
+		"Em breve: você e seus amigos escolhem um país cada um, e os países que ninguém escolher "
+		+ "continuam com a IA. O jogo já foi organizado para isso; falta a parte de rede."))
+	_root.add_child(_menu)
 
 
 func _only_one_panel(p: Control) -> void:

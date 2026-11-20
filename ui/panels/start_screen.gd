@@ -4,6 +4,7 @@ extends PanelContainer
 ## depois de começar, os dados dos outros só chegam por relatórios de inteligência.
 
 signal country_chosen(tag: String)
+signal back_requested
 
 var _main
 var _list: ItemList
@@ -35,7 +36,15 @@ func setup(main) -> void:
 	th.add_child(title)
 	var scen := UiStyle.title_label(main.sim.state.scenario_name, 16, UiStyle.MUTED)
 	scen.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	scen.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	th.add_child(scen)
+	var back := Button.new()
+	back.text = "Voltar ao menu"
+	back.icon = UiStyle.icon_texture("back")
+	back.expand_icon = true
+	back.add_theme_constant_override("icon_max_width", 14)
+	back.pressed.connect(func(): back_requested.emit())
+	th.add_child(back)
 	v.add_child(UiStyle.rule())
 	v.add_child(UiStyle.dim_label("1º de janeiro de 1936. Escolha o país que você vai governar. "
 		+ "Esta é a única vez em que você vê a produção de todos os países: no jogo, só a inteligência revela os dados dos outros."))
