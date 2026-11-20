@@ -100,9 +100,17 @@ Documento de design completo: `docs/design.md`.
 ## Interface
 
 - `ui/main.gd` orquestra; painéis em `ui/panels/` (escolha de país, economia, mercado, inteligência,
-  pesquisa, produção); a ficha de equipamento é `ResearchPanel.equipment_sheet()`;
-  estilo comum em `ui/ui_style.gd` (painéis escuros com detalhes dourados `#c9b37a`).
-- A fonte da versão web não tem símbolos como ● ▶ ❚: usar texto ou `ColorRect`.
+  pesquisa, produção, exército); a ficha de equipamento é `ResearchPanel.equipment_sheet()`.
+- Visual "quartel-general" (aprovado pelo Miguel, proposta A do Design): tudo passa por `ui/ui_style.gd`.
+  Painéis `#17191c` com fio dourado `#c9b37a` e sombra; títulos em Oswald maiúsculo espaçado
+  (`title_label`, `section`, `header`); números em Oswald (`number_label`); texto em Inter.
+  Fontes em `ui/fonts/` (OFL, recortadas para latim); ícones de traço brancos em `ui/icons/*.svg`,
+  coloridos com `UiStyle.icon(nome, cor)`. Não criar estilos soltos nos painéis: usar as funções do UiStyle.
+- Barra superior: país (abre ficha), Tesouro (abre detalhe), Fábricas civis|militares, Pesquisa,
+  Grupos, Recursos (abre tabela com estoque, variação de ontem e preço), sino de Avisos
+  (`GameState.events` do jogador + falta de recurso na produção), data, pausa e 5 barras de velocidade.
+  As caixas abertas são uma só (`_drop` em `main.gd`); Esc ou clique fora fecham.
+- As fontes não têm símbolos como ● ▶ ❚: usar ícones (`ui/icons`) ou `UiStyle.dot()`.
 - Tropas no mapa (`ui/units/`): bonecos 3D numa camada 3D por cima do mapa 2D (`UnitLayer`). Modelos:
   `SoldierModel` (articulado, uniforme de `data/common/uniforms.json`), `TankModel`, `PlaneModel`,
   montados com `MeshKit`. Soldado com tamanho fixo no mapa (cabe nos países); veículos em escala de
