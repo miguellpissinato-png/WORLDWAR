@@ -29,6 +29,8 @@ static func load_defs() -> Dictionary:
 	d["intelligence"] = read_json(COMMON_DIR + "/intelligence.json")
 	d["equipment"] = read_json(COMMON_DIR + "/equipment.json").equipment
 	d["research"] = read_json(COMMON_DIR + "/research.json")
+	d["army"] = read_json(COMMON_DIR + "/army.json")
+	d["general_names"] = read_json(COMMON_DIR + "/general_names.json")
 	MapState.extraction_step_share = float(d.extraction.get("step_share", 0.1))
 	return d
 
@@ -126,6 +128,81 @@ static func load_scenario(scenario: String, defs: Dictionary = {}) -> GameState:
 				push_error("Tecnologia %s de research.json não existe" % id)
 			elif not id in country.researched:
 				country.researched.append(id)
+	# Vizinhança por terra (geografia).
+	var adj: Dictionary = read_json(MAP_DIR + "/adjacency.json")
+	for code in adj.get("land", {}):
+		var st: MapState = by_code.get(code)
+		if st == null:
+			continue
+		var ids: Array = []
+		for n in adj.land[code]:
+			if by_code.has(n):
+				ids.append(by_code[n].id)
+		gs.adjacency[st.id] = ids
+
+	_load_armies(gs, defs, read_json(dir + "/armies.json"))
 	for rdef in defs.resources:
 		gs.prices[rdef.id] = MarketSystem.target_price(gs, defs, rdef)
 	return gs
+
+
+## Generais e grupos iniciais. Países sem fuzil próprio recebem o fuzil representante (ver armies.json).
+static func _load_armies(gs: GameState, defs: Dictionary, armies: Dictionary) -> void:
+	if armies == null:
+		return
+	var standin: Dictionary = armies.get("rifle_standin", {})
+	var gd: Dictionary = defs.get("army", {}).get("generals", {})
+	var tags: Array = gs.countries.keys()
+	tags.sort()
+	for tag in tags:
+		var c: Country = gs.countries[tag]
+		if ArmySystem.home_state(gs, tag) == -1:
+			continue
+		var has_rifle := false
+		for eq in ResearchSystem.unlocked_equipment(defs, c):
+			if defs.equipment[eq].category == "rifle":
+				has_rifle = true
+		if not has_rifle:
+			var t: String = standin.get(tag, standin.get("_padrao", ""))
+			if t != "" and not c.has_tech(t):
+				c.researched.append(t)
+		var start: Dictionary = gd.get("start", {})
+		for i in int(start.get(tag, start.get("_padrao", 1))):
+			ArmySystem.new_general(gs, defs, tag, int(gd.get("skill_start_max", 3)))
+		var plan: Dictionary = armies.get(tag, armies.get("_padrao", {}))
+		for regs in plan.get("groups", []):
+			var g: ArmyGroup = null
+			for type in regs:
+				if not c.has_tech("t_" + type):
+					continue
+				_give_for(defs, c, type, 1)
+				if ArmySystem.pick_equipment(defs, c, type).is_empty():
+					continue
+				g = ArmySystem.form_regiment(gs, defs, tag, type, -1 if g == null else g.id)
+		var spare: Dictionary = plan.get("spare", {})
+		for cat in spare:
+			var best := _best_unlocked(defs, c, cat)
+			if best != "":
+				c.equipment[best] = c.equipment_count(best) + float(spare[cat])
+
+
+## Coloca no depósito o equipamento que um regimento precisa (melhor modelo já pesquisado).
+static func _give_for(defs: Dictionary, c: Country, type: String, times: int) -> void:
+	for need in ArmySystem.regiment_def(defs, type).get("needs", []):
+		var best := ""
+		for cat in need.categories:
+			best = _best_unlocked(defs, c, cat)
+			if best != "":
+				break
+		if best != "":
+			c.equipment[best] = c.equipment_count(best) + float(need.qty) * times
+
+
+static func _best_unlocked(defs: Dictionary, c: Country, category: String) -> String:
+	var stat: String = defs.get("army", {}).get("rank_stat", {}).get(category, "soft_attack")
+	var best := ""
+	for eq in ResearchSystem.unlocked_equipment(defs, c):
+		var e: Dictionary = defs.equipment[eq]
+		if e.category == category and (best == "" or float(e.stats.get(stat, 0)) > float(defs.equipment[best].stats.get(stat, 0))):
+			best = eq
+	return best

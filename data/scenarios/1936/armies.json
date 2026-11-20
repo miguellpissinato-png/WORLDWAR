@@ -1,0 +1,17 @@
+{
+  "_nota": "Exército inicial em 1º/01/1936. VALORES DE EXEMPLO, não dados históricos: o tamanho real dos exércitos de 1936 ainda será pesquisado com fonte. Os grupos começam na capital. 'spare' = equipamento extra no depósito, por categoria (vai o melhor modelo pesquisado).",
+  "rifle_standin": {
+    "_nota": "Países sem fuzil próprio nos dados recebem um fuzil representante até termos os modelos de cada país: o Kar98k representa os fuzis Mauser, usados por boa parte dos exércitos da época.",
+    "RUN": "tech_lee_enfield_no4",
+    "EUA": "tech_m1_garand",
+    "_padrao": "tech_kar98k"
+  },
+  "_padrao": {"groups": [["infantaria", "infantaria"]], "spare": {"rifle": 10}},
+  "ALE": {"groups": [["infantaria", "infantaria", "artilharia"], ["tanquistas", "infantaria"]], "spare": {"rifle": 20}},
+  "URS": {"groups": [["infantaria", "infantaria"], ["tanquistas", "infantaria"]], "spare": {"rifle": 20}},
+  "EUA": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
+  "RUN": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
+  "FRA": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
+  "ITA": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
+  "JAP": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}}
+}

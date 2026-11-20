@@ -18,6 +18,13 @@ var _font: Font
 var _cities: Node2D
 
 
+var _world_w := 0.0   # largura do mapa: nomes e capitais são desenhados também nas cópias laterais
+
+
+func _offsets() -> Array:
+	return [0.0] if _world_w <= 0.0 else [-_world_w, 0.0, _world_w]
+
+
 func _ready() -> void:
 	# Fonte em campo de distância (MSDF): continua nítida em qualquer zoom.
 	var base := ThemeDB.fallback_font
@@ -35,6 +42,7 @@ func _ready() -> void:
 
 
 func build(state: GameState, map: MapView) -> void:
+	_world_w = map.map_size.x
 	_labels.clear()
 	_capitals.clear()
 	var by_owner := {}
@@ -173,28 +181,34 @@ func _make_label(text: String, states: Array, map: MapView) -> Dictionary:
 
 
 func _draw() -> void:
-	for l in _labels:
-		var size := int(l.size)
-		for i in l.text.length():
-			var ch: String = l.text[i]
-			var w := _font.get_string_size(ch, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
-			draw_set_transform(l.points[i], l.angles[i])
-			var at := Vector2(-w * 0.5, size * 0.35)
-			draw_char_outline(_font, at, ch, size, maxi(2, size / 7), NAME_OUTLINE)
-			draw_char(_font, at, ch, size, NAME_FILL)
+	for dx in _offsets():
+		for l in _labels:
+			_draw_label(l, Vector2(dx, 0))
 	draw_set_transform(Vector2.ZERO, 0.0)
+
+
+func _draw_label(l: Dictionary, off: Vector2) -> void:
+	var size := int(l.size)
+	for i in l.text.length():
+		var ch: String = l.text[i]
+		var w := _font.get_string_size(ch, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+		draw_set_transform(l.points[i] + off, l.angles[i])
+		var at := Vector2(-w * 0.5, size * 0.35)
+		draw_char_outline(_font, at, ch, size, maxi(2, size / 7), NAME_OUTLINE)
+		draw_char(_font, at, ch, size, NAME_FILL)
 
 
 func _draw_cities() -> void:
 	var s := 1.0 / _zoom
 	var size := int(12)
 	for c in _capitals:
-		_cities.draw_set_transform(c.pos, 0.0, Vector2(s, s))
-		_cities.draw_colored_polygon(_star(5.5), CITY_FILL)
-		_cities.draw_polyline(_star(5.5) + PackedVector2Array([_star(5.5)[0]]), CITY_OUTLINE, 1.0)
-		if _zoom > 1.2 and c.name != "":
-			_cities.draw_string_outline(_font, Vector2(9, 4), c.name, HORIZONTAL_ALIGNMENT_LEFT, -1, size, 3, CITY_OUTLINE)
-			_cities.draw_string(_font, Vector2(9, 4), c.name, HORIZONTAL_ALIGNMENT_LEFT, -1, size, CITY_FILL)
+		for dx in _offsets():
+			_cities.draw_set_transform(c.pos + Vector2(dx, 0), 0.0, Vector2(s, s))
+			_cities.draw_colored_polygon(_star(5.5), CITY_FILL)
+			_cities.draw_polyline(_star(5.5) + PackedVector2Array([_star(5.5)[0]]), CITY_OUTLINE, 1.0)
+			if _zoom > 1.2 and c.name != "":
+				_cities.draw_string_outline(_font, Vector2(9, 4), c.name, HORIZONTAL_ALIGNMENT_LEFT, -1, size, 3, CITY_OUTLINE)
+				_cities.draw_string(_font, Vector2(9, 4), c.name, HORIZONTAL_ALIGNMENT_LEFT, -1, size, CITY_FILL)
 	_cities.draw_set_transform(Vector2.ZERO, 0.0)
 
 

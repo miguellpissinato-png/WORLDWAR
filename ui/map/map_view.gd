@@ -134,6 +134,11 @@ func load_shapes() -> void:
 	_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_sprite.material = _material
 	add_child(_sprite)
+	# O mundo dá a volta: cópias do mapa encostadas à esquerda e à direita (mesma textura e shader).
+	for dx in [-map_size.x, map_size.x]:
+		var copy := _sprite.duplicate() as Sprite2D
+		copy.position.x = dx
+		add_child(copy)
 
 
 ## Atualiza a tabela id -> dono. Chamar quando estados mudarem de dono.
@@ -179,8 +184,14 @@ func set_zoom(zoom: float) -> void:
 	_material.set_shader_parameter("sea_detail", clampf((zoom - 0.5) / 2.0, 0.0, 1.0))
 
 
+## Leva um ponto de qualquer cópia do mapa para o mapa original (o mundo dá a volta em x).
+func wrap_point(point: Vector2) -> Vector2:
+	return Vector2(fposmod(point.x, map_size.x), point.y) if map_size.x > 0 else point
+
+
 ## Estado sob um ponto do mapa (coordenadas locais), ou -1.
 func state_at(point: Vector2) -> int:
+	point = wrap_point(point)
 	var best := -1
 	for sid in _grid.get(_cell(point), []):
 		for pts in _rings[sid]:
@@ -192,6 +203,7 @@ func state_at(point: Vector2) -> int:
 
 ## Zona marítima sob um ponto do mapa, ou -1. Só faz sentido onde não há terra.
 func sea_at(point: Vector2) -> int:
+	point = wrap_point(point)
 	for zid in _sea_grid.get(_cell(point), []):
 		for pts in _sea_rings[zid]:
 			if Geometry2D.is_point_in_polygon(point, pts):

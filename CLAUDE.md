@@ -74,6 +74,18 @@ Documento de design completo: `docs/design.md`.
   Regras em `military_production` de `data/common/buildings.json`.
 - Eventos para o jogador: `GameState.add_event(tags, texto, tipo)`; o tipo vira o prefixo no registro.
 
+## Exército
+
+- `data/common/army.json`: tipos de regimento (equipamento necessário por categoria, marcha em km/dia),
+  limites (regimentos por grupo, grupos por general) e generais. Nomes dos generais (fictícios, decisão
+  do Miguel: nada de generais reais) em `data/common/general_names.json`, sorteados com `GameState.rng`.
+- `ArmyGroup` (regimentos, estado atual, caminho, km andados no trecho) e `General` (ataque, defesa,
+  velocidade 1–5). `ArmySystem`: formar regimento na hora com o melhor equipamento do depósito,
+  dissolver, caminho por terra (Dijkstra em km, só no próprio país por enquanto).
+- `MovementSystem.hourly_update` anda o grupo hora a hora; `MapGeo.km()` dá a distância real.
+  Vizinhança por terra: `data/map/adjacency.json`, gerado por `tools/map/build_adjacency.py`.
+- Exército inicial: `data/scenarios/<ano>/armies.json` (valores de exemplo, marcados).
+
 ## Inteligência
 
 - `data/common/intelligence.json`. Cada país tem espionagem (`intel_offense`) e contraespionagem
@@ -91,6 +103,13 @@ Documento de design completo: `docs/design.md`.
   pesquisa, produção); a ficha de equipamento é `ResearchPanel.equipment_sheet()`;
   estilo comum em `ui/ui_style.gd` (painéis escuros com detalhes dourados `#c9b37a`).
 - A fonte da versão web não tem símbolos como ● ▶ ❚: usar texto ou `ColorRect`.
+- Tropas no mapa (`ui/units/`): bonecos 3D numa camada 3D por cima do mapa 2D (`UnitLayer`). Modelos:
+  `SoldierModel` (articulado, uniforme de `data/common/uniforms.json`), `TankModel`, `PlaneModel`,
+  montados com `MeshKit`. Soldado com tamanho fixo no mapa (cabe nos países); veículos em escala de
+  miniatura (`VEHICLE_SCALE`). O Miguel quer bonecos realistas: os modelos finais virão do Blender.
+- O mundo dá a volta em x: `MapView` desenha cópias do mapa em ±largura, `MapView.wrap_point()` leva
+  pontos para o mapa original e `MapCamera.near()` leva um ponto para a cópia mais perto da câmera.
+  Zoom mínimo calculado (`MapCamera.min_zoom()`) para nunca aparecer faixa cinza fora do mapa.
 
 ## Testes
 

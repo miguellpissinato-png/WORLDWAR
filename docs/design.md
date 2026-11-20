@@ -68,6 +68,15 @@ Critérios de "pronto" por fase:
 - Próximas partes: exército (grupos, até 5 por general, habilidades) e depois movimento, combate de
   vários dias e apoio aéreo de bombardeiros saindo de bases.
 
+## Militar — parte 2: exército (decidido em 19–20/11/2026)
+
+- Regimentos ficam prontos na hora (usam o equipamento do depósito); grupos de até 4 regimentos;
+  generais fictícios comandam até 5 grupos, com ataque, defesa e velocidade.
+- Grupos marcham pelo mapa com tempo real de viagem (km entre estados / km por dia).
+- Visual: bonecos 3D realistas por exército (uniforme, capacete, botas e equipamento da época), que
+  viram para o destino e marcham; seta do caminho no mapa. Tudo em escala que caiba nos países.
+- O mapa dá a volta no mundo (passando do Alasca chega-se à Ásia) e nunca mostra bordas vazias.
+
 ## Multiplayer
 
 Host autoritativo: a simulação roda no host; o outro jogador envia comandos e recebe o estado.

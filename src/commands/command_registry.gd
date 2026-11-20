@@ -18,6 +18,11 @@ const TYPES := {
 	"add_production_line": preload("res://src/commands/add_production_line_command.gd"),
 	"set_line_factories": preload("res://src/commands/set_line_factories_command.gd"),
 	"remove_production_line": preload("res://src/commands/remove_production_line_command.gd"),
+	"form_regiment": preload("res://src/commands/form_regiment_command.gd"),
+	"disband_group": preload("res://src/commands/disband_group_command.gd"),
+	"move_group": preload("res://src/commands/move_group_command.gd"),
+	"recruit_general": preload("res://src/commands/recruit_general_command.gd"),
+	"assign_general": preload("res://src/commands/assign_general_command.gd"),
 }
 
 

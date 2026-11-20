@@ -15,6 +15,7 @@ var _dragging := false
 
 func _ready() -> void:
 	make_current()
+	get_viewport().size_changed.connect(_clamp)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -39,8 +40,15 @@ func _process(delta: float) -> void:
 		_clamp()
 
 
+## Zoom mínimo: o mapa sempre cobre a tela toda na altura (nada de faixa cinza em cima ou embaixo)
+## e a largura visível nunca passa de uma volta ao mundo.
+func min_zoom() -> float:
+	var vp := get_viewport_rect().size
+	return maxf(MIN_ZOOM, maxf(vp.y / map_size.y, vp.x / map_size.x) * 1.001)
+
+
 func set_zoom_level(z: float) -> void:
-	z = clampf(z, MIN_ZOOM, MAX_ZOOM)
+	z = clampf(z, min_zoom(), MAX_ZOOM)
 	zoom = Vector2(z, z)
 	_clamp()
 	zoom_changed.emit(z)
@@ -56,6 +64,15 @@ func _zoom_at(factor: float, screen_pos: Vector2) -> void:
 
 
 func _clamp() -> void:
+	if zoom.x < min_zoom():
+		zoom = Vector2.ONE * min_zoom()
+		zoom_changed.emit(zoom.x)
 	var half := get_viewport_rect().size * 0.5 / zoom.x
-	position.x = clampf(position.x, minf(half.x, map_size.x * 0.5), maxf(map_size.x - half.x, map_size.x * 0.5))
+	# Em x o mundo dá a volta: a câmera fica sempre sobre o mapa original (as cópias cobrem as bordas).
+	position.x = fposmod(position.x, map_size.x)
 	position.y = clampf(position.y, minf(half.y, map_size.y * 0.5), maxf(map_size.y - half.y, map_size.y * 0.5))
+
+
+## Leva um ponto do mapa para a cópia mais perto da câmera (para desenhar tropas e setas).
+func near(p: Vector2) -> Vector2:
+	return Vector2(p.x + roundf((position.x - p.x) / map_size.x) * map_size.x, p.y)

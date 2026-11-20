@@ -18,6 +18,7 @@ var _map_mode := "political"
 var map: MapView
 var labels: MapLabels
 var camera: MapCamera
+var units: UnitLayer
 
 var _root: Control
 var _game_ui: Control
@@ -27,6 +28,7 @@ var _market: MarketPanel
 var _intel: IntelPanel
 var _research: ResearchPanel
 var _production: ProductionPanel
+var _army: ArmyPanel
 var _date_label: Label
 var _pause_button: Button
 var _speed_buttons: Array = []
@@ -64,6 +66,13 @@ func _ready() -> void:
 	add_child(labels)
 	labels.build(sim.state, map)
 
+	units = UnitLayer.new()
+	add_child(units)
+	units.setup(self)
+	units.group_selected.connect(func(_id):
+		_army.refresh()
+		_refresh_group_card())
+
 	camera = MapCamera.new()
 	camera.map_size = map.map_size
 	add_child(camera)
@@ -97,6 +106,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode >= KEY_1 and event.keycode <= KEY_5:
 			_set_speed(event.keycode - KEY_0)
 		elif event.keycode == KEY_ESCAPE:
+			units.select(-1)
 			_on_state_clicked(-1)
 
 
@@ -162,6 +172,8 @@ func _refresh_all() -> void:
 	_intel.refresh()
 	_research.refresh()
 	_production.refresh()
+	_army.refresh()
+	_refresh_group_card()
 	if _map_mode == "resources":
 		_apply_map_mode()
 
@@ -218,8 +230,40 @@ func _on_state_clicked(sid: int) -> void:
 		return
 	selected_state = sid
 	map.select(sid)
+	if sid != -1 and units.selected != -1:
+		units.select(-1)
 	_state_panel.visible = sid != -1
 	_refresh_state_panel()
+
+
+## Cartão do grupo selecionado no mapa (usa o mesmo painel da direita que os estados).
+func _refresh_group_card() -> void:
+	if units == null or _state_panel == null:
+		return
+	var g := sim.state.group(units.selected)
+	if g == null:
+		if selected_state == -1:
+			_state_panel.visible = false
+		return
+	selected_state = -1
+	map.select(-1)
+	_state_panel.visible = true
+	var owner := sim.state.country(g.owner)
+	var t := "[b][font_size=18]%s[/font_size][/b]\n[color=#999]%s[/color]\n" % [g.name, owner.name]
+	var gen := sim.state.general(g.general_id)
+	if gen != null:
+		t += UiStyle.kv("General", "%s  [color=#999](ataque %d, defesa %d, velocidade %d)[/color]" % [gen.name, gen.attack, gen.defense, gen.speed]) + "\n"
+	if g.moving():
+		t += UiStyle.kv("Marchando para", "%s, chega em ~%d dias" % [sim.state.state(g.destination()).name,
+			ceili(ArmySystem.eta_days(sim.state, sim.defs, g))]) + "\n"
+	else:
+		t += UiStyle.kv("Em", sim.state.state(g.state_id).name) + "\n"
+	t += ArmyPanel.summary(sim, g)
+	if g.owner == player_tag:
+		t += "\n\n[color=#999]Clique com o botão direito num estado para mandar marchar.[/color]"
+	_state_info.text = t
+	UiStyle.clear(_build_box)
+	_spy_button.visible = false
 
 
 func _on_state_hovered(sid: int) -> void:
@@ -313,6 +357,7 @@ func _apply_map_mode() -> void:
 
 func _build_ui() -> void:
 	var layer := CanvasLayer.new()
+	layer.layer = 10   # acima da camada 3D das tropas
 	add_child(layer)
 	_root = Control.new()
 	_root.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -343,6 +388,9 @@ func _build_ui() -> void:
 	_production = ProductionPanel.new()
 	_production.setup(self)
 	_game_ui.add_child(_production)
+	_army = ArmyPanel.new()
+	_army.setup(self)
+	_game_ui.add_child(_army)
 	_build_side_panels()
 
 	_hover_label = Label.new()
@@ -363,7 +411,7 @@ func _build_ui() -> void:
 
 
 func _only_one_panel(p: Control) -> void:
-	for other in [_economy, _market, _intel, _research, _production]:
+	for other in [_economy, _market, _intel, _research, _production, _army]:
 		if other != p:
 			other.visible = false
 
@@ -428,7 +476,7 @@ func _build_top_bar() -> void:
 func _build_side_panels() -> void:
 	# Menu lateral: um botão por janela; o botão da janela aberta fica dourado.
 	_panels = {"economy": _economy, "market": _market, "production": _production,
-		"research": _research, "intel": _intel}
+		"research": _research, "army": _army, "intel": _intel}
 	var left := UiStyle.panel()
 	left.position = Vector2(10, 58)
 	left.custom_minimum_size = Vector2(140, 0)
@@ -437,7 +485,7 @@ func _build_side_panels() -> void:
 	lv.add_theme_constant_override("separation", 6)
 	left.add_child(lv)
 	for pair in [["Economia", "economy"], ["Mercado", "market"], ["Produção", "production"],
-			["Pesquisa", "research"], ["Inteligência", "intel"]]:
+			["Pesquisa", "research"], ["Exército", "army"], ["Inteligência", "intel"]]:
 		var b := Button.new()
 		b.text = pair[0]
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT

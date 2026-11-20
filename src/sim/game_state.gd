@@ -14,6 +14,12 @@ var human_tags: Array = []         # países controlados por jogadores (a IA nã
 var operations: Dictionary = {}    # id -> IntelOperation
 var next_operation_id: int = 1
 var events: Array = []             # [{hours, tags, text}] avisos para os países envolvidos
+var groups: Dictionary = {}        # id -> ArmyGroup
+var next_group_id: int = 1
+var group_counters: Dictionary = {} # tag -> quantos grupos o país já criou (para numerar "3º Grupo")
+var generals: Dictionary = {}      # id -> General
+var next_general_id: int = 1
+var adjacency: Dictionary = {}     # id do estado -> [ids vizinhos por terra] (geografia, não muda)
 
 const MAX_EVENTS := 300
 var rng := RandomNumberGenerator.new()   # único gerador aleatório da simulação
@@ -25,6 +31,26 @@ func country(tag: String) -> Country:
 
 func state(id: int) -> MapState:
 	return states.get(id)
+
+
+func group(id: int) -> ArmyGroup:
+	return groups.get(id)
+
+
+func general(id: int) -> General:
+	return generals.get(id)
+
+
+func groups_of(tag: String) -> Array:
+	var out := groups.values().filter(func(g): return g.owner == tag)
+	out.sort_custom(func(a, b): return a.id < b.id)
+	return out
+
+
+func generals_of(tag: String) -> Array:
+	var out := generals.values().filter(func(g): return g.owner == tag)
+	out.sort_custom(func(a, b): return a.id < b.id)
+	return out
 
 
 func states_of(tag: String) -> Array:

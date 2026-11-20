@@ -47,8 +47,12 @@ func make_world() -> Simulation:
 		"military_production": {"efficiency_start": 0.5, "efficiency_gain_per_day": 0.1, "efficiency_max": 1.0,
 			"shortage_floor": 0.25, "max_factories_per_line": 15},
 		"equipment": {
-			"rifle": {"name": "Fuzil", "cost": 1.0, "resources": {"iron": 1.0}},
-			"tank": {"name": "Tanque", "cost": 4.0, "resources": {"iron": 2.0, "oil": 1.0}},
+			"rifle": {"name": "Fuzil", "category": "rifle", "cost": 1.0, "resources": {"iron": 1.0},
+				"stats": {"soft_attack": 3.0}},
+			"rifle_old": {"name": "Fuzil velho", "category": "rifle", "cost": 1.0, "resources": {"iron": 1.0},
+				"stats": {"soft_attack": 2.0}},
+			"tank": {"name": "Tanque", "category": "tank", "cost": 4.0, "resources": {"iron": 2.0, "oil": 1.0},
+				"stats": {"hard_attack": 5.0}},
 		},
 		"research": {
 			"rules": {"slots": 2, "max_years_ahead": 2, "ahead_penalty_per_year": 0.5, "foreign_design_penalty": 0.75},
@@ -61,6 +65,17 @@ func make_world() -> Simulation:
 				"tech_future": {"name": "Futuro", "area": "blindados", "year": 1940, "days": 10, "money_cost": 10, "origin": []},
 			},
 		},
+		"army": {
+			"max_regiments_per_group": 2, "max_groups_per_general": 2,
+			"regiments": {
+				"infantaria": {"name": "Infantaria", "needs": [{"categories": ["rifle"], "qty": 4}], "march_km_day": 24},
+				"tanquistas": {"name": "Blindados", "needs": [{"categories": ["tank"], "qty": 2}], "march_km_day": 48},
+			},
+			"rank_stat": {"rifle": "soft_attack", "tank": "hard_attack"},
+			"movement": {"infrastructure_bonus_per_level": 0.0, "general_speed_bonus_per_level": 0.1},
+			"generals": {"recruit_cost": 300, "skill_start_max": 3},
+		},
+		"general_names": {"pools": {"x": {"first": ["Ana"], "last": ["Silva", "Souza"]}}, "country_pool": {"AAA": "x"}},
 		"market": {"elasticity": 0.5, "min_factor": 0.4, "max_factor": 3.0, "price_speed": 0.05,
 			"max_markup": 0.25, "ai_accept_buy_below": 1.10, "ai_accept_sell_above": 0.95},
 	}
