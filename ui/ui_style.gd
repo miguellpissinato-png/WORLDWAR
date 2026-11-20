@@ -464,6 +464,46 @@ static func dim_label(text: String) -> Label:
 	return l
 
 
+## Bandeira de 1936 do país (ui/flags/<TAG>.svg, gerada por tools/data/gen_flags.py).
+static func flag_texture(tag: String) -> Texture2D:
+	var key := "flag:" + tag
+	if not _icons.has(key):
+		var path := "res://ui/flags/%s.svg" % tag
+		_icons[key] = load(path) if tag != "" and ResourceLoader.exists(path) else null
+	return _icons[key]
+
+
+## Caixa de bandeira: cor do país por baixo (se faltar a imagem) e a bandeira por cima.
+## Trocar o país com set_flag().
+static func flag_box(size: Vector2, frame: bool = true) -> PanelContainer:
+	var p := PanelContainer.new()
+	var sb := box(Color(0, 0, 0, 0), ACCENT if frame else Color(0, 0, 0, 0.6), 2 if frame else 1, 1, 4 if frame else 1)
+	p.add_theme_stylebox_override("panel", sb)
+	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var inner := Control.new()
+	inner.custom_minimum_size = size
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	p.add_child(inner)
+	var c := ColorRect.new()
+	c.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_child(c)
+	var t := TextureRect.new()
+	t.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	t.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	t.stretch_mode = TextureRect.STRETCH_SCALE
+	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_child(t)
+	return p
+
+
+static func set_flag(fbox: PanelContainer, tag: String, color: Color) -> void:
+	var inner := fbox.get_child(0)
+	inner.get_child(0).color = color
+	inner.get_child(1).texture = flag_texture(tag)
+
+
 ## Bandeira (cor do país) com moldura dourada.
 static func flag(color: Color, size: Vector2 = Vector2(18, 12), frame: bool = false) -> Control:
 	var f := ColorRect.new()

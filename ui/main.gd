@@ -35,7 +35,7 @@ var _date_sub: Label
 var _date_box: PanelContainer
 var _pause_button: Button
 var _speed_bars: Array = []   # ColorRect de cada barrinha de velocidade
-var _flag: ColorRect
+var _flag: PanelContainer
 var _country_label: Label
 var _peace_label: Label
 var _nation_button: Button
@@ -54,7 +54,7 @@ var _stock_delta := {}        # recurso -> variação do estoque no último dia
 var _map_mode_buttons := {}
 var _state_title: Label
 var _state_sub: Label
-var _state_flag: ColorRect
+var _state_flag: PanelContainer
 var _nav_buttons := {}     # id -> Button do menu lateral
 var _panels := {}          # id -> janela
 var _queue_box: VBoxContainer
@@ -158,9 +158,10 @@ func _start_game(tag: String) -> void:
 	submit(ClaimCountryCommand.create(tag))
 	started = true
 	_start.visible = false
+	_menu.visible = false
 	_game_ui.visible = true
 	var c := sim.state.country(tag)
-	_flag.color = c.color
+	UiStyle.set_flag(_flag, tag, c.color)
 	_country_label.text = c.name.to_upper()
 	for r in sim.defs.resources:
 		_prev_stock[r.id] = c.stock(r.id)
@@ -396,7 +397,7 @@ func _refresh_group_card() -> void:
 	map.select(-1)
 	_state_panel.visible = true
 	var owner := sim.state.country(g.owner)
-	_set_card_title(g.name, owner.name, owner.color)
+	_set_card_title(g.name, owner.name, g.owner)
 	var t := ""
 	var gen := sim.state.general(g.general_id)
 	if gen != null:
@@ -414,10 +415,10 @@ func _refresh_group_card() -> void:
 	_spy_button.visible = false
 
 
-func _set_card_title(title: String, sub: String, color: Color) -> void:
+func _set_card_title(title: String, sub: String, tag: String) -> void:
 	_state_title.text = title.to_upper()
 	_state_sub.text = sub
-	_state_flag.color = color
+	UiStyle.set_flag(_state_flag, tag, sim.state.country(tag).color)
 
 
 func _on_state_hovered(sid: int) -> void:
@@ -441,7 +442,7 @@ func _refresh_state_panel() -> void:
 	var s := sim.state.state(selected_state)
 	var owner := sim.state.country(s.owner)
 	var mine := s.owner == player_tag
-	_set_card_title(s.name, "%s · %s km²" % [owner.name, UiStyle.num(s.area_km2)], owner.color)
+	_set_card_title(s.name, "%s · %s km²" % [owner.name, UiStyle.num(s.area_km2)], s.owner)
 	var st := ""
 	if mine:
 		st += UiStyle.kv("Fábricas", "%d de %d vagas" % [s.level("factory"), s.building_slots])
@@ -579,7 +580,8 @@ func _build_ui() -> void:
 	_menu = MainMenu.new()
 	_menu.single_player_chosen.connect(func():
 		_menu.visible = false
-		_start.visible = true)
+		_start.visible = true
+		_start.select(_start._selected if _start._selected != "" else "BRA"))
 	_menu.multiplayer_chosen.connect(func(): _menu.show_dialog("Multiplayer",
 		"Em breve: você e seus amigos escolhem um país cada um, e os países que ninguém escolher "
 		+ "continuam com a IA. O jogo já foi organizado para isso; falta a parte de rede."))
@@ -625,9 +627,8 @@ func _build_top_bar() -> void:
 	nh.set_anchors_preset(Control.PRESET_FULL_RECT)
 	nh.offset_left = 6
 	_nation_button.add_child(nh)
-	var fl := UiStyle.flag(Color.GRAY, Vector2(42, 28), true)
-	_flag = fl.get_child(0)
-	nh.add_child(fl)
+	_flag = UiStyle.flag_box(Vector2(42, 28), true)
+	nh.add_child(_flag)
 	var nv := VBoxContainer.new()
 	nv.alignment = BoxContainer.ALIGNMENT_CENTER
 	nv.add_theme_constant_override("separation", 2)
@@ -1048,9 +1049,8 @@ func _build_side_panels() -> void:
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", 10)
 	rv.add_child(head)
-	var fl := UiStyle.flag(Color.GRAY, Vector2(30, 20), true)
-	_state_flag = fl.get_child(0)
-	head.add_child(fl)
+	_state_flag = UiStyle.flag_box(Vector2(30, 20), true)
+	head.add_child(_state_flag)
 	var hv := VBoxContainer.new()
 	hv.add_theme_constant_override("separation", 0)
 	hv.size_flags_horizontal = Control.SIZE_EXPAND_FILL

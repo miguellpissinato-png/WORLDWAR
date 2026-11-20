@@ -113,7 +113,13 @@ Documento de design completo: `docs/design.md`.
 - Menu inicial (`ui/panels/main_menu.gd`, modelo "cartaz central" escolhido pelo Miguel): imagem de
   cartazes `ui/menu/menu_bg.jpg`, título na fonte de estêncil Big Shoulders (OFL), Single player (vai para a
   escolha de país), Multiplayer (aviso de "em breve" até existir a rede), Configurações (opções a definir)
-  e Sair (some na versão web). A escolha de país tem "Voltar ao menu".
+  e Sair (some na versão web).
+- Escolha de país (`ui/panels/start_screen.gd`): lista com bandeiras (grandes potências primeiro, nomes
+  ordenados sem acento), ficha com placas de números e recursos com % da produção mundial, e
+  "Ver no mapa" (destaca o país, voa a câmera; clicar em outro país troca).
+- Bandeiras de 1936: `ui/flags/<TAG>.svg`, geradas por `tools/data/gen_flags.py` (não editar à mão);
+  decisões e fontes em `docs/fontes-bandeiras.md` (Alemanha sem suástica, Lei 7.716/89).
+  Na interface: `UiStyle.flag_box()` + `UiStyle.set_flag(caixa, tag, cor)`.
 - As fontes não têm símbolos como ● ▶ ❚: usar ícones (`ui/icons`) ou `UiStyle.dot()`.
 - Tropas no mapa (`ui/units/`): bonecos 3D numa camada 3D por cima do mapa 2D (`UnitLayer`). Modelos:
   `SoldierModel` (articulado, uniforme de `data/common/uniforms.json`), `TankModel`, `PlaneModel`,
