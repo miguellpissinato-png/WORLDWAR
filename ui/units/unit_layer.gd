@@ -17,8 +17,9 @@ const MIN_PX := 14.0
 const MAX_PX := 72.0
 const MIN_ZOOM_ALL := 0.8         # abaixo desse zoom só os grupos do jogador aparecem
 ## Veículos em escala de miniatura: em proporção real um tanque teria 3x a altura do soldado e um avião
-## 6x, e não caberiam nos países menores. Por isso eles são reduzidos (o tanque fica ~2x o soldado).
-const VEHICLE_SCALE := 0.55
+## 6x, e não caberiam nos países menores. Por isso são reduzidos: o tanque fica do comprimento da
+## altura do soldado e mais baixo que ele (pedido do Miguel: veículos não podem dominar o mapa).
+const VEHICLE_SCALE := 0.32
 const SAME_AS := {"CAN": "RUN", "AUS": "RUN", "NZE": "RUN", "AFS": "RUN", "MAN": "JAP", "BEL": "FRA"}
 
 var selected := -1
@@ -171,7 +172,7 @@ func _make_model(g: ArmyGroup, has_tank: bool) -> Dictionary:
 	if has_tank:
 		tank = TankModel.create(str(u.get("tank", "generico")), Color(u.get("vehicle", "#5a5c45")), str(u.get("marking", "")))
 		tank.scale = Vector3.ONE * VEHICLE_SCALE
-		tank.position = Vector3(1.7, 0, -0.9)
+		tank.position = Vector3(1.05, 0, -0.45)
 		holder.add_child(tank)
 	# Parado, o boneco olha um pouco de lado para a câmera.
 	return {"holder": holder, "soldier": soldier, "tank": tank, "has_tank": has_tank, "yaw": 0.4}
