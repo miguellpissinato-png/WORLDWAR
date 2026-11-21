@@ -13,10 +13,12 @@ uniform sampler2D land_noise : repeat_enable, filter_linear;
 uniform sampler2D detail_noise : repeat_enable, filter_linear;
 uniform sampler2D sea_noise : repeat_enable, filter_linear;
 uniform sampler2D depth_tex : filter_linear;
+uniform sampler2D terrain_tex : filter_linear_mipmap;   // relevo, solo, neve (RGB) e rios (A = 1 - rio)
 uniform vec2 tex_size;               // tamanho da imagem de IDs, em texels
 uniform float texels_per_px = 1.0;   // quantos texels cabem em 1 pixel da tela (muda com o zoom)
 uniform float state_border_alpha = 0.35;
 uniform float sea_detail = 0.5;      // 0 = mapa afastado, 1 = bem perto
+uniform float terrain_detail = 0.0;  // 0 = vista política (longe), 1 = terreno real (perto)
 
 varying vec2 world;
 
@@ -120,6 +122,15 @@ void fragment() {
 
 		vec3 owner = owner_color(id).rgb;
 		vec3 col = mix(terrain, owner, 0.62) * (0.8 + 0.4 * relief);
+		if (terrain_detail > 0.0) {
+			// De perto: o terreno real (serras, campos, desertos, neve) com a cor do país por cima, fraca.
+			vec4 tr = texture(terrain_tex, UV);
+			float lum = dot(tr.rgb, vec3(0.333));
+			float snow = smoothstep(0.72, 0.88, lum);
+			vec3 near = mix(tr.rgb, owner, 0.34 * (1.0 - snow));
+			near = mix(near, vec3(0.22, 0.38, 0.52), (1.0 - tr.a) * 0.9);   // rios
+			col = mix(col, near, terrain_detail);
+		}
 		col = mix(col, owner * 1.35 + 0.08, clamp(glow, 0.0, 0.55));   // faixa clara junto à fronteira
 		if (state_edge) col = mix(col, col * 0.55, state_border_alpha);
 		if (country_edge) col = owner * 0.45;

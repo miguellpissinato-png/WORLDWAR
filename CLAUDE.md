@@ -40,6 +40,9 @@ Documento de design completo: `docs/design.md`.
   não editar à mão. O id de cada estado depende da ordem dos códigos: use sempre o `code` nos dados.
 - Donos por cenário: `data/scenarios/<ano>/owners.json`. Capitais e construções iniciais usam o `code`.
 - Na imagem de IDs, azul = 255 marca zona marítima e azul = 0 marca estado de terra.
+- Terreno real (`data/map/terrain.webp`, de `tools/map/build_terrain.py`; fontes em `docs/fontes-terreno-e-sons.md`):
+  relevo, solo, neve e lagos no RGB, rios no alfa (255 - rio). O shader mistura pelo `terrain_detail`
+  (`MapView.TERRAIN_ZOOM_FROM`/`FULL`): de longe vista política, de perto o terreno com a cor do país fraca.
 - O mapa é pintado por um shader que lê uma imagem de IDs; mudar o dono de um estado = chamar
   `MapView.color_by_owner()` de novo (não precisa redesenhar polígonos).
 
@@ -100,6 +103,9 @@ Documento de design completo: `docs/design.md`.
   general, bônus de defesa) e um pouco de equipamento. Lado com todos abaixo de `break_org` perde: defensor
   recua para vizinho amigo (sem saída = destruído); atacante desiste. Fora de batalha a organização volta.
   `GameState.battles` (estado -> atacantes/defensores) é refeito a cada hora.
+- Efeitos de batalha (`ui/units/battle_fx.gd`, filho do `UnitLayer`): clarões, traçantes, explosões com fumaça
+  e sons (`Audio.play_sfx`, barramento "Efeitos", volume nas configurações). Sorteio próprio, fora da simulação;
+  sons em `audio/sfx/`, sintetizados por `tools/audio/gen_sfx.py`.
 - Ocupação: `MapState.controller` ("" = o dono); `control()` / `occupied()`; `GameState.set_control()`.
   Entrar em estado de inimigo em guerra ocupa; entrar num estado próprio ocupado liberta. `states_of()` usa
   quem controla (o ocupante usa fábricas e recursos). Mapa pinta pelo controle (`control_version`).
@@ -139,7 +145,7 @@ Documento de design completo: `docs/design.md`.
 - Salvar/carregar (`src/sim/save_game.gd`): o arquivo guarda cenário + diário de comandos (`Simulation.journal`);
   carregar refaz a partida hora a hora (determinismo). Ao carregar, `SaveGame.pending` + `reload_current_scene()`.
   Cerca de 11 s por ano de jogo; se ficar lento demais, trocar por uma foto do estado.
-- Configurações (`ui/panels/settings_panel.gd`), abas (por enquanto só Áudio: volume geral e música, 0–100).
+- Configurações (`ui/panels/settings_panel.gd`), abas (por enquanto só Áudio: volume geral, música e efeitos, 0–100).
   Áudio no autoload `Audio` (`ui/audio/audio_manager.gd`): barramento "Musica", volumes em `user://settings.cfg`,
   músicas de `data/common/music.json` (`audio/music/`) tocando em sequência; música começa em 50%.
 - Desempenho: `GameState.states_of()` usa um índice por dono (refeito a cada hora e depois de cada comando);

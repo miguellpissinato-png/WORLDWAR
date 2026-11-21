@@ -15,6 +15,10 @@ signal sea_hovered(zone_id: int)   # -1 quando o mouse sai do mar
 const SHAPES_PATH := "res://data/map/shapes.json"
 const SEA_SHAPES_PATH := "res://data/map/sea_shapes.json"
 const DEPTH_PATH := "res://data/map/sea_depth.png"
+const TERRAIN_PATH := "res://data/map/terrain.webp"   # gerado por tools/map/build_terrain.py
+## Zoom em que o terreno real começa a aparecer e em que já aparece inteiro.
+const TERRAIN_ZOOM_FROM := 1.6
+const TERRAIN_ZOOM_FULL := 3.2
 const LOOKUP_WIDTH := 4096
 const CELL := 40.0         # tamanho da célula da grade de busca (clique)
 const GAP_FILL := 0.8      # quanto expandir os contornos na passada que tapa frestas
@@ -126,6 +130,7 @@ func load_shapes() -> void:
 	_material.set_shader_parameter("detail_noise", _noise(11, 0.05, 4))
 	_material.set_shader_parameter("sea_noise", _noise(23, 0.008, 5))
 	_material.set_shader_parameter("depth_tex", load(DEPTH_PATH))
+	_material.set_shader_parameter("terrain_tex", load(TERRAIN_PATH))
 
 	_sprite = Sprite2D.new()
 	_sprite.texture = _id_viewport.get_texture()
@@ -185,6 +190,7 @@ func set_zoom(zoom: float) -> void:
 	# Detalhes do mar (contraste da profundidade, linhas das zonas, curva da plataforma)
 	# aparecem aos poucos conforme o zoom aumenta.
 	_material.set_shader_parameter("sea_detail", clampf((zoom - 0.5) / 2.0, 0.0, 1.0))
+	_material.set_shader_parameter("terrain_detail", smoothstep(TERRAIN_ZOOM_FROM, TERRAIN_ZOOM_FULL, zoom))
 
 
 ## Leva um ponto de qualquer cópia do mapa para o mapa original (o mundo dá a volta em x).

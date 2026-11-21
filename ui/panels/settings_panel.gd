@@ -72,6 +72,7 @@ func _build_audio() -> Control:
 	v.add_child(pad)
 	v.add_child(_slider_row("master", "volume", "Volume geral", Audio.master_volume, Audio.set_master))
 	v.add_child(_slider_row("music", "music", "Música", Audio.music_volume, Audio.set_music))
+	v.add_child(_slider_row("effects", "volume", "Efeitos (batalha)", Audio.effects_volume, Audio.set_effects))
 	var hint := UiStyle.small_label("Para desligar a música, deixe o volume dela em 0.", 12)
 	v.add_child(hint)
 	return v
@@ -110,6 +111,8 @@ func open() -> void:
 	_sliders.music.set_value_no_signal(Audio.music_volume)
 	_value_labels.master.text = "%d%%" % int(Audio.master_volume)
 	_value_labels.music.text = "%d%%" % int(Audio.music_volume)
+	_sliders.effects.set_value_no_signal(Audio.effects_volume)
+	_value_labels.effects.text = "%d%%" % int(Audio.effects_volume)
 	visible = true
 
 

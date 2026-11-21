@@ -6,5 +6,6 @@
     {"file": "res://audio/music/rising_dominion.mp3", "title": "Rising Dominion", "original": "cscprod-rising-dominion-275776.mp3"}
   ],
   "default_master": 100,
-  "default_music": 50
+  "default_music": 50,
+  "default_effects": 70
 }

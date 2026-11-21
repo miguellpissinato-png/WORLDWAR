@@ -38,6 +38,9 @@ var _right_down := Vector2.INF
 func setup(main) -> void:
 	_main = main
 	_uniforms = ScenarioLoader.read_json("res://data/common/uniforms.json")
+	var fx := BattleFx.new()   # explosões, tiros e sons das batalhas (desenhados por cima das marcas)
+	fx.setup(main)
+	add_child(fx)
 	var layer := CanvasLayer.new()
 	layer.layer = 1
 	add_child(layer)

@@ -4,9 +4,16 @@ extends Node
 
 const SETTINGS_PATH := "user://settings.cfg"
 const MUSIC_BUS := "Musica"
+const SFX_BUS := "Efeitos"
+const SFX_DIR := "res://audio/sfx/"   # gerados por tools/audio/gen_sfx.py
+const SFX_VOICES := 10
 
 var master_volume := 100.0   # 0–100
 var music_volume := 50.0     # 0–100
+var effects_volume := 70.0   # 0–100
+var _sfx: Dictionary = {}    # nome -> AudioStream
+var _voices: Array = []
+var _next_voice := 0
 
 var _player: AudioStreamPlayer
 var _tracks: Array = []
@@ -15,11 +22,12 @@ var _index := -1
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	if AudioServer.get_bus_index(MUSIC_BUS) == -1:
-		AudioServer.add_bus()
-		var i := AudioServer.bus_count - 1
-		AudioServer.set_bus_name(i, MUSIC_BUS)
-		AudioServer.set_bus_send(i, "Master")
+	for bus in [MUSIC_BUS, SFX_BUS]:
+		if AudioServer.get_bus_index(bus) == -1:
+			AudioServer.add_bus()
+			var i := AudioServer.bus_count - 1
+			AudioServer.set_bus_name(i, bus)
+			AudioServer.set_bus_send(i, "Master")
 	var info: Dictionary = {}
 	var f := FileAccess.open("res://data/common/music.json", FileAccess.READ)
 	if f != null:
@@ -27,6 +35,16 @@ func _ready() -> void:
 	_tracks = info.get("tracks", [])
 	master_volume = float(info.get("default_master", 100))
 	music_volume = float(info.get("default_music", 50))
+	effects_volume = float(info.get("default_effects", 70))
+	for n in ["tiro_1", "tiro_2", "tiro_3", "rajada_1", "rajada_2", "explosao_1", "explosao_2", "explosao_3"]:
+		var s = load(SFX_DIR + n + ".ogg")
+		if s != null:
+			_sfx[n] = s
+	for i in SFX_VOICES:
+		var p := AudioStreamPlayer.new()
+		p.bus = SFX_BUS
+		add_child(p)
+		_voices.append(p)
 	_load_settings()
 	_apply_volumes()
 	_player = AudioStreamPlayer.new()
@@ -71,6 +89,25 @@ func set_master(v: float) -> void:
 	_save_settings()
 
 
+## Toca um efeito (ex.: "explosao_2"), com volume extra em dB (negativo = mais longe).
+## Usa poucas vozes em rodízio para não empilhar sons demais.
+func play_sfx(name: String, volume_db: float = 0.0, pitch: float = 1.0) -> void:
+	if effects_volume <= 0.0 or not _sfx.has(name) or _voices.is_empty():
+		return
+	var p: AudioStreamPlayer = _voices[_next_voice]
+	_next_voice = (_next_voice + 1) % _voices.size()
+	p.stream = _sfx[name]
+	p.volume_db = volume_db
+	p.pitch_scale = pitch
+	p.play()
+
+
+func set_effects(v: float) -> void:
+	effects_volume = clampf(v, 0, 100)
+	_apply_volumes()
+	_save_settings()
+
+
 func set_music(v: float) -> void:
 	music_volume = clampf(v, 0, 100)
 	_apply_volumes()
@@ -80,6 +117,7 @@ func set_music(v: float) -> void:
 func _apply_volumes() -> void:
 	_set_bus(0, master_volume)
 	_set_bus(AudioServer.get_bus_index(MUSIC_BUS), music_volume)
+	_set_bus(AudioServer.get_bus_index(SFX_BUS), effects_volume)
 
 
 func _set_bus(i: int, v: float) -> void:
@@ -94,6 +132,7 @@ func _load_settings() -> void:
 	if cfg.load(SETTINGS_PATH) == OK:
 		master_volume = float(cfg.get_value("audio", "master", master_volume))
 		music_volume = float(cfg.get_value("audio", "music", music_volume))
+		effects_volume = float(cfg.get_value("audio", "effects", effects_volume))
 
 
 func _save_settings() -> void:
@@ -101,4 +140,5 @@ func _save_settings() -> void:
 	cfg.load(SETTINGS_PATH)
 	cfg.set_value("audio", "master", master_volume)
 	cfg.set_value("audio", "music", music_volume)
+	cfg.set_value("audio", "effects", effects_volume)
 	cfg.save(SETTINGS_PATH)
