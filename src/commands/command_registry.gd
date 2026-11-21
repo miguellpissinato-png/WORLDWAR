@@ -26,6 +26,8 @@ const TYPES := {
 	"justify_war": preload("res://src/commands/justify_war_command.gd"),
 	"declare_war": preload("res://src/commands/declare_war_command.gd"),
 	"set_objectives": preload("res://src/commands/set_objectives_command.gd"),
+	"join_faction": preload("res://src/commands/join_faction_command.gd"),
+	"leave_faction": preload("res://src/commands/leave_faction_command.gd"),
 }
 
 

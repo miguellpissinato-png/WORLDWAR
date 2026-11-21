@@ -75,4 +75,8 @@ static func daily_update(state: GameState, defs: Dictionary) -> void:
 			var obj := find(defs, state.objectives[tag])
 			state.add_event(state.countries.keys(), "%s cumpriu o objetivo \"%s\" e venceu a guerra." % [
 				state.country(tag).name, obj.get("name", "")], "Vitória")
+			var c := state.country(tag)
+			state.add_news("Vitória %s!" % NewsText.of(c.name), "O objetivo \"%s\" foi cumprido." % obj.get("name", ""),
+				"%s alcançou o que buscava desde o começo da guerra e dita agora o rumo do mundo." % NewsText.the(c.name, true),
+				c.capital_state, [tag], "Vitória")
 			return

@@ -33,6 +33,7 @@ static func load_defs() -> Dictionary:
 	d["general_names"] = read_json(COMMON_DIR + "/general_names.json")
 	d["diplomacy"] = read_json(COMMON_DIR + "/diplomacy.json")
 	d["objectives"] = read_json(COMMON_DIR + "/objectives.json")
+	d["ai"] = read_json(COMMON_DIR + "/ai.json")
 	MapState.extraction_step_share = float(d.extraction.get("step_share", 0.1))
 	return d
 
@@ -134,15 +135,31 @@ static func load_scenario(scenario: String, defs: Dictionary = {}) -> GameState:
 				country.researched.append(id)
 	# Vizinhança por terra (geografia).
 	var adj: Dictionary = read_json(MAP_DIR + "/adjacency.json")
-	for code in adj.get("land", {}):
-		var st: MapState = by_code.get(code)
-		if st == null:
+	# Travessias curtas de mar (estreitos) contam como vizinhança: tropas atravessam.
+	var links: Array = []
+	for section in ["land", "strait"]:
+		for code in adj.get(section, {}):
+			for n in adj[section][code]:
+				links.append([code, n])
+	for c in read_json(COMMON_DIR + "/sea_crossings.json").get("crossings", []):
+		links.append([c[0], c[1]])
+		links.append([c[1], c[0]])
+	for l in links:
+		var a: MapState = by_code.get(l[0])
+		var b: MapState = by_code.get(l[1])
+		if a == null or b == null:
 			continue
-		var ids: Array = []
-		for n in adj.land[code]:
-			if by_code.has(n):
-				ids.append(by_code[n].id)
-		gs.adjacency[st.id] = ids
+		var ids: Array = gs.adjacency.get(a.id, [])
+		if not b.id in ids:
+			ids.append(b.id)
+		gs.adjacency[a.id] = ids
+		var back: Array = gs.adjacency.get(b.id, [])
+		if not a.id in back:
+			back.append(a.id)
+		gs.adjacency[b.id] = back
+	if FileAccess.file_exists(dir + "/access.json"):
+		for pair in read_json(dir + "/access.json").get("pairs", []):
+			gs.access.append([pair[0], pair[1]])
 
 	_load_armies(gs, defs, read_json(dir + "/armies.json"))
 	for rdef in defs.resources:

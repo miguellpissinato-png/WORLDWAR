@@ -1,0 +1,13 @@
+{
+  "_nota": "Travessias de mar curtas feitas à mão (geografia), além dos estreitos gerados em data/map/adjacency.json. Pares de code de estado; valem nos dois sentidos.",
+  "crossings": [
+    ["GBR-R-South East", "FRA-5334"],
+    ["JPN-1829", "KOR-2507"],
+    ["ITA-5407", "ALB-1504"]
+  ],
+  "_fontes": {
+    "GBR-R-South East/FRA-5334": "Estreito de Dover (Passo de Calais), cerca de 33 km",
+    "JPN-1829/KOR-2507": "Estreito da Coreia (Tsushima), cerca de 200 km entre Fukuoka e Busan",
+    "ITA-5407/ALB-1504": "Canal de Otranto, cerca de 72 km"
+  }
+}

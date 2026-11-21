@@ -1,0 +1,44 @@
+{
+  "_nota": "Comportamento dos países controlados pelo computador (valores de jogo). Cada país pensa a cada think_every_days dias (escalonado). war_plans e factions seguem fatos históricos (datas aproximadas): a IA só executa quando o país não é de um jogador e tem força para isso.",
+  "think_every_days": 5,
+  "build": {"keep_money": 150, "max_queue": 2, "extraction_every": 3},
+  "civil_share": {"peace": 0.7, "war": 0.45, "planning": 0.55},
+  "army": {"base_groups": 1, "factories_per_group": 2, "regiments_per_think": 3, "max_groups": 24, "types": ["tanquistas", "artilharia", "infantaria"], "line_factories": 6},
+  "trade": {"sell_above": 120, "sell_share": 0.25, "max_offers": 2},
+  "war": {"attack_groups_share": 0.8},
+  "war_plans": [
+    {"tag": "ITA", "target": "ETI", "from": "1936-01"},
+    {"tag": "JAP", "target": "CHI", "from": "1937-07"},
+    {"tag": "ALE", "target": "AUT", "from": "1938-02"},
+    {"tag": "ALE", "target": "TCH", "from": "1938-09"},
+    {"tag": "ITA", "target": "ALB", "from": "1939-03"},
+    {"tag": "ALE", "target": "POL", "from": "1939-08"},
+    {"tag": "URS", "target": "POL", "from": "1939-09"},
+    {"tag": "RUN", "target": "ALE", "from": "1939-09", "if_at_war": ["ALE", "POL"]},
+    {"tag": "FRA", "target": "ALE", "from": "1939-09", "if_at_war": ["ALE", "POL"]},
+    {"tag": "URS", "target": "FIN", "from": "1939-11"},
+    {"tag": "ALE", "target": "DIN", "from": "1940-04"},
+    {"tag": "ALE", "target": "NOR", "from": "1940-04"},
+    {"tag": "ALE", "target": "HOL", "from": "1940-05"},
+    {"tag": "ALE", "target": "BEL", "from": "1940-05"},
+    {"tag": "ALE", "target": "FRA", "from": "1940-05"},
+    {"tag": "URS", "target": "EST", "from": "1940-06"},
+    {"tag": "URS", "target": "LET", "from": "1940-06"},
+    {"tag": "URS", "target": "LIT", "from": "1940-06"},
+    {"tag": "ITA", "target": "GRE", "from": "1940-10"},
+    {"tag": "ALE", "target": "IUG", "from": "1941-04"},
+    {"tag": "ALE", "target": "URS", "from": "1941-06"},
+    {"tag": "JAP", "target": "EUA", "from": "1941-12"}
+  ],
+  "factions": [
+    {"id": "eixo", "name": "Eixo", "leader": "ALE", "from": "1936-10", "members": [
+      {"tag": "ITA", "from": "1936-10"}, {"tag": "JAP", "from": "1940-09"}, {"tag": "HUN", "from": "1940-11"},
+      {"tag": "ROM", "from": "1940-11"}, {"tag": "BUL", "from": "1941-03"}]},
+    {"id": "aliados", "name": "Aliados", "leader": "RUN", "from": "1939-03", "members": [
+      {"tag": "FRA", "from": "1939-03"}, {"tag": "POL", "from": "1939-08"}, {"tag": "CAN", "from": "1939-09"},
+      {"tag": "AUS", "from": "1939-09"}, {"tag": "NZE", "from": "1939-09"}, {"tag": "AFS", "from": "1939-09"},
+      {"tag": "IND", "from": "1939-09"}, {"tag": "EUA", "from": "1941-12", "if_at_war_with": "eixo"},
+      {"tag": "URS", "from": "1941-06", "if_at_war_with": "eixo"}, {"tag": "BRA", "from": "1942-08"}]},
+    {"id": "comintern", "name": "Comintern", "leader": "URS", "from": "1936-01", "members": [{"tag": "MON", "from": "1936-01"}, {"tag": "TUV", "from": "1936-01"}]}
+  ]
+}

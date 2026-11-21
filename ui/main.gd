@@ -47,6 +47,11 @@ var _res_cells := {}          # recurso -> {box, value}
 var _alert_button: Button
 var _alert_badge: PanelContainer
 var _alert_count: Label
+var _newspaper: Newspaper
+var _news_read := 0          # notícias já vistas no jornal (contador de GameState.news_count)
+var _news_toasted := 0
+var _extra: PanelContainer   # aviso "EXTRA!" de notícia grande
+var _extra_timer := 0.0
 var _events_read := 0         # avisos do jogador já vistos no sino
 var _drop: PanelContainer     # caixa que abre embaixo da barra (recursos, tesouro, avisos...)
 var _drop_kind := ""
@@ -116,6 +121,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _extra != null:
+		_extra_timer -= delta
+		if _extra_timer <= 0.0:
+			_hide_extra()
 	if started and _briefing_pending and sim.state.objectives.has(player_tag):
 		_briefing_pending = false
 		_briefing.open_briefing(player_tag, not mp, mp)
@@ -298,6 +307,8 @@ func _enter_game(tag: String) -> void:
 	camera.set_zoom_level(1.6)
 	_events_seen = sim.state.events.size()
 	_events_read = _events_seen
+	_news_read = sim.state.news_count
+	_news_toasted = _news_read
 	write_log("Você governa %s. Boa sorte." % c.name)
 	_refresh_all()
 
@@ -375,6 +386,7 @@ func _on_day() -> void:
 		_events_seen += 1
 		if player_tag in e.tags:
 			write_log("[color=#e0c070]%s:[/color] %s" % [e.get("kind", "Inteligência"), e.text])
+	_check_extra()
 	_refresh_all()
 
 
@@ -431,10 +443,10 @@ func _refresh_top_bar() -> void:
 	_peace_label.text = "Em paz" if enemies.is_empty() else ("Em guerra" if enemies.size() == 1 else "Em %d guerras" % enemies.size())
 	_peace_label.add_theme_color_override("font_color", UiStyle.MUTED if enemies.is_empty() else UiStyle.BAD)
 	_peace_dot.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.GOOD if enemies.is_empty() else UiStyle.BAD, Color(0, 0, 0, 0), 0, 7))
-	var unread := _unread_events().size() + _shortages().size()
+	var unread := _unread_events().size() + _shortages().size() + (sim.state.news_count - _news_read)
 	_alert_badge.visible = unread > 0
-	_alert_count.text = str(unread)
-	_alert_button.tooltip_text = "Avisos" if unread == 0 else "Avisos: %d novos" % unread
+	_alert_count.text = str(unread) if unread < 100 else "99+"
+	_alert_button.tooltip_text = "Jornal e despachos" if unread == 0 else "Jornal: %d novidades" % unread
 	if _drop_kind != "":
 		_fill_drop()
 
@@ -926,6 +938,10 @@ func _build_ui() -> void:
 		Net.leave()
 		get_tree().reload_current_scene())
 	_mp_screen.setup(self)
+	_newspaper = Newspaper.new()
+	_root.add_child(_newspaper)
+	_newspaper.setup(self)
+	_newspaper.closed.connect(_refresh_top_bar)
 	_briefing = BriefingScreen.new()
 	_root.add_child(_briefing)
 	_briefing.setup(self)
@@ -981,6 +997,8 @@ var _paused_before_menu := true
 func _on_escape() -> void:
 	if _pause_menu.visible:
 		_close_pause_menu()
+	elif _newspaper.visible:
+		_newspaper.close()
 	elif _war_dialog.visible:
 		_war_dialog.visible = false
 	elif _drop_kind != "":
@@ -1148,7 +1166,7 @@ func _build_top_bar() -> void:
 	bar.add_child(spacer)
 
 	# Avisos
-	_alert_button = UiStyle.icon_button("bell", "Avisos", 44, 20)
+	_alert_button = UiStyle.icon_button("newspaper", "Jornal", 44, 22)
 	_alert_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_alert_badge = PanelContainer.new()
 	var bsb := UiStyle.box(Color("#d2563f"), Color(0, 0, 0, 0), 0, 8)
@@ -1166,7 +1184,7 @@ func _build_top_bar() -> void:
 	_alert_badge.add_child(_alert_count)
 	_alert_badge.visible = false
 	_alert_button.add_child(_alert_badge)
-	_alert_button.pressed.connect(func(): _toggle_drop("alerts", _alert_button))
+	_alert_button.pressed.connect(func(): _open_newspaper(-1))
 	bar.add_child(_alert_button)
 
 	# Data, pausa e velocidade numa placa só
@@ -1608,3 +1626,100 @@ func _build_side_panels() -> void:
 	help.add_theme_constant_override("outline_size", 3)
 	help.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_game_ui.add_child(help)
+
+
+# ---------------------------------------------------------------- jornal
+
+func _open_newspaper(index: int) -> void:
+	_close_drop()
+	_hide_extra()
+	_news_read = sim.state.news_count
+	_events_read = sim.state.events.size()
+	_newspaper.open(index)
+	_refresh_top_bar()
+
+
+## Notícia de guerra ou de aliança que saiu hoje: mostra o "EXTRA!" com "Ler a notícia".
+func _check_extra() -> void:
+	var st := sim.state
+	var fresh := st.news_count - _news_toasted
+	_news_toasted = st.news_count
+	if fresh <= 0 or st.news.is_empty():
+		return
+	var pick := -1
+	for i in range(st.news.size() - 1, maxi(-1, st.news.size() - 1 - fresh), -1):
+		var n: Dictionary = st.news[i]
+		if n.kind == "Guerra" or n.kind == "Diplomacia" or player_tag in n.tags:
+			pick = i
+			if player_tag in n.tags:
+				break
+	if pick == -1:
+		return
+	_show_extra(pick)
+
+
+func _show_extra(index: int) -> void:
+	_hide_extra()
+	var n: Dictionary = sim.state.news[index]
+	_extra = PanelContainer.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Newspaper.PAPER
+	sb.set_border_width_all(2)
+	sb.border_color = Newspaper.INK
+	sb.shadow_color = Color(0, 0, 0, 0.5)
+	sb.shadow_size = 10
+	sb.content_margin_left = 14
+	sb.content_margin_right = 10
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 8
+	_extra.add_theme_stylebox_override("panel", sb)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	_extra.add_child(row)
+	var tag := Label.new()
+	tag.text = "EXTRA!"
+	tag.add_theme_font_override("font", load("res://ui/fonts/OldStandard-Bold.ttf"))
+	tag.add_theme_font_size_override("font_size", 22)
+	tag.add_theme_color_override("font_color", Newspaper.RED)
+	row.add_child(tag)
+	var h := Label.new()
+	h.text = n.headline
+	h.add_theme_font_override("font", load("res://ui/fonts/OldStandard-Bold.ttf"))
+	h.add_theme_font_size_override("font_size", 16)
+	h.add_theme_color_override("font_color", Newspaper.INK)
+	h.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	h.custom_minimum_size = Vector2(380, 0)
+	h.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(h)
+	var read := Button.new()
+	read.text = "Ler a notícia"
+	read.add_theme_font_override("font", load("res://ui/fonts/OldStandard-Bold.ttf"))
+	read.add_theme_font_size_override("font_size", 14)
+	read.add_theme_color_override("font_color", Newspaper.PAPER)
+	read.add_theme_color_override("font_hover_color", Color.WHITE)
+	for k in ["normal", "hover", "pressed", "focus"]:
+		var bs := StyleBoxFlat.new()
+		bs.bg_color = Newspaper.RED if k == "hover" else Newspaper.INK
+		bs.content_margin_left = 12
+		bs.content_margin_right = 12
+		bs.content_margin_top = 4
+		bs.content_margin_bottom = 4
+		read.add_theme_stylebox_override(k, bs)
+	read.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	read.pressed.connect(func(): _open_newspaper(index))
+	row.add_child(read)
+	var x := UiStyle.icon_button("close", "Dispensar", 26, 12)
+	x.modulate = Newspaper.INK
+	x.pressed.connect(_hide_extra)
+	row.add_child(x)
+	_game_ui.add_child(_extra)
+	_extra.reset_size()
+	var vw := get_viewport().get_visible_rect().size.x
+	_extra.position = Vector2((vw - _extra.size.x) * 0.5, 70)
+	_extra_timer = 14.0
+
+
+func _hide_extra() -> void:
+	if _extra != null:
+		_extra.queue_free()
+		_extra = null

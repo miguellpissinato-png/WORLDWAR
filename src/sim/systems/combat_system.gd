@@ -243,8 +243,24 @@ static func on_enter(state: GameState, g: ArmyGroup) -> void:
 		return
 	if s.owner == g.owner or state.at_war(g.owner, ctl):
 		var before := ctl
-		state.set_control(s, g.owner)
-		if s.owner == g.owner:
-			state.add_event([g.owner, before], "%s foi libertado." % s.name, "Guerra")
+		# estado de um aliado ocupado volta para o dono (libertação)
+		var friend := s.owner != g.owner and state.allied(g.owner, s.owner)
+		state.set_control(s, s.owner if friend else g.owner)
+		if s.owner == g.owner or friend:
+			state.add_event([g.owner, before, s.owner], "%s foi libertado." % s.name, "Guerra")
+			var home := state.country(s.owner)
+			if home != null and home.capital_state == s.id:
+				var city := home.capital_city if home.capital_city != "" else s.name
+				state.add_news("%s é libertada" % city, "Tropas %s expulsam o ocupante." % NewsText.of(state.country(g.owner).name),
+					"Multidões foram às ruas de %s para receber as forças %s, que retomaram a capital %s." % [city,
+						NewsText.of(state.country(g.owner).name), NewsText.of(home.name)], s.id, [g.owner, s.owner], "Guerra")
 		else:
 			state.add_event([g.owner, before], "%s ocupou %s." % [state.country(g.owner).name, s.name], "Guerra")
+			var victim := state.country(s.owner)
+			if victim != null and victim.capital_state == s.id:
+				var me := state.country(g.owner)
+				state.add_news("%s cai: tropas %s tomam a capital" % [victim.capital_city if victim.capital_city != "" else s.name, NewsText.of(me.name)],
+					"Golpe duro para %s; o governo foge." % NewsText.the(victim.name),
+					"Depois de dias de combate, as forças %s entraram em %s, capital %s." % [NewsText.of(me.name),
+						victim.capital_city if victim.capital_city != "" else s.name, NewsText.of(victim.name)],
+					s.id, [g.owner, s.owner], "Guerra")

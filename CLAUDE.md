@@ -118,6 +118,30 @@ Documento de design completo: `docs/design.md`.
   Briefing do começo e tela de vitória/derrota em `ui/panels/briefing_screen.gd`; barra do topo tem "Objetivo".
   Enquanto não houver marinha, as porcentagens deixam de fora as ilhas grandes.
 - Ainda falta (parte 2 do combate): capitulação, paz e resumo de batalha.
+- Alianças = facções: `GameState.factions` (id -> {name, leader, members}); `allied()` = mesma facção.
+  `FactionSystem` (entrar/sair, `JoinFactionCommand`/`LeaveFactionCommand`); quem entra assume as guerras da
+  facção; declarar guerra chama as duas facções inteiras (`DiplomacySystem.side_of`/`start_war`). Libertar estado
+  de aliado devolve ao dono. Passagem militar: `GameState.access` ([quem, por onde], de
+  `data/scenarios/<ano>/access.json`; ex.: Japão em Manchukuo). Estreitos (`strait` do adjacency.json) e as
+  travessias de `data/common/sea_crossings.json` (Dover, Coreia, Otranto) contam como vizinhança.
+
+## IA dos países e jornal
+
+- `data/common/ai.json` (valores de jogo): cada país da IA pensa a cada `think_every_days` (escalonado) em
+  `AiSystem`: economia (civil/militar, construir), pesquisa, produção, exército (regimentos e generais),
+  comércio (vende excesso a quem tem falta), diplomacia e operações (ataca o estado inimigo mais perto da frente).
+  `war_plans` e `factions` seguem fatos históricos com datas aproximadas; plano com justificativa pronta declara.
+  Os comandos da IA são aplicados dentro de `Simulation._daily_update` (determinísticos, fora do diário).
+  Sem `defs.ai` (mundo de teste), a IA não joga. Hoje: cerca de 20–30 s por ano de jogo simulado sem tela.
+- Notícias: `GameState.add_news(manchete, linha fina, texto, estado, tags, tipo)`; `news_count` conta todas
+  (a lista guarda só as últimas `MAX_NEWS`). Artigos e contrações em `NewsText` ("à França", "aos Aliados";
+  gênero pela primeira palavra). Nomes de aliança no plural ficam em `NewsText.PLURAL`.
+- Jornal (`ui/panels/newspaper.gd`, "O Correio do Mundo", nome fictício) substituiu o sino: papel, título em
+  UnifrakturMaguntia, texto em Old Standard (OFL, `ui/fonts/`), foto em retícula feita do relevo do mapa no
+  estado da notícia (shader com níveis automáticos). Uma foto em `ui/news/<TAG>.jpg|png|webp` substitui o
+  recorte (só imagens com direito de uso; nada de fotos de líderes reais geradas ou baixadas por nós).
+  Coluna "Despachos ao governo" = avisos do jogador + falta de recursos. Notícia de guerra/aliança do dia
+  mostra o "EXTRA!" com "Ler a notícia" (`main._check_extra`).
 
 ## Inteligência
 
@@ -140,8 +164,8 @@ Documento de design completo: `docs/design.md`.
   Fontes em `ui/fonts/` (OFL, recortadas para latim); ícones de traço brancos em `ui/icons/*.svg`,
   coloridos com `UiStyle.icon(nome, cor)`. Não criar estilos soltos nos painéis: usar as funções do UiStyle.
 - Barra superior: país (abre ficha), Tesouro (abre detalhe), Fábricas civis|militares, Pesquisa,
-  Grupos, Recursos (abre tabela com estoque, variação de ontem e preço), sino de Avisos
-  (`GameState.events` do jogador + falta de recurso na produção), data, pausa e 5 barras de velocidade.
+  Grupos, Recursos (abre tabela com estoque, variação de ontem e preço)
+  e Jornal (notícias do mundo + avisos do jogador e falta de recurso), data, pausa e 5 barras de velocidade.
   As caixas abertas são uma só (`_drop` em `main.gd`); Esc ou clique fora fecham.
 - Menu inicial (`ui/panels/main_menu.gd`, modelo "cartaz central" escolhido pelo Miguel): imagem de
   cartazes `ui/menu/menu_bg.jpg`, título na fonte de estêncil Big Shoulders (OFL), Single player (vai para a

@@ -25,7 +25,16 @@ var objectives: Dictionary = {}
 var winner: String = ""
 var wars: Array = []               # [[tagA, tagB]] pares em guerra (em ordem alfabética)
 var justifications: Array = []     # [{owner, target, days_done, days_needed, done}]
-var alliances: Array = []          # [[tagA, tagB]] aliados (ainda sem sistema de alianças)
+var alliances: Array = []          # (antigo; as alianças agora são as facções abaixo)
+## Facções (alianças): id -> {name, leader, members: [tags]}. Membros da mesma facção são aliados.
+var factions: Dictionary = {}
+var factions_created: Array = []   # ids já criados uma vez (não renascem)
+## Jornal: notícias do mundo, as mais novas no fim. {hours, headline, sub, body, state, tags, kind}
+var news: Array = []
+var news_count := 0                # quantas notícias já saíram (o jornal guarda só as últimas)
+const MAX_NEWS := 300
+## Passagem militar: [quem passa, por onde] (ex.: Japão em Manchukuo). Vem do cenário.
+var access: Array = []
 
 const MAX_EVENTS := 300
 var rng := RandomNumberGenerator.new()   # único gerador aleatório da simulação
@@ -68,14 +77,29 @@ func at_war(a: String, b: String) -> bool:
 func allied(a: String, b: String) -> bool:
 	if a == b:
 		return true
-	var pair := [a, b]
-	pair.sort()
-	return pair in alliances
+	var fa := faction_of(a)
+	return fa != "" and fa == faction_of(b)
+
+
+## Facção do país ("" se nenhuma).
+func faction_of(tag: String) -> String:
+	for id in factions:
+		if tag in factions[id].members:
+			return id
+	return ""
+
+
+func add_news(headline: String, sub: String, body: String, state_id: int, tags: Array, kind: String) -> void:
+	news_count += 1
+	news.append({"hours": hours, "headline": headline, "sub": sub, "body": body, "state": state_id,
+		"tags": tags, "kind": kind})
+	if news.size() > MAX_NEWS:
+		news.pop_front()
 
 
 ## Tropas de `tag` podem entrar em estados de `owner`: próprio, aliado ou inimigo em guerra.
 func can_enter(tag: String, owner: String) -> bool:
-	return allied(tag, owner) or at_war(tag, owner)
+	return allied(tag, owner) or at_war(tag, owner) or [tag, owner] in access
 
 
 func enemies_of(tag: String) -> Array:

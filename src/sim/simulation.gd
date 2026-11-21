@@ -67,3 +67,9 @@ func _daily_update() -> void:
 	ResearchSystem.daily_update(state, defs)
 	DiplomacySystem.daily_update(state, defs)
 	ObjectiveSystem.daily_update(state, defs)
+	FactionSystem.daily_update(state, defs)
+	# Países da IA: decidem e mandam comandos, aplicados na hora (determinístico; fora do diário).
+	for cmd in AiSystem.decide(state, defs):
+		if cmd.validate(state, defs) == "":
+			cmd.apply(state, defs)
+			state.invalidate_owners()

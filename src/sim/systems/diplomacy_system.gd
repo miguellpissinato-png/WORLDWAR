@@ -67,11 +67,43 @@ static func justify(state: GameState, defs: Dictionary, tag: String, target: Str
 static func declare(state: GameState, tag: String, target: String) -> void:
 	var me := state.country(tag)
 	var them := state.country(target)
-	var pair := [tag, target]
-	pair.sort()
-	state.wars.append(pair)
+	start_war(state, tag, target)
 	state.justifications = state.justifications.filter(func(j): return not (j.owner == tag and j.target == target))
 	state.add_event([tag, target], "%s declarou guerra a %s." % [me.name, them.name], "Guerra")
+	var cap := state.state(them.capital_state)
+	state.add_news("%s declara guerra %s" % [NewsText.the(me.name, true), NewsText.to(them.name)],
+		"Tropas %s cruzam a fronteira; o mundo acompanha apreensivo." % NewsText.of(me.name),
+		"Em comunicado oficial, o governo %s anunciou o estado de guerra contra %s. %s" % [
+			NewsText.of(me.name), NewsText.the(them.name), _sides_text(state, tag, target)],
+		them.capital_state if cap != null else -1, [tag, target], "Guerra")
+	# Alianças: os membros das duas facções entram na guerra.
+	for a in side_of(state, tag):
+		for b in side_of(state, target):
+			if a != b and not state.at_war(a, b) and not state.allied(a, b):
+				start_war(state, a, b)
+				state.add_event([a, b], "%s entrou na guerra contra %s (aliança)." % [state.country(a).name, state.country(b).name], "Guerra")
+
+
+## O país e os membros da facção dele.
+static func side_of(state: GameState, tag: String) -> Array:
+	var f := state.faction_of(tag)
+	return [tag] if f == "" else state.factions[f].members.duplicate()
+
+
+static func start_war(state: GameState, a: String, b: String) -> void:
+	var pair := [a, b]
+	pair.sort()
+	if not pair in state.wars:
+		state.wars.append(pair)
+
+
+static func _sides_text(state: GameState, tag: String, target: String) -> String:
+	var out := []
+	for t in [tag, target]:
+		var f := state.faction_of(t)
+		if f != "":
+			out.append("%s, %s, conta com seus aliados." % [NewsText.the(state.country(t).name, true), NewsText.of(state.factions[f].name)])
+	return " ".join(out)
 
 
 static func daily_update(state: GameState, _defs: Dictionary) -> void:
