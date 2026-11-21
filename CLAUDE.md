@@ -137,8 +137,14 @@ Documento de design completo: `docs/design.md`.
   As caixas abertas são uma só (`_drop` em `main.gd`); Esc ou clique fora fecham.
 - Menu inicial (`ui/panels/main_menu.gd`, modelo "cartaz central" escolhido pelo Miguel): imagem de
   cartazes `ui/menu/menu_bg.jpg`, título na fonte de estêncil Big Shoulders (OFL), Single player (vai para a
-  escolha de país), Multiplayer (aviso de "em breve" até existir a rede), Configurações (opções a definir)
-  e Sair (some na versão web).
+  escolha de país), Multiplayer, Configurações e Sair (some na versão web).
+- Multiplayer (`ui/panels/multiplayer_screen.gd` + autoload `Net` em `ui/net/net_session.gd`): 1) perfil
+  (apelido e insígnia, guardados em `user://settings.cfg` [perfil]); 2) criar servidor (nome, porta, máx. de
+  jogadores; padrão 7036) ou entrar por IP:porta (recentes guardados); 3) sala com a lista de jogadores.
+  Rede por WebSocket (`WebSocketMultiplayerPeer`): o host recebe `_register` e manda `_sync` para todos.
+  No navegador não dá para criar servidor (e uma página https não conecta em ws://): multiplayer é no jogo
+  instalado. Insígnias genéricas em `ui/avatars/*.svg` (desenhos próprios). Falta: escolher países na sala,
+  iniciar a partida e sincronizar comandos (só o host aplica; os outros mandam comandos ao host).
 - Menu do Esc (`ui/panels/pause_menu.gd`): Esc fecha primeiro o que estiver aberto (aviso, caixa, janela,
   seleção); sem nada aberto, abre o menu (Continuar jogo, Salvar jogo, Configurações, Sair para o menu inicial)
   e pausa o single player. "Carregar jogo" aparece no menu inicial quando existe `user://save.json`.

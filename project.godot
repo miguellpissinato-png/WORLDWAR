@@ -27,3 +27,4 @@ renderer/rendering_method="gl_compatibility"
 [autoload]
 
 Audio="*res://ui/audio/audio_manager.gd"
+Net="*res://ui/net/net_session.gd"

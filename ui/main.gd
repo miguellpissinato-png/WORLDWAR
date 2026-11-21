@@ -800,10 +800,11 @@ func _build_ui() -> void:
 		_menu.visible = false
 		_start.visible = true
 		_start.select(_start._selected if _start._selected != "" else "BRA"))
-	_menu.multiplayer_chosen.connect(func(): _menu.show_dialog("Multiplayer",
-		"Em breve: você e seus amigos escolhem um país cada um, e os países que ninguém escolher "
-		+ "continuam com a IA. O jogo já foi organizado para isso; falta a parte de rede."))
 	_root.add_child(_menu)
+	_mp_screen = MultiplayerScreen.new()
+	_mp_screen.visible = false
+	_root.add_child(_mp_screen)
+	_menu.multiplayer_chosen.connect(func(): _mp_screen.open())
 
 
 	_settings = SettingsPanel.new()
@@ -826,6 +827,7 @@ func _build_ui() -> void:
 # ---------------------------------------------------------------- menu do Esc, salvar e carregar
 
 const SCENARIO := "1936"
+var _mp_screen: MultiplayerScreen
 var _control_seen := 0
 const SAVE_PATH := "user://save.json"
 var _settings: SettingsPanel
