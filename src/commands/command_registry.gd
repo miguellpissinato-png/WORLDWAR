@@ -25,6 +25,7 @@ const TYPES := {
 	"assign_general": preload("res://src/commands/assign_general_command.gd"),
 	"justify_war": preload("res://src/commands/justify_war_command.gd"),
 	"declare_war": preload("res://src/commands/declare_war_command.gd"),
+	"set_objectives": preload("res://src/commands/set_objectives_command.gd"),
 }
 
 

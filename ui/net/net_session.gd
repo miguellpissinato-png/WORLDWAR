@@ -30,6 +30,7 @@ var max_players := 8
 var players: Dictionary = {}       # id do par -> {nick, avatar}
 var is_host := false
 var playing := false               # a partida em rede já começou
+var objective_mode := "individual"  # "individual" (sorteado e secreto) ou "comum" (votação)
 var last_message := ""             # aviso para mostrar no menu depois de voltar (ex.: host saiu)
 
 # ---- modo online (P2P): sala com código, apresentada pelo servidor de sinalização
@@ -125,6 +126,36 @@ func pick_country(tag: String) -> void:
 		_apply_pick(1, tag)
 	else:
 		_pick.rpc_id(1, tag)
+
+
+## Host: modo dos objetivos da sala.
+func set_objective_mode(mode: String) -> void:
+	if is_host and not playing and mode in ["individual", "comum"]:
+		objective_mode = mode
+		_sync.rpc(players, server_name, max_players, objective_mode)
+		players_changed.emit()
+
+
+## Voto no objetivo comum.
+func vote_objective(id: String) -> void:
+	if is_host:
+		_apply_vote(1, id)
+	else:
+		_vote.rpc_id(1, id)
+
+
+@rpc("any_peer", "reliable")
+func _vote(id: String) -> void:
+	if is_host:
+		_apply_vote(multiplayer.get_remote_sender_id(), id)
+
+
+func _apply_vote(peer: int, id: String) -> void:
+	if playing or not players.has(peer):
+		return
+	players[peer]["vote"] = id
+	_sync.rpc(players, server_name, max_players, objective_mode)
+	players_changed.emit()
 
 
 func can_start() -> bool:
@@ -299,6 +330,7 @@ func leave() -> void:
 	is_host = false
 	server_name = ""
 	playing = false
+	objective_mode = "individual"
 
 
 # ---------------------------------------------------------------- troca de mensagens
@@ -318,7 +350,7 @@ func _on_peer_disconnected(id: int) -> void:
 		players.erase(id)
 		if playing and tag != "":
 			player_left.emit(tag)
-		_sync.rpc(players, server_name, max_players)
+		_sync.rpc(players, server_name, max_players, objective_mode)
 		players_changed.emit()
 
 
@@ -336,14 +368,15 @@ func _register(p_nick: String, p_avatar: String) -> void:
 		multiplayer.multiplayer_peer.disconnect_peer(id)
 		return
 	players[id] = {"nick": p_nick.strip_edges().left(MAX_NICK), "avatar": p_avatar if p_avatar in AVATARS else AVATARS[0], "tag": ""}
-	_sync.rpc(players, server_name, max_players)
+	_sync.rpc(players, server_name, max_players, objective_mode)
 	players_changed.emit()
 
 
 ## Servidor -> todos: lista atual da sala.
 @rpc("authority", "reliable")
-func _sync(p_players: Dictionary, p_name: String, p_max: int) -> void:
+func _sync(p_players: Dictionary, p_name: String, p_max: int, p_mode: String) -> void:
 	players = p_players
+	objective_mode = p_mode
 	server_name = p_name
 	max_players = p_max
 	players_changed.emit()
@@ -362,7 +395,7 @@ func _apply_pick(id: int, tag: String) -> void:
 		if other != id and String(players[other].get("tag", "")) == tag and tag != "":
 			return   # já é de outro jogador
 	players[id]["tag"] = tag
-	_sync.rpc(players, server_name, max_players)
+	_sync.rpc(players, server_name, max_players, objective_mode)
 	players_changed.emit()
 
 

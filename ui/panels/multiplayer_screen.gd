@@ -27,6 +27,12 @@ var _main
 var _picker: OptionButton
 var _picker_tags: Array = []
 var _start_button: Button
+var _mode_pick: OptionButton
+var _mode_label: Label
+var _vote_row: HBoxContainer
+var _vote_pick: OptionButton
+var _vote_ids: Array = []
+var _tally: Label
 
 
 func setup(main) -> void:
@@ -304,6 +310,30 @@ func _build_lobby(p: PanelContainer) -> void:
 	_picker.add_theme_constant_override("icon_max_width", 26)
 	_picker.item_selected.connect(func(i): Net.pick_country(_picker_tags[i]))
 	pr.add_child(_picker)
+	var orow := HBoxContainer.new()
+	orow.add_theme_constant_override("separation", 10)
+	v.add_child(orow)
+	orow.add_child(UiStyle.section("Objetivos"))
+	_mode_pick = OptionButton.new()
+	_mode_pick.add_item("Individual: um sorteado e secreto para cada um")
+	_mode_pick.add_item("Comum: todos votam num objetivo")
+	_mode_pick.custom_minimum_size = Vector2(400, 36)
+	_mode_pick.item_selected.connect(func(i): Net.set_objective_mode("comum" if i == 1 else "individual"))
+	orow.add_child(_mode_pick)
+	_mode_label = UiStyle.small_label("", 12, UiStyle.TEXT)
+	orow.add_child(_mode_label)
+	_vote_row = HBoxContainer.new()
+	_vote_row.add_theme_constant_override("separation", 10)
+	v.add_child(_vote_row)
+	_vote_row.add_child(UiStyle.small_label("Seu voto", 12))
+	_vote_pick = OptionButton.new()
+	_vote_pick.custom_minimum_size = Vector2(360, 36)
+	_vote_pick.item_selected.connect(func(i): Net.vote_objective(_vote_ids[i]))
+	_vote_row.add_child(_vote_pick)
+	_tally = UiStyle.small_label("", 11)
+	_tally.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_tally.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_vote_row.add_child(_tally)
 	_lobby_hint = UiStyle.small_label("Cada jogador escolhe um país; os que ninguém escolher ficam com a IA. "
 		+ "O host inicia a partida e controla o tempo (pausa e velocidade).", 12)
 	_lobby_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -366,9 +396,44 @@ func _refresh_lobby() -> void:
 		_lobby_list.add_child(h)
 	_lobby_list.add_child(UiStyle.small_label("%d de %d" % [ids.size(), Net.max_players], 11))
 	_fill_picker()
+	_fill_objectives()
 	_start_button.visible = Net.is_host
 	_start_button.disabled = not Net.can_start()
 	_start_button.tooltip_text = "" if Net.can_start() else "Todos precisam escolher um país."
+
+
+func _fill_objectives() -> void:
+	if _main == null:
+		return
+	var comum := Net.objective_mode == "comum"
+	_mode_pick.visible = Net.is_host
+	_mode_pick.select(1 if comum else 0)
+	_mode_label.visible = not Net.is_host
+	_mode_label.text = "Comum (votação)" if comum else "Individual (sorteado e secreto)"
+	_vote_row.visible = comum
+	if not comum:
+		return
+	var defs: Dictionary = _main.sim.defs
+	if _vote_ids.is_empty():
+		_vote_ids = [""] + ObjectiveSystem.list(defs).map(func(o): return o.id)
+	var counts := {}
+	var mine := ""
+	for id in Net.players:
+		var vt := String(Net.players[id].get("vote", ""))
+		if vt != "":
+			counts[vt] = int(counts.get(vt, 0)) + 1
+		if id == multiplayer.get_unique_id():
+			mine = vt
+	_vote_pick.clear()
+	for i in _vote_ids.size():
+		var oid: String = _vote_ids[i]
+		if oid == "":
+			_vote_pick.add_item("Escolha um objetivo")
+		else:
+			var n := int(counts.get(oid, 0))
+			_vote_pick.add_item(ObjectiveSystem.find(defs, oid).name + ("  (%d voto%s)" % [n, "" if n == 1 else "s"] if n > 0 else ""))
+	_vote_pick.select(maxi(0, _vote_ids.find(mine)))
+	_tally.text = "Empate: sorteio entre os mais votados." if counts.size() > 1 else ""
 
 
 func _fill_picker() -> void:

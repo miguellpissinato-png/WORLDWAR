@@ -9,6 +9,7 @@ var name: String
 var modern_country: String   # país atual (ISO), usado só para aplicar regras de cenário
 var center: Vector2          # ponto central, em coordenadas do mapa
 var area_km2: int
+var continent: String = ""   # europa, asia, africa, america_norte, america_sul, oceania, outros
 var owner: String = ""       # tag do país dono
 var controller: String = ""  # quem ocupa o estado agora ("" = o próprio dono)
 var population: int = 0

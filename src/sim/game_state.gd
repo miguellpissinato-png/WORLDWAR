@@ -20,6 +20,9 @@ var group_counters: Dictionary = {} # tag -> quantos grupos o país já criou (p
 var generals: Dictionary = {}      # id -> General
 var next_general_id: int = 1
 var adjacency: Dictionary = {}     # id do estado -> [ids vizinhos por terra] (geografia, não muda)
+## Objetivo de vitória de cada jogador humano (tag -> id do objetivo) e o vencedor, quando houver.
+var objectives: Dictionary = {}
+var winner: String = ""
 var wars: Array = []               # [[tagA, tagB]] pares em guerra (em ordem alfabética)
 var justifications: Array = []     # [{owner, target, days_done, days_needed, done}]
 var alliances: Array = []          # [[tagA, tagB]] aliados (ainda sem sistema de alianças)

@@ -116,6 +116,16 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if started and _briefing_pending and sim.state.objectives.has(player_tag):
+		_briefing_pending = false
+		_briefing.open_briefing(player_tag, not mp, mp)
+		_refresh_top_bar()
+	if started and sim.state.winner != "" and not _result_shown:
+		_result_shown = true
+		if not mp:
+			paused = true
+			_update_time_controls()
+		_briefing.open_result(player_tag)
 	if started and sim.state.control_version != _control_seen:
 		_control_seen = sim.state.control_version
 		_apply_map_mode()
@@ -203,6 +213,19 @@ func write_log(line: String) -> void:
 func _start_game(tag: String) -> void:
 	submit(ClaimCountryCommand.create(tag))
 	_enter_game(tag)
+	_ui_rng.randomize()
+	var c := ObjectiveSystem.candidates(sim.state, sim.defs, tag)
+	if not c.is_empty():
+		submit(SetObjectivesCommand.create({tag: c[_ui_rng.randi() % c.size()]}))
+	_briefing_pending = true
+
+
+func _reroll_objective() -> void:
+	var cur: String = sim.state.objectives.get(player_tag, "")
+	var c := ObjectiveSystem.candidates(sim.state, sim.defs, player_tag).filter(func(o): return o != cur)
+	if not c.is_empty():
+		submit(SetObjectivesCommand.create({player_tag: c[_ui_rng.randi() % c.size()]}))
+	_briefing.open_briefing(player_tag, true, false)
 
 
 ## Partida em rede: todos entram juntos; o host registra cada jogador no seu país.
@@ -212,12 +235,49 @@ func _start_mp(my_tag: String) -> void:
 	_enter_game(my_tag)
 	paused = true
 	_update_time_controls()
+	_briefing_pending = true
 	if Net.is_host:
 		var ids: Array = Net.players.keys()
 		ids.sort()
 		for id in ids:
 			submit(ClaimCountryCommand.create(String(Net.players[id].tag)))
+		submit(SetObjectivesCommand.create(_mp_objectives(ids)))
 	write_log("Partida em rede: %s." % ", ".join(Net.players.values().map(func(p): return "%s (%s)" % [p.nick, sim.state.country(p.tag).name])))
+
+
+## Host: objetivos da partida em rede. Individual = um sorteado para cada jogador (secreto);
+## comum = o mais votado na sala (empate: sorteio entre os mais votados), igual para todos.
+func _mp_objectives(ids: Array) -> Dictionary:
+	_ui_rng.randomize()
+	var out := {}
+	if Net.objective_mode == "comum":
+		var votes := {}
+		for id in ids:
+			var vt := String(Net.players[id].get("vote", ""))
+			if vt != "":
+				votes[vt] = int(votes.get(vt, 0)) + 1
+		var best := []
+		var top := 0
+		for k in votes:
+			if votes[k] > top:
+				top = votes[k]
+				best = [k]
+			elif votes[k] == top:
+				best.append(k)
+		if best.is_empty():
+			best = ObjectiveSystem.list(sim.defs).map(func(o): return o.id)
+		best.sort()
+		var chosen: String = best[_ui_rng.randi() % best.size()]
+		for id in ids:
+			out[String(Net.players[id].tag)] = chosen
+	else:
+		for id in ids:
+			var tag := String(Net.players[id].tag)
+			var c := ObjectiveSystem.candidates(sim.state, sim.defs, tag)
+			if c.is_empty():
+				c = ObjectiveSystem.list(sim.defs).map(func(o): return o.id)
+			out[tag] = c[_ui_rng.randi() % c.size()]
+	return out
 
 
 ## Entra na partida já com o país escolhido (jogo novo ou carregado).
@@ -352,6 +412,10 @@ func _refresh_top_bar() -> void:
 	_chips.research.value.text = str(c.research.size())
 	_chips.research.extra.text = "/%d" % c.research_slots
 	_chips.research.button.tooltip_text = "Pesquisa: %d de %d vagas ocupadas\nClique para abrir a Pesquisa." % [c.research.size(), c.research_slots]
+	var obj_id: String = sim.state.objectives.get(player_tag, "")
+	var op := ObjectiveSystem.progress(sim.state, sim.defs, player_tag, obj_id)
+	_chips.objective.value.text = "%d%%" % roundi(op.value * 100) if obj_id != "" else "—"
+	_chips.objective.button.tooltip_text = "Objetivo: %s\nClique para ver o andamento." % ObjectiveSystem.find(sim.defs, obj_id).get("name", "nenhum")
 	var groups := sim.state.groups_of(player_tag)
 	_chips.army.value.text = str(groups.size())
 	_chips.army.button.tooltip_text = "Exército: %d grupos\nClique para abrir o Exército." % groups.size()
@@ -862,6 +926,14 @@ func _build_ui() -> void:
 		Net.leave()
 		get_tree().reload_current_scene())
 	_mp_screen.setup(self)
+	_briefing = BriefingScreen.new()
+	_root.add_child(_briefing)
+	_briefing.setup(self)
+	_root.move_child(_settings, -1)
+	_briefing.reroll_requested.connect(_reroll_objective)
+	_briefing.quit_requested.connect(func():
+		Net.leave()
+		get_tree().reload_current_scene())
 	if Net.last_message != "":
 		_menu.show_dialog("Multiplayer", Net.last_message)
 		Net.last_message = ""
@@ -891,6 +963,10 @@ func _build_ui() -> void:
 # ---------------------------------------------------------------- menu do Esc, salvar e carregar
 
 const SCENARIO := "1936"
+var _briefing: BriefingScreen
+var _briefing_pending := false   # abre o briefing quando o objetivo do jogador chegar
+var _result_shown := false
+var _ui_rng := RandomNumberGenerator.new()
 var mp := false   # partida em rede
 var _mp_screen: MultiplayerScreen
 var _control_seen := 0
@@ -1033,6 +1109,8 @@ func _build_top_bar() -> void:
 	_chips.research.button.pressed.connect(func(): _open_panel("research"))
 	_chips.army = _chip(bar, "army", "Grupos", 88)
 	_chips.army.button.pressed.connect(func(): _open_panel("army"))
+	_chips.objective = _chip(bar, "target", "Objetivo", 92)
+	_chips.objective.button.pressed.connect(func(): _toggle_drop("objective", _chips.objective.button))
 	bar.add_child(UiStyle.vsep())
 
 	# Recursos: ícone + estoque; o clique abre a tabela completa
@@ -1227,6 +1305,14 @@ func _fill_drop() -> void:
 	var cur: String = sim.defs.currency
 	var width := 300.0
 	match _drop_kind:
+		"objective":
+			v.add_child(UiStyle.section("Objetivo de vitória"))
+			v.add_child(UiStyle.rule())
+			v.add_child(ObjectiveView.build(sim.state, sim.defs, player_tag, sim.state.objectives.get(player_tag, ""), 300))
+			var how := UiStyle.small_label("Conta o território que você controla (o seu e o ocupado). Vence quem cumprir o próprio objetivo primeiro.", 11)
+			how.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			how.custom_minimum_size = Vector2(300, 0)
+			v.add_child(how)
 		"nation":
 			v.add_child(UiStyle.section(c.name))
 			v.add_child(UiStyle.rule())

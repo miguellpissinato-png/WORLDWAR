@@ -109,6 +109,14 @@ Documento de design completo: `docs/design.md`.
 - Ocupação: `MapState.controller` ("" = o dono); `control()` / `occupied()`; `GameState.set_control()`.
   Entrar em estado de inimigo em guerra ocupa; entrar num estado próprio ocupado liberta. `states_of()` usa
   quem controla (o ocupante usa fábricas e recursos). Mapa pinta pelo controle (`control_version`).
+- Objetivos de vitória (estilo War): `data/common/objectives.json` (dominar % do mundo ou de continentes;
+  continentes por estado em `data/map/continents.json`, de `tools/data/gen_continents.py`, Rússia a leste dos
+  Urais = Ásia). `ObjectiveSystem` mede a área controlada; `SetObjectivesCommand` define (tag -> objetivo);
+  o primeiro a cumprir vira `GameState.winner`. Sorteio só entre objetivos ainda distantes
+  (`max_start_progress`). Solo: sorteado ao começar, com "Sortear outro" no briefing. Multiplayer: o host
+  escolhe na sala o modo individual (um sorteado e secreto por jogador) ou comum (votação; empate = sorteio).
+  Briefing do começo e tela de vitória/derrota em `ui/panels/briefing_screen.gd`; barra do topo tem "Objetivo".
+  Enquanto não houver marinha, as porcentagens deixam de fora as ilhas grandes.
 - Ainda falta (parte 2 do combate): capitulação, paz e resumo de batalha.
 
 ## Inteligência

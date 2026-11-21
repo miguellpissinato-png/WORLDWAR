@@ -1,0 +1,18 @@
+{
+  "_nota": "Objetivos de vitória (estilo jogo de tabuleiro): cada alvo pede uma parte da área de uma região (continentes em data/map/continents.json; 'mundo' = tudo). Conta a área que o país controla (ocupada ou dele). Enquanto não há marinha, as porcentagens deixam de fora as ilhas grandes. regions: lista de continentes somados num alvo só.",
+  "max_start_progress": 0.25,
+  "objectives": [
+    {"id": "mundo_50", "name": "Dominar metade do mundo", "targets": [{"regions": ["mundo"], "share": 0.5}]},
+    {"id": "mundo_70", "name": "Dominar 70% do mundo", "targets": [{"regions": ["mundo"], "share": 0.7}]},
+    {"id": "europa", "name": "Conquistar a Europa", "targets": [{"regions": ["europa"], "share": 0.9}]},
+    {"id": "america_sul", "name": "Conquistar a América do Sul", "targets": [{"regions": ["america_sul"], "share": 0.95}]},
+    {"id": "america_norte", "name": "Conquistar a América do Norte", "targets": [{"regions": ["america_norte"], "share": 0.85}]},
+    {"id": "americas_70", "name": "Dominar 70% das Américas", "targets": [{"regions": ["america_norte", "america_sul"], "share": 0.7}]},
+    {"id": "asia_70", "name": "Dominar 70% da Ásia", "targets": [{"regions": ["asia"], "share": 0.7}]},
+    {"id": "africa", "name": "Conquistar a África", "targets": [{"regions": ["africa"], "share": 0.95}]},
+    {"id": "europa_america_sul", "name": "Conquistar a Europa e a América do Sul", "targets": [{"regions": ["europa"], "share": 0.9}, {"regions": ["america_sul"], "share": 0.95}]},
+    {"id": "asia_africa", "name": "Dominar a Ásia e a África", "targets": [{"regions": ["asia"], "share": 0.6}, {"regions": ["africa"], "share": 0.8}]},
+    {"id": "europa_africa", "name": "Dominar a Europa e a África", "targets": [{"regions": ["europa"], "share": 0.75}, {"regions": ["africa"], "share": 0.75}]}
+  ],
+  "region_names": {"mundo": "mundo", "europa": "Europa", "asia": "Ásia", "africa": "África", "america_norte": "América do Norte", "america_sul": "América do Sul", "oceania": "Oceania"}
+}

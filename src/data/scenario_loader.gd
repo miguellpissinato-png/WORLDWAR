@@ -32,6 +32,7 @@ static func load_defs() -> Dictionary:
 	d["army"] = read_json(COMMON_DIR + "/army.json")
 	d["general_names"] = read_json(COMMON_DIR + "/general_names.json")
 	d["diplomacy"] = read_json(COMMON_DIR + "/diplomacy.json")
+	d["objectives"] = read_json(COMMON_DIR + "/objectives.json")
 	MapState.extraction_step_share = float(d.extraction.get("step_share", 0.1))
 	return d
 
@@ -53,8 +54,10 @@ static func load_scenario(scenario: String, defs: Dictionary = {}) -> GameState:
 	var by_state: Dictionary = owners.get("states", {})
 	var by_code := {}
 	var default_slots := int(info.get("default_building_slots", 4))
+	var continents: Dictionary = read_json(MAP_DIR + "/continents.json")
 	for d in read_json(MAP_DIR + "/states.json"):
 		var st := MapState.from_dict(d)
+		st.continent = String(continents.get(st.code, "outros"))
 		if by_state.has(st.code):
 			st.owner = by_state[st.code].owner
 		else:

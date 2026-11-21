@@ -66,3 +66,4 @@ func _daily_update() -> void:
 	ProductionSystem.daily_update(state, defs)
 	ResearchSystem.daily_update(state, defs)
 	DiplomacySystem.daily_update(state, defs)
+	ObjectiveSystem.daily_update(state, defs)

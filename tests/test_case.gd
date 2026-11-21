@@ -66,6 +66,9 @@ func make_world() -> Simulation:
 			},
 		},
 		"diplomacy": {"justify_days": 3, "justify_cost": 10},
+		"objectives": {"max_start_progress": 0.4, "region_names": {"europa": "Europa"}, "objectives": [
+			{"id": "europa", "name": "Conquistar a Europa", "targets": [{"regions": ["europa"], "share": 0.9}]},
+			{"id": "mundo_70", "name": "Dominar 70% do mundo", "targets": [{"regions": ["mundo"], "share": 0.7}]}]},
 		"army": {
 			"max_regiments_per_group": 2, "max_groups_per_general": 2,
 			"regiments": {
