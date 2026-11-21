@@ -150,6 +150,13 @@ Documento de design completo: `docs/design.md`.
   `broadcast_advance(horas)` e `broadcast_time(pausa, velocidade)`. Como a simulação é determinística,
   todos ficam iguais. Jogador que sai: a IA assume (`ClaimCountryCommand` com release = o próprio país).
   Host saiu: os clientes voltam ao menu com aviso (`Net.last_message`).
+- Online P2P (sala com código): `Net.host_online()` / `join_online(código)`. O servidor de sinalização
+  (`server/signaling/`, Node + ws, instruções no LEIAME de lá; endereço em `data/common/network.json`)
+  só troca as mensagens do WebRTC (offer/answer/candidatos); a partida vai direto entre os computadores por
+  `WebRTCMultiplayerPeer` (host = par 1, clientes ligados só ao host), com as mesmas RPCs da rede local.
+  No navegador o WebRTC é nativo; no jogo instalado precisa do plugin oficial "WebRTC" (Godot AssetLib,
+  pasta `addons/webrtc`), que não guardamos no repositório. Campo "Entrar": 4 letras = código; com ponto
+  ou dois-pontos = IP. Teste local: Chrome com `--disable-features=WebRtcHideLocalIpsWithMdns`.
 - Menu do Esc (`ui/panels/pause_menu.gd`): Esc fecha primeiro o que estiver aberto (aviso, caixa, janela,
   seleção); sem nada aberto, abre o menu (Continuar jogo, Salvar jogo, Configurações, Sair para o menu inicial)
   e pausa o single player. "Carregar jogo" aparece no menu inicial quando existe `user://save.json`.

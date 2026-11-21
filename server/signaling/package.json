@@ -1,0 +1,10 @@
+{
+  "name": "worldwar-sinalizacao",
+  "version": "1.0.0",
+  "description": "Servidor de sinalização do multiplayer do WorldWar: apresenta os jogadores (salas com código) para a conexão P2P (WebRTC).",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "ws": "^8.18.0" },
+  "license": "MIT"
+}

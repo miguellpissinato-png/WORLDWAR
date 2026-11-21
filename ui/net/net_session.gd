@@ -32,9 +32,26 @@ var is_host := false
 var playing := false               # a partida em rede já começou
 var last_message := ""             # aviso para mostrar no menu depois de voltar (ex.: host saiu)
 
+# ---- modo online (P2P): sala com código, apresentada pelo servidor de sinalização
+signal room_code_ready(code: String)
+var room_code := ""
+var signaling_url := ""
+var _ice: Array = []
+var _sig: WebSocketPeer = null
+var _sig_open := false
+var _rtc: WebRTCMultiplayerPeer = null
+var _conns: Dictionary = {}        # id do par -> WebRTCPeerConnection
+var _online_role := ""             # "host" / "client" enquanto fala com a sinalização
+
 
 func _ready() -> void:
 	_load_profile()
+	var f := FileAccess.open("res://data/common/network.json", FileAccess.READ)
+	if f != null:
+		var cfg = JSON.parse_string(f.get_as_text())
+		if cfg is Dictionary:
+			signaling_url = String(cfg.get("signaling_url", ""))
+			_ice = cfg.get("ice_servers", [])
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	multiplayer.connected_to_server.connect(_on_connected)
@@ -122,6 +139,7 @@ func can_start() -> bool:
 ## Host: começa a partida para todos.
 func start_game() -> void:
 	if can_start():
+		_sig_send({"type": "lock"})   # sala online: ninguém mais entra pelo código
 		_begin.rpc(players)
 
 
@@ -144,7 +162,136 @@ func broadcast_time(p_paused: bool, p_speed: int) -> void:
 		_time.rpc(p_paused, p_speed)
 
 
+## Pode jogar online neste computador? ("" = sim; senão, o motivo)
+func online_unavailable() -> String:
+	if signaling_url == "":
+		return "O servidor de sinalização ainda não foi configurado (data/common/network.json)."
+	var test := WebRTCPeerConnection.new()
+	if test.initialize({}) != OK:
+		return "Falta o plugin WebRTC no jogo instalado (Godot: AssetLib > WebRTC plugin)."
+	test.close()
+	return ""
+
+
+## Cria uma sala online: a sinalização devolve um código (room_code_ready).
+func host_online(p_name: String, p_max: int) -> String:
+	var why := online_unavailable()
+	if why != "":
+		return why
+	leave()
+	is_host = true
+	server_name = p_name.strip_edges() if p_name.strip_edges() != "" else "Sala de %s" % nick
+	max_players = clampi(p_max, 2, 16)
+	_open_signaling("host")
+	return ""
+
+
+## Entra numa sala online pelo código.
+func join_online(code: String) -> String:
+	var why := online_unavailable()
+	if why != "":
+		return why
+	if code.strip_edges().length() < 4:
+		return "Digite o código da sala (4 letras)."
+	leave()
+	room_code = code.strip_edges().to_upper()
+	_open_signaling("client")
+	return ""
+
+
+func _open_signaling(role: String) -> void:
+	_online_role = role
+	_sig = WebSocketPeer.new()
+	_sig_open = false
+	if _sig.connect_to_url(signaling_url) != OK:
+		_sig = null
+		_fail("Não foi possível falar com o servidor de sinalização.")
+
+
+func _process(_delta: float) -> void:
+	if _sig == null:
+		return
+	_sig.poll()
+	var st := _sig.get_ready_state()
+	if st == WebSocketPeer.STATE_OPEN:
+		if not _sig_open:
+			_sig_open = true
+			_sig_send({"type": "host"} if _online_role == "host" else {"type": "join", "code": room_code})
+		while _sig.get_available_packet_count() > 0:
+			var msg = JSON.parse_string(_sig.get_packet().get_string_from_utf8())
+			if msg is Dictionary:
+				_on_signal(msg)
+	elif st == WebSocketPeer.STATE_CLOSED:
+		var was_open := _sig_open
+		_sig = null
+		if not was_open:
+			_fail("Não foi possível falar com o servidor de sinalização.")
+		# depois que todos se conectaram, a sinalização pode cair sem afetar a partida
+
+
+func _sig_send(msg: Dictionary) -> void:
+	if _sig != null and _sig.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		_sig.send_text(JSON.stringify(msg))
+
+
+func _on_signal(msg: Dictionary) -> void:
+	match String(msg.get("type", "")):
+		"hosted":
+			room_code = String(msg.code)
+			_rtc = WebRTCMultiplayerPeer.new()
+			_rtc.create_server()
+			multiplayer.multiplayer_peer = _rtc
+			players = {1: {"nick": nick, "avatar": avatar, "tag": ""}}
+			room_code_ready.emit(room_code)
+			players_changed.emit()
+		"joined":
+			_rtc = WebRTCMultiplayerPeer.new()
+			_rtc.create_client(int(msg.id))
+			multiplayer.multiplayer_peer = _rtc
+			_new_connection(1)   # o cliente só se liga ao host; o host manda a oferta
+		"peer":
+			if is_host:
+				var c := _new_connection(int(msg.id))
+				c.create_offer()
+		"signal":
+			var c: WebRTCPeerConnection = _conns.get(int(msg.from))
+			if c == null:
+				return
+			var d: Dictionary = msg.data
+			if d.kind == "sdp":
+				c.set_remote_description(d.sdp_type, d.sdp)
+			elif d.kind == "ice":
+				c.add_ice_candidate(d.media, int(d.index), d.name)
+		"peer_left":
+			_conns.erase(int(msg.id))
+		"closed":
+			if not playing:
+				_end("O host fechou a sala.")
+		"error":
+			_fail(String(msg.get("message", "Erro na sala.")))
+
+
+func _new_connection(id: int) -> WebRTCPeerConnection:
+	var c := WebRTCPeerConnection.new()
+	c.initialize({"iceServers": _ice})
+	c.session_description_created.connect(func(type: String, sdp: String):
+		c.set_local_description(type, sdp)
+		_sig_send({"type": "signal", "to": id, "data": {"kind": "sdp", "sdp_type": type, "sdp": sdp}}))
+	c.ice_candidate_created.connect(func(media: String, index: int, name: String):
+		_sig_send({"type": "signal", "to": id, "data": {"kind": "ice", "media": media, "index": index, "name": name}}))
+	_rtc.add_peer(c, id)
+	_conns[id] = c
+	return c
+
+
 func leave() -> void:
+	if _sig != null:
+		_sig.close()
+	_sig = null
+	_rtc = null
+	_conns = {}
+	room_code = ""
+	_online_role = ""
 	if in_session():
 		multiplayer.multiplayer_peer.close()
 	multiplayer.multiplayer_peer = null

@@ -53,6 +53,7 @@ func _ready() -> void:
 	_build_servers(_pages.servers)
 	_build_lobby(_pages.lobby)
 	Net.players_changed.connect(_refresh_lobby)
+	Net.room_code_ready.connect(func(_c): _refresh_lobby())
 	Net.connected_to_server.connect(func():
 		_server_status.text = ""
 		_show("lobby"))
@@ -174,8 +175,8 @@ func _build_servers(p: PanelContainer) -> void:
 	c1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c1.add_theme_constant_override("separation", 10)
 	cols.add_child(c1)
-	c1.add_child(UiStyle.section("Criar servidor"))
-	c1.add_child(UiStyle.small_label("Seu computador vira o servidor; os amigos entram pelo seu endereço.", 12))
+	c1.add_child(UiStyle.section("Criar sala"))
+	c1.add_child(UiStyle.small_label("Online: você recebe um código curto e os amigos entram com ele, sem IP nem roteador.", 12))
 	_host_name = LineEdit.new()
 	_host_name.placeholder_text = "Nome da sala"
 	_host_name.custom_minimum_size = Vector2(0, 38)
@@ -195,21 +196,24 @@ func _build_servers(p: PanelContainer) -> void:
 	_host_max.max_value = 16
 	_host_max.value = 8
 	r.add_child(_host_max)
-	var create := UiStyle.primary_button("Criar servidor", 42)
-	create.pressed.connect(_create)
+	var create := UiStyle.primary_button("Criar sala online", 42)
+	create.pressed.connect(_create_online)
 	c1.add_child(create)
-	if OS.has_feature("web"):
-		create.disabled = true
-		c1.add_child(UiStyle.small_label("No navegador não dá para abrir um servidor: use o jogo instalado.", 12, UiStyle.WARN))
+	var lan := Button.new()
+	lan.text = "Criar na rede local (por IP e porta)"
+	lan.flat = true
+	lan.pressed.connect(_create)
+	lan.disabled = OS.has_feature("web")
+	c1.add_child(lan)
 	# entrar
 	var c2 := VBoxContainer.new()
 	c2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c2.add_theme_constant_override("separation", 10)
 	cols.add_child(c2)
-	c2.add_child(UiStyle.section("Entrar em servidor"))
-	c2.add_child(UiStyle.small_label("Endereço que o dono do servidor te passou (IP ou IP:porta).", 12))
+	c2.add_child(UiStyle.section("Entrar"))
+	c2.add_child(UiStyle.small_label("Código da sala (4 letras) ou, na rede local, o IP:porta do host.", 12))
 	_join_addr = LineEdit.new()
-	_join_addr.placeholder_text = "ex.: 192.168.0.10:%d" % Net.DEFAULT_PORT
+	_join_addr.placeholder_text = "ex.: K7PX  ou  192.168.0.10:%d" % Net.DEFAULT_PORT
 	_join_addr.custom_minimum_size = Vector2(0, 38)
 	_join_addr.text_submitted.connect(func(_t): _join())
 	c2.add_child(_join_addr)
@@ -257,9 +261,20 @@ func _create() -> void:
 	_show("lobby")
 
 
+func _create_online() -> void:
+	var err := Net.host_online(_host_name.text, int(_host_max.value))
+	if err != "":
+		_server_status.text = err
+		return
+	_server_status.text = "Criando a sala..."
+	_show("lobby")
+
+
 func _join() -> void:
-	var err := Net.join(_join_addr.text)
-	_server_status.text = err if err != "" else "Conectando a %s..." % _join_addr.text.strip_edges()
+	var a := _join_addr.text.strip_edges()
+	var is_code := a.length() == 4 and not "." in a and not ":" in a
+	var err := Net.join_online(a) if is_code else Net.join(a)
+	_server_status.text = err if err != "" else "Conectando a %s..." % a
 
 
 # ---------------------------------------------------------------- 3. sala
@@ -314,7 +329,11 @@ func _refresh_lobby() -> void:
 	if _lobby_list == null:
 		return
 	_lobby_title.text = Net.server_name if Net.server_name != "" else "Conectando..."
-	if Net.is_host:
+	if Net.is_host and Net.room_code != "":
+		_lobby_sub.text = "Código da sala: %s   ·   passe este código para os amigos entrarem (Multiplayer > Entrar)." % Net.room_code
+	elif Net.is_host and Net.signaling_url != "" and not Net.in_session():
+		_lobby_sub.text = "Criando a sala no servidor de sinalização..."
+	elif Net.is_host:
 		var ips := Array(IP.get_local_addresses()).filter(func(a): return a.count(".") == 3 and not a.begins_with("127.") and not a.begins_with("169.254"))
 		var port := int(_host_port.value)
 		_lobby_sub.text = "Você é o host. Passe para os amigos: %s (porta %d). Fora da sua rede, é preciso liberar a porta no roteador." % [
