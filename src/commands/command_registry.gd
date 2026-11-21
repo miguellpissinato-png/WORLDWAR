@@ -23,6 +23,8 @@ const TYPES := {
 	"move_group": preload("res://src/commands/move_group_command.gd"),
 	"recruit_general": preload("res://src/commands/recruit_general_command.gd"),
 	"assign_general": preload("res://src/commands/assign_general_command.gd"),
+	"justify_war": preload("res://src/commands/justify_war_command.gd"),
+	"declare_war": preload("res://src/commands/declare_war_command.gd"),
 }
 
 

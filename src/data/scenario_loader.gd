@@ -31,6 +31,7 @@ static func load_defs() -> Dictionary:
 	d["research"] = read_json(COMMON_DIR + "/research.json")
 	d["army"] = read_json(COMMON_DIR + "/army.json")
 	d["general_names"] = read_json(COMMON_DIR + "/general_names.json")
+	d["diplomacy"] = read_json(COMMON_DIR + "/diplomacy.json")
 	MapState.extraction_step_share = float(d.extraction.get("step_share", 0.1))
 	return d
 

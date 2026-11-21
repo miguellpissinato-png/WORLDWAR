@@ -20,6 +20,9 @@ var group_counters: Dictionary = {} # tag -> quantos grupos o país já criou (p
 var generals: Dictionary = {}      # id -> General
 var next_general_id: int = 1
 var adjacency: Dictionary = {}     # id do estado -> [ids vizinhos por terra] (geografia, não muda)
+var wars: Array = []               # [[tagA, tagB]] pares em guerra (em ordem alfabética)
+var justifications: Array = []     # [{owner, target, days_done, days_needed, done}]
+var alliances: Array = []          # [[tagA, tagB]] aliados (ainda sem sistema de alianças)
 
 const MAX_EVENTS := 300
 var rng := RandomNumberGenerator.new()   # único gerador aleatório da simulação
@@ -51,6 +54,41 @@ func generals_of(tag: String) -> Array:
 	var out := generals.values().filter(func(g): return g.owner == tag)
 	out.sort_custom(func(a, b): return a.id < b.id)
 	return out
+
+
+func at_war(a: String, b: String) -> bool:
+	var pair := [a, b]
+	pair.sort()
+	return pair in wars
+
+
+func allied(a: String, b: String) -> bool:
+	if a == b:
+		return true
+	var pair := [a, b]
+	pair.sort()
+	return pair in alliances
+
+
+## Tropas de `tag` podem entrar em estados de `owner`: próprio, aliado ou inimigo em guerra.
+func can_enter(tag: String, owner: String) -> bool:
+	return allied(tag, owner) or at_war(tag, owner)
+
+
+func enemies_of(tag: String) -> Array:
+	var out := []
+	for w in wars:
+		if tag in w:
+			out.append(w[1] if w[0] == tag else w[0])
+	return out
+
+
+## Justificativa de guerra de `owner` contra `target` ({} se não houver).
+func justification(owner: String, target: String) -> Dictionary:
+	for j in justifications:
+		if j.owner == owner and j.target == target:
+			return j
+	return {}
 
 
 func states_of(tag: String) -> Array:

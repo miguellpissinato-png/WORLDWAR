@@ -86,6 +86,16 @@ Documento de design completo: `docs/design.md`.
   Vizinhança por terra: `data/map/adjacency.json`, gerado por `tools/map/build_adjacency.py`.
 - Exército inicial: `data/scenarios/<ano>/armies.json` (valores de exemplo, marcados).
 
+## Diplomacia e guerra
+
+- `data/common/diplomacy.json` (dias e custo da justificativa). `GameState.wars` (pares em guerra),
+  `justifications`, `alliances` (reservado; ainda sem sistema de alianças). `can_enter(tag, dono)`:
+  tropas só entram em território próprio, aliado ou inimigo em guerra (`ArmySystem.find_path` respeita isso;
+  `route_blocker()` diz qual país fecha o caminho).
+- `DiplomacySystem`: `JustifyWarCommand` (custa dinheiro, leva dias; o alvo é avisado) e, quando termina,
+  `DeclareWarCommand` (a guerra só começa ao declarar). Eventos do tipo "Diplomacia" e "Guerra".
+- Combate e ocupação ainda não existem (Parte 3): em guerra, os grupos só conseguem entrar no país inimigo.
+
 ## Inteligência
 
 - `data/common/intelligence.json`. Cada país tem espionagem (`intel_offense`) e contraespionagem
@@ -121,6 +131,14 @@ Documento de design completo: `docs/design.md`.
   decisões e fontes em `docs/fontes-bandeiras.md` (Alemanha sem suástica, Lei 7.716/89).
   Na interface: `UiStyle.flag_box()` + `UiStyle.set_flag(caixa, tag, cor)`.
 - As fontes não têm símbolos como ● ▶ ❚: usar ícones (`ui/icons`) ou `UiStyle.dot()`.
+- Ordens de marcha: clicar no boneco seleciona; clicar num estado manda marchar (botão direito também).
+  Passar o mouse mostra a prévia do caminho. Setas grossas e curvas com ponta (verde = marcha,
+  vermelha = destino inimigo) em `UnitLayer._draw_route`. Fronteira fechada abre o aviso
+  (`main._show_war_dialog`: cancelar, justificar ou declarar guerra); a ficha de estado estrangeiro
+  tem a seção Diplomacia.
+- Pesquisa em organograma (`ResearchPanel` + `ResearchTreeCanvas`): colunas por ano, linhas ligando
+  requisitos, cartões com ilustração. Ilustrações em `ui/research/<tech>.svg`, geradas por
+  `tools/data/gen_research_art.py`; um PNG com o mesmo nome substitui o desenho automaticamente.
 - Tropas no mapa (`ui/units/`): bonecos 3D numa camada 3D por cima do mapa 2D (`UnitLayer`). Modelos:
   `SoldierModel` (articulado, uniforme de `data/common/uniforms.json`), `TankModel`, `PlaneModel`,
   montados com `MeshKit`. Soldado com tamanho fixo no mapa (cabe nos países); veículos em escala de

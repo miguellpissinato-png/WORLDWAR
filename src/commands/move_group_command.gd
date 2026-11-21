@@ -1,6 +1,7 @@
 class_name MoveGroupCommand
 extends Command
-## Manda um grupo marchar até um estado do próprio país (o caminho é calculado por terra).
+## Manda um grupo marchar até um estado (o caminho é calculado por terra). As tropas só passam por
+## território próprio, aliado ou de quem está em guerra conosco.
 ## Se já estava marchando, ele termina o trecho em que está antes de mudar de rumo.
 
 var group_id: int
@@ -40,11 +41,15 @@ func validate(state: GameState, _defs: Dictionary) -> String:
 		return "estado desconhecido"
 	if target == g.destination():
 		return "o grupo já vai para lá"
-	if s.owner != country_tag:
-		return "só dá para marchar dentro do próprio país por enquanto"
+	if not state.can_enter(country_tag, s.owner):
+		return "não estamos em guerra com %s" % state.country(s.owner).name
 	if not g.moving() and target == g.state_id:
 		return "o grupo já está lá"
 	if _route(state).is_empty():
+		var from: int = g.path[0] if g.moving() else g.state_id
+		var blocker := ArmySystem.route_blocker(state, from, target, country_tag)
+		if blocker != "":
+			return "o caminho passa por %s, com quem não estamos em guerra" % state.country(blocker).name
 		return "não há caminho por terra até %s" % s.name
 	return ""
 

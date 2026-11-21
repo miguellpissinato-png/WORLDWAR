@@ -65,6 +65,7 @@ func make_world() -> Simulation:
 				"tech_future": {"name": "Futuro", "area": "blindados", "year": 1940, "days": 10, "money_cost": 10, "origin": []},
 			},
 		},
+		"diplomacy": {"justify_days": 3, "justify_cost": 10},
 		"army": {
 			"max_regiments_per_group": 2, "max_groups_per_general": 2,
 			"regiments": {

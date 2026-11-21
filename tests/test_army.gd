@@ -99,7 +99,7 @@ func test_cannot_march_abroad() -> void:
 	sim.command_rejected.connect(func(_c, r): reasons.append(r))
 	sim.submit(MoveGroupCommand.create("AAA", g.id, 2))
 	sim.apply_pending()
-	assert_eq(reasons, ["só dá para marchar dentro do próprio país por enquanto"])
+	assert_eq(reasons, ["não estamos em guerra com País B"])
 
 
 func test_change_route_while_marching() -> void:

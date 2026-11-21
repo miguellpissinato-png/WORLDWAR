@@ -175,7 +175,25 @@ static func groups_of_general(state: GameState, general_id: int) -> Array:
 ## Caminho mais curto (em km) por terra, só por estados do próprio país. Devolve os estados depois
 ## da origem até o destino; vazio se não há caminho.
 static func find_path(state: GameState, from: int, to: int, tag: String) -> Array:
-	if from == to or state.state(to) == null or state.state(to).owner != tag:
+	if state.state(to) == null or not state.can_enter(tag, state.state(to).owner):
+		return []
+	return _dijkstra(state, from, to, func(s: MapState): return state.can_enter(tag, s.owner))
+
+
+## Primeiro país no caminho por terra onde as tropas de `tag` não podem entrar ("" se nenhum
+## ou se não há caminho nenhum). Serve para avisar "é preciso estar em guerra com X".
+static func route_blocker(state: GameState, from: int, to: int, tag: String) -> String:
+	var path := _dijkstra(state, from, to, func(_s): return true)
+	for sid in path:
+		var owner: String = state.state(sid).owner
+		if not state.can_enter(tag, owner):
+			return owner
+	return ""
+
+
+## Caminho mais curto em km entre dois estados, só por estados em que `passable(estado)` é verdade.
+static func _dijkstra(state: GameState, from: int, to: int, passable: Callable) -> Array:
+	if from == to or state.state(to) == null:
 		return []
 	var dist := {from: 0.0}
 	var prev := {}
@@ -196,7 +214,7 @@ static func find_path(state: GameState, from: int, to: int, tag: String) -> Arra
 			if done.has(nb):
 				continue
 			var ns := state.state(nb)
-			if ns == null or ns.owner != tag:
+			if ns == null or not passable.call(ns):
 				continue
 			var d: float = dist[cur] + MapGeo.km(cs.center, ns.center)
 			if not dist.has(nb) or d < dist[nb]:

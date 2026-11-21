@@ -59,3 +59,4 @@ func _daily_update() -> void:
 	ConstructionSystem.daily_update(state, defs)
 	ProductionSystem.daily_update(state, defs)
 	ResearchSystem.daily_update(state, defs)
+	DiplomacySystem.daily_update(state, defs)

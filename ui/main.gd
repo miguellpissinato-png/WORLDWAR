@@ -38,6 +38,8 @@ var _speed_bars: Array = []   # ColorRect de cada barrinha de velocidade
 var _flag: PanelContainer
 var _country_label: Label
 var _peace_label: Label
+var _peace_dot: Panel
+var _war_dialog: PanelContainer
 var _nation_button: Button
 var _chips := {}              # id -> {button, value, extra...}
 var _res_button: Button
@@ -141,6 +143,31 @@ func _unhandled_input(event: InputEvent) -> void:
 			_on_state_clicked(-1)
 
 
+## Ordem de marcha vinda do mapa. Se o caminho passa por um país com quem não estamos em guerra,
+## abre o aviso de fronteira (cancelar, justificar ou declarar guerra) em vez de mandar a ordem.
+func order_move(group_id: int, sid: int) -> void:
+	var g := sim.state.group(group_id)
+	if g == null:
+		return
+	var cmd := MoveGroupCommand.create(player_tag, group_id, sid)
+	var reason := cmd.validate(sim.state, sim.defs)
+	if reason == "":
+		submit(cmd)
+		units.preview(-1)
+		return
+	var dest_owner: String = sim.state.state(sid).owner
+	var blocker := ""
+	if not sim.state.can_enter(player_tag, dest_owner):
+		blocker = dest_owner
+	else:
+		var from: int = g.path[0] if g.moving() else g.state_id
+		blocker = ArmySystem.route_blocker(sim.state, from, sid, player_tag)
+	if blocker != "":
+		_show_war_dialog(blocker, group_id, sid)
+	elif reason != "o grupo já está lá" and reason != "o grupo já vai para lá":
+		write_log("[color=#e08070]Ordem recusada:[/color] " + reason)
+
+
 ## Envia uma ordem e aplica na hora (jogo solo: este computador é o "host").
 func submit(cmd: Command) -> void:
 	sim.submit(cmd)
@@ -163,6 +190,7 @@ func _start_game(tag: String) -> void:
 	var c := sim.state.country(tag)
 	UiStyle.set_flag(_flag, tag, c.color)
 	_country_label.text = c.name.to_upper()
+	_country_label.add_theme_font_size_override("font_size", 19 if c.name.length() <= 9 else (16 if c.name.length() <= 13 else 13))
 	for r in sim.defs.resources:
 		_prev_stock[r.id] = c.stock(r.id)
 		_stock_delta[r.id] = 0.0
@@ -281,12 +309,28 @@ func _refresh_top_bar() -> void:
 		var short := float(c.last_shortage.get(r.id, 0.0)) > 0.0
 		cell.value.add_theme_color_override("font_color", UiStyle.WARN if short else UiStyle.TEXT)
 		cell.box.modulate = Color(1, 1, 1, 0.5) if stock < 0.5 and prod == 0 and not short else Color(1, 1, 1)
+	var enemies := sim.state.enemies_of(player_tag)
+	_peace_label.text = "Em paz" if enemies.is_empty() else ("Em guerra" if enemies.size() == 1 else "Em %d guerras" % enemies.size())
+	_peace_label.add_theme_color_override("font_color", UiStyle.MUTED if enemies.is_empty() else UiStyle.BAD)
+	_peace_dot.add_theme_stylebox_override("panel", UiStyle.box(UiStyle.GOOD if enemies.is_empty() else UiStyle.BAD, Color(0, 0, 0, 0), 0, 7))
 	var unread := _unread_events().size() + _shortages().size()
 	_alert_badge.visible = unread > 0
 	_alert_count.text = str(unread)
 	_alert_button.tooltip_text = "Avisos" if unread == 0 else "Avisos: %d novos" % unread
 	if _drop_kind != "":
 		_fill_drop()
+
+
+func _war_summary() -> String:
+	var parts := []
+	for e in sim.state.enemies_of(player_tag):
+		parts.append("[color=%s]em guerra com %s[/color]" % [UiStyle.BAD_HEX, sim.state.country(e).name])
+	for j in sim.state.justifications:
+		if j.owner == player_tag:
+			var n: String = sim.state.country(j.target).name
+			parts.append(("pronto para declarar guerra a %s" % n) if j.done else
+				("justificando guerra contra %s (%d dias)" % [n, DiplomacySystem.days_left(j)]))
+	return "em paz com todos" if parts.is_empty() else ", ".join(parts)
 
 
 func _player_events() -> Array:
@@ -409,7 +453,7 @@ func _refresh_group_card() -> void:
 		t += UiStyle.kv("Em", sim.state.state(g.state_id).name) + "\n"
 	t += ArmyPanel.summary(sim, g)
 	if g.owner == player_tag:
-		t += "\n\n[color=%s]Clique com o botão direito num estado para mandar marchar.[/color]" % UiStyle.MUTED_HEX
+		t += "\n\n[color=%s]Clique num estado para mandar marchar. Esc tira a seleção.[/color]" % UiStyle.MUTED_HEX
 	_state_info.text = t
 	UiStyle.clear(_build_box)
 	_spy_button.visible = false
@@ -422,11 +466,22 @@ func _set_card_title(title: String, sub: String, tag: String) -> void:
 
 
 func _on_state_hovered(sid: int) -> void:
+	if started:
+		units.preview(sid)
 	if sid == -1:
 		_hover_label.text = ""
 		return
 	var s := sim.state.state(sid)
-	_hover_label.text = "%s — %s" % [s.name, sim.state.country(s.owner).name]
+	var t := "%s — %s" % [s.name, sim.state.country(s.owner).name]
+	var g := sim.state.group(units.selected) if started else null
+	if g != null and g.owner == player_tag:
+		if not sim.state.can_enter(player_tag, s.owner):
+			t += "  ·  fronteira fechada: sem guerra com %s" % sim.state.country(s.owner).name
+		elif sim.state.at_war(player_tag, s.owner):
+			t += "  ·  clique para atacar"
+		else:
+			t += "  ·  clique para marchar"
+	_hover_label.text = t
 
 
 func _on_sea_hovered(zid: int) -> void:
@@ -464,6 +519,7 @@ func _refresh_state_panel() -> void:
 	_spy_button.visible = not mine
 	_spy_button.text = "Investigar %s" % owner.name
 	if not mine:
+		_diplomacy_box(_build_box, s.owner)
 		return
 	var cur: String = sim.defs.currency
 	var options: Array = sim.defs.buildings.keys()
@@ -486,6 +542,137 @@ func _refresh_state_panel() -> void:
 			submit(QueueConstructionCommand.create(player_tag, selected_state, building))
 			_refresh_all())
 		_build_box.add_child(btn)
+
+
+## Situação com outro país e o botão do próximo passo (justificar, declarar).
+func _diplomacy_box(parent: Control, tag: String) -> void:
+	var them := sim.state.country(tag)
+	parent.add_child(UiStyle.section("Diplomacia"))
+	var j := sim.state.justification(player_tag, tag)
+	var cur: String = sim.defs.currency
+	if sim.state.at_war(player_tag, tag):
+		parent.add_child(UiStyle.small_label("Em guerra com %s. Suas tropas podem entrar." % them.name, 13, UiStyle.BAD))
+	elif sim.state.allied(player_tag, tag):
+		parent.add_child(UiStyle.small_label("Aliado.", 13, UiStyle.GOOD))
+	elif j.is_empty():
+		parent.add_child(UiStyle.dim_label("Em paz. Para suas tropas entrarem, é preciso justificar e depois declarar guerra."))
+		var b := Button.new()
+		b.text = "Justificar guerra  ·  %d dias, %s" % [DiplomacySystem.justify_days(sim.defs), UiStyle.money(DiplomacySystem.justify_cost(sim.defs), cur)]
+		var why := DiplomacySystem.can_justify(sim.state, sim.defs, player_tag, tag)
+		b.disabled = why != ""
+		b.tooltip_text = why
+		b.pressed.connect(func(): submit(JustifyWarCommand.create(player_tag, tag)))
+		parent.add_child(b)
+	elif not j.done:
+		parent.add_child(UiStyle.small_label("Justificando guerra: faltam %d dias." % DiplomacySystem.days_left(j), 13, UiStyle.WARN))
+		var bar := ProgressBar.new()
+		bar.show_percentage = false
+		bar.custom_minimum_size = Vector2(0, 6)
+		bar.max_value = float(j.days_needed)
+		bar.value = float(j.days_done)
+		parent.add_child(bar)
+	else:
+		parent.add_child(UiStyle.small_label("Justificativa pronta.", 13, UiStyle.WARN))
+		parent.add_child(_declare_button(tag))
+
+
+func _declare_button(tag: String) -> Button:
+	var b := Button.new()
+	b.text = "Declarar guerra a %s" % sim.state.country(tag).name
+	b.icon = UiStyle.icon_texture("warning")
+	b.expand_icon = true
+	b.add_theme_constant_override("icon_max_width", 16)
+	b.add_theme_stylebox_override("normal", UiStyle.box(Color("#5a1d17"), UiStyle.BAD, 1, 3))
+	b.add_theme_stylebox_override("hover", UiStyle.box(Color("#7a271f"), UiStyle.BAD, 1, 3))
+	b.add_theme_color_override("icon_normal_color", Color.WHITE)
+	b.pressed.connect(func(): submit(DeclareWarCommand.create(player_tag, tag)))
+	return b
+
+
+# ---------------------------------------------------------------- aviso de fronteira
+
+func _build_war_dialog() -> void:
+	_war_dialog = UiStyle.panel(20)
+	_war_dialog.custom_minimum_size = Vector2(480, 0)
+	_war_dialog.visible = false
+	_game_ui.add_child(_war_dialog)
+
+
+func _show_war_dialog(tag: String, group_id: int, target_state: int) -> void:
+	UiStyle.clear(_war_dialog)
+	var them := sim.state.country(tag)
+	var cur: String = sim.defs.currency
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 12)
+	_war_dialog.add_child(v)
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 12)
+	v.add_child(h)
+	h.add_child(UiStyle.icon("warning", UiStyle.WARN, 22))
+	var title := UiStyle.title_label("Fronteira fechada", 19)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(title)
+	var close := UiStyle.icon_button("close", "Cancelar", 28, 14)
+	close.pressed.connect(func(): _war_dialog.visible = false)
+	h.add_child(close)
+	v.add_child(UiStyle.rule())
+	var who := HBoxContainer.new()
+	who.add_theme_constant_override("separation", 12)
+	v.add_child(who)
+	var fb := UiStyle.flag_box(Vector2(48, 32), true)
+	UiStyle.set_flag(fb, tag, them.color)
+	who.add_child(fb)
+	var msg := Label.new()
+	msg.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	msg.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	msg.custom_minimum_size = Vector2(360, 0)
+	msg.text = "Suas tropas não podem entrar em %s: vocês não estão em guerra." % them.name
+	who.add_child(msg)
+	var j := sim.state.justification(player_tag, tag)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 10)
+	row.alignment = BoxContainer.ALIGNMENT_END
+	var cancel := Button.new()
+	cancel.text = "Cancelar"
+	cancel.custom_minimum_size = Vector2(120, 40)
+	cancel.pressed.connect(func(): _war_dialog.visible = false)
+	if j.is_empty():
+		v.add_child(UiStyle.dim_label("Justificar a guerra leva %d dias e custa %s. Quando terminar, a guerra só começa se você a declarar." % [
+			DiplomacySystem.justify_days(sim.defs), UiStyle.money(DiplomacySystem.justify_cost(sim.defs), cur)]))
+		v.add_child(row)
+		row.add_child(cancel)
+		var just := UiStyle.primary_button("Justificar guerra", 40)
+		just.custom_minimum_size.x = 220
+		var why := DiplomacySystem.can_justify(sim.state, sim.defs, player_tag, tag)
+		just.disabled = why != ""
+		just.tooltip_text = why
+		just.pressed.connect(func():
+			submit(JustifyWarCommand.create(player_tag, tag))
+			_war_dialog.visible = false)
+		row.add_child(just)
+	elif not j.done:
+		v.add_child(UiStyle.small_label("A justificativa contra %s termina em %d dias. Depois disso, declare a guerra para entrar." % [
+			them.name, DiplomacySystem.days_left(j)], 13, UiStyle.WARN))
+		v.add_child(row)
+		cancel.text = "Entendi"
+		row.add_child(cancel)
+	else:
+		v.add_child(UiStyle.small_label("A justificativa está pronta. Declarar a guerra abre a fronteira e a marcha começa.", 13, UiStyle.WARN))
+		v.add_child(row)
+		row.add_child(cancel)
+		var dec := _declare_button(tag)
+		dec.custom_minimum_size = Vector2(0, 40)
+		dec.pressed.connect(func():
+			_war_dialog.visible = false
+			order_move.call_deferred(group_id, target_state))
+		row.add_child(dec)
+	_war_dialog.visible = true
+	_center_war_dialog.call_deferred()
+
+
+func _center_war_dialog() -> void:
+	_war_dialog.size = _war_dialog.get_combined_minimum_size()
+	_war_dialog.position = ((get_viewport().get_visible_rect().size - _war_dialog.size) * 0.5).floor()
 
 
 func _set_map_mode(mode: String) -> void:
@@ -553,6 +740,9 @@ func _build_ui() -> void:
 	_army.setup(self)
 	_game_ui.add_child(_army)
 	_build_side_panels()
+	for p in [_economy, _market, _intel, _research, _production, _army]:
+		_game_ui.move_child(p, -1)   # janelas por cima do registro e dos modos de mapa
+	_build_war_dialog()
 	_game_ui.move_child(_drop, -1)   # a caixa da barra fica por cima de tudo
 
 	_hover_label = Label.new()
@@ -639,7 +829,8 @@ func _build_top_bar() -> void:
 	nv.add_child(_country_label)
 	var ph := HBoxContainer.new()
 	ph.add_theme_constant_override("separation", 6)
-	ph.add_child(UiStyle.dot(UiStyle.GOOD, 7))
+	_peace_dot = UiStyle.dot(UiStyle.GOOD, 7)
+	ph.add_child(_peace_dot)
 	_peace_label = UiStyle.small_label("Em paz", 11)
 	ph.add_child(_peace_label)
 	nv.add_child(ph)
@@ -863,7 +1054,7 @@ func _fill_drop() -> void:
 				UiStyle.kv("Ideologia", c.ideology if c.ideology != "" else "a definir"),
 				UiStyle.kv("Capital", c.capital_city),
 				UiStyle.kv("Estados", str(sim.state.states_of(player_tag).size())),
-				UiStyle.kv("Situação", "em paz com todos")]
+				UiStyle.kv("Situação", _war_summary())]
 			v.add_child(t)
 		"treasury":
 			v.add_child(UiStyle.section("Tesouro"))
@@ -942,7 +1133,8 @@ func _fill_drop() -> void:
 				var e: Dictionary = evs[i]
 				var kind: String = e.get("kind", "Inteligência")
 				var look: Array = {"Inteligência": ["intel", UiStyle.INFO], "Pesquisa": ["research", UiStyle.GOOD],
-					"Exército": ["army", UiStyle.ACCENT], "Produção": ["warning", UiStyle.WARN]}.get(kind, ["bell", UiStyle.ACCENT])
+					"Exército": ["army", UiStyle.ACCENT], "Produção": ["warning", UiStyle.WARN],
+					"Diplomacia": ["map_political", UiStyle.WARN], "Guerra": ["warning", UiStyle.BAD]}.get(kind, ["bell", UiStyle.ACCENT])
 				v.add_child(_alert_row(look[0], look[1], kind, e.text))
 				any = true
 			if not any:
