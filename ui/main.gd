@@ -125,7 +125,10 @@ func _process(delta: float) -> void:
 		var whole := int(_accum)
 		if whole > 0:
 			_accum -= whole
-			sim.advance_hours(whole)
+			if not mp or Net.is_host:
+				sim.advance_hours(whole)
+				if mp:
+					Net.broadcast_advance(whole)
 	if _date_label != null:
 		_update_date()
 	if _drop_kind != "":
@@ -182,8 +185,13 @@ func order_move(group_id: int, sid: int) -> void:
 
 ## Envia uma ordem e aplica na hora (jogo solo: este computador é o "host").
 func submit(cmd: Command) -> void:
+	if mp and not Net.is_host:
+		Net.send_command(cmd.to_dict())   # o host aplica e devolve para todos
+		return
 	sim.submit(cmd)
 	sim.apply_pending()
+	if mp:
+		Net.broadcast_command(cmd.to_dict())
 
 
 func write_log(line: String) -> void:
@@ -195,6 +203,21 @@ func write_log(line: String) -> void:
 func _start_game(tag: String) -> void:
 	submit(ClaimCountryCommand.create(tag))
 	_enter_game(tag)
+
+
+## Partida em rede: todos entram juntos; o host registra cada jogador no seu país.
+func _start_mp(my_tag: String) -> void:
+	mp = true
+	_mp_screen.visible = false
+	_enter_game(my_tag)
+	paused = true
+	_update_time_controls()
+	if Net.is_host:
+		var ids: Array = Net.players.keys()
+		ids.sort()
+		for id in ids:
+			submit(ClaimCountryCommand.create(String(Net.players[id].tag)))
+	write_log("Partida em rede: %s." % ", ".join(Net.players.values().map(func(p): return "%s (%s)" % [p.nick, sim.state.country(p.tag).name])))
 
 
 ## Entra na partida já com o país escolhido (jogo novo ou carregado).
@@ -222,13 +245,27 @@ func _enter_game(tag: String) -> void:
 # ---------------------------------------------------------------- tempo e atualização
 
 func _toggle_pause() -> void:
+	if not _time_allowed():
+		return
 	paused = not paused
 	_update_time_controls()
+	Net.broadcast_time(paused, speed)
 
 
 func _set_speed(s: int) -> void:
+	if not _time_allowed():
+		return
 	speed = s
 	_update_time_controls()
+	Net.broadcast_time(paused, speed)
+
+
+## No multiplayer só o host mexe no tempo.
+func _time_allowed() -> bool:
+	if mp and not Net.is_host:
+		write_log("[color=#999]O tempo da partida é controlado pelo host.[/color]")
+		return false
+	return true
 
 
 func _update_time_controls() -> void:
@@ -821,12 +858,40 @@ func _build_ui() -> void:
 	_pause_menu.continue_chosen.connect(_close_pause_menu)
 	_pause_menu.save_chosen.connect(_save_game)
 	_pause_menu.settings_chosen.connect(func(): _settings.open())
-	_pause_menu.quit_chosen.connect(func(): get_tree().reload_current_scene())
+	_pause_menu.quit_chosen.connect(func():
+		Net.leave()
+		get_tree().reload_current_scene())
+	_mp_screen.setup(self)
+	if Net.last_message != "":
+		_menu.show_dialog("Multiplayer", Net.last_message)
+		Net.last_message = ""
+	Net.game_started.connect(_start_mp)
+	Net.host_command.connect(func(d):
+		var c := CommandRegistry.from_dict(d)
+		if c != null:
+			submit(c))
+	Net.net_command.connect(func(d):
+		var c := CommandRegistry.from_dict(d)
+		if c != null:
+			sim.submit(c)
+			sim.apply_pending())
+	Net.net_advance.connect(func(h): sim.advance_hours(h))
+	Net.time_changed.connect(func(p, s):
+		paused = p
+		speed = s
+		_update_time_controls())
+	Net.player_left.connect(func(tag):
+		write_log("%s saiu; a IA assume %s." % [tag, sim.state.country(tag).name])
+		submit(ClaimCountryCommand.create(tag, tag)))
+	Net.session_ended.connect(func(_r):
+		if mp:
+			get_tree().reload_current_scene())
 
 
 # ---------------------------------------------------------------- menu do Esc, salvar e carregar
 
 const SCENARIO := "1936"
+var mp := false   # partida em rede
 var _mp_screen: MultiplayerScreen
 var _control_seen := 0
 const SAVE_PATH := "user://save.json"
@@ -854,16 +919,18 @@ func _on_escape() -> void:
 
 
 func _open_pause_menu() -> void:
-	_paused_before_menu = paused
-	paused = true   # single player: o jogo para enquanto o menu está aberto
-	_update_time_controls()
-	_pause_menu.open(false)
+	if not mp:
+		_paused_before_menu = paused
+		paused = true   # single player: o jogo para enquanto o menu está aberto
+		_update_time_controls()
+	_pause_menu.open(mp)
 
 
 func _close_pause_menu() -> void:
 	_pause_menu.visible = false
-	paused = _paused_before_menu
-	_update_time_controls()
+	if not mp:
+		paused = _paused_before_menu
+		_update_time_controls()
 
 
 func _save_game() -> void:

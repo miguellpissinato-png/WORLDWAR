@@ -8,6 +8,12 @@ signal players_changed
 signal connected_to_server
 signal connection_failed(reason: String)
 signal session_ended(reason: String)
+signal game_started(my_tag: String)
+signal host_command(d: Dictionary)      # no host: comando que um cliente mandou (já conferido)
+signal net_command(d: Dictionary)       # nos clientes: comando aplicado pelo host
+signal net_advance(hours: int)          # nos clientes: o host avançou o tempo
+signal time_changed(paused: bool, speed: int)
+signal player_left(tag: String)
 
 const SETTINGS_PATH := "user://settings.cfg"
 const DEFAULT_PORT := 7036
@@ -23,6 +29,8 @@ var server_name := ""
 var max_players := 8
 var players: Dictionary = {}       # id do par -> {nick, avatar}
 var is_host := false
+var playing := false               # a partida em rede já começou
+var last_message := ""             # aviso para mostrar no menu depois de voltar (ex.: host saiu)
 
 
 func _ready() -> void:
@@ -64,7 +72,7 @@ func host(p_name: String, port: int, p_max: int) -> String:
 	is_host = true
 	server_name = p_name.strip_edges() if p_name.strip_edges() != "" else "Sala de %s" % nick
 	max_players = clampi(p_max, 2, 16)
-	players = {1: {"nick": nick, "avatar": avatar}}
+	players = {1: {"nick": nick, "avatar": avatar, "tag": ""}}
 	players_changed.emit()
 	return ""
 
@@ -89,6 +97,53 @@ func join(address: String) -> String:
 	return ""
 
 
+func my_tag() -> String:
+	var me: Dictionary = players.get(multiplayer.get_unique_id(), {})
+	return String(me.get("tag", ""))
+
+
+## Escolhe (ou larga, com "") o país na sala.
+func pick_country(tag: String) -> void:
+	if is_host:
+		_apply_pick(1, tag)
+	else:
+		_pick.rpc_id(1, tag)
+
+
+func can_start() -> bool:
+	if not is_host or players.size() < 1:
+		return false
+	for p in players.values():
+		if String(p.get("tag", "")) == "":
+			return false
+	return true
+
+
+## Host: começa a partida para todos.
+func start_game() -> void:
+	if can_start():
+		_begin.rpc(players)
+
+
+func send_command(d: Dictionary) -> void:
+	_cmd_from_client.rpc_id(1, d)
+
+
+func broadcast_command(d: Dictionary) -> void:
+	if is_host and playing:
+		_cmd.rpc(d)
+
+
+func broadcast_advance(hours: int) -> void:
+	if is_host and playing:
+		_adv.rpc(hours)
+
+
+func broadcast_time(p_paused: bool, p_speed: int) -> void:
+	if is_host and playing:
+		_time.rpc(p_paused, p_speed)
+
+
 func leave() -> void:
 	if in_session():
 		multiplayer.multiplayer_peer.close()
@@ -96,6 +151,7 @@ func leave() -> void:
 	players = {}
 	is_host = false
 	server_name = ""
+	playing = false
 
 
 # ---------------------------------------------------------------- troca de mensagens
@@ -111,7 +167,10 @@ func _on_peer_connected(_id: int) -> void:
 
 func _on_peer_disconnected(id: int) -> void:
 	if is_host and players.has(id):
+		var tag := String(players[id].get("tag", ""))
 		players.erase(id)
+		if playing and tag != "":
+			player_left.emit(tag)
 		_sync.rpc(players, server_name, max_players)
 		players_changed.emit()
 
@@ -122,11 +181,14 @@ func _register(p_nick: String, p_avatar: String) -> void:
 	if not is_host:
 		return
 	var id := multiplayer.get_remote_sender_id()
+	if playing:
+		_refused.rpc_id(id, "A partida já começou nesta sala.")
+		return
 	if players.size() >= max_players:
 		_refused.rpc_id(id, "A sala está cheia.")
 		multiplayer.multiplayer_peer.disconnect_peer(id)
 		return
-	players[id] = {"nick": p_nick.strip_edges().left(MAX_NICK), "avatar": p_avatar if p_avatar in AVATARS else AVATARS[0]}
+	players[id] = {"nick": p_nick.strip_edges().left(MAX_NICK), "avatar": p_avatar if p_avatar in AVATARS else AVATARS[0], "tag": ""}
 	_sync.rpc(players, server_name, max_players)
 	players_changed.emit()
 
@@ -140,6 +202,56 @@ func _sync(p_players: Dictionary, p_name: String, p_max: int) -> void:
 	players_changed.emit()
 
 
+@rpc("any_peer", "reliable")
+func _pick(tag: String) -> void:
+	if is_host:
+		_apply_pick(multiplayer.get_remote_sender_id(), tag)
+
+
+func _apply_pick(id: int, tag: String) -> void:
+	if playing or not players.has(id):
+		return
+	for other in players:
+		if other != id and String(players[other].get("tag", "")) == tag and tag != "":
+			return   # já é de outro jogador
+	players[id]["tag"] = tag
+	_sync.rpc(players, server_name, max_players)
+	players_changed.emit()
+
+
+@rpc("authority", "call_local", "reliable")
+func _begin(p_players: Dictionary) -> void:
+	players = p_players
+	playing = true
+	game_started.emit(my_tag())
+
+
+## Cliente -> host: uma ordem do jogador. O host confere se o país é mesmo dele.
+@rpc("any_peer", "reliable")
+func _cmd_from_client(d: Dictionary) -> void:
+	if not is_host or not playing:
+		return
+	var id := multiplayer.get_remote_sender_id()
+	if not players.has(id) or String(d.get("country", "")) != String(players[id].get("tag", "")):
+		return
+	host_command.emit(d)
+
+
+@rpc("authority", "reliable")
+func _cmd(d: Dictionary) -> void:
+	net_command.emit(d)
+
+
+@rpc("authority", "reliable")
+func _adv(hours: int) -> void:
+	net_advance.emit(hours)
+
+
+@rpc("authority", "reliable")
+func _time(p_paused: bool, p_speed: int) -> void:
+	time_changed.emit(p_paused, p_speed)
+
+
 @rpc("authority", "reliable")
 func _refused(reason: String) -> void:
 	_end(reason)
@@ -151,6 +263,7 @@ func _fail(reason: String) -> void:
 
 
 func _end(reason: String) -> void:
+	last_message = reason if playing else ""
 	leave()
 	session_ended.emit(reason)
 

@@ -25,7 +25,7 @@ func validate(state: GameState, _defs: Dictionary) -> String:
 
 func apply(state: GameState, _defs: Dictionary) -> void:
 	state.human_tags.erase(release)
-	if not country_tag in state.human_tags:
+	if release != country_tag and not country_tag in state.human_tags:   # release == país: devolve à IA
 		state.human_tags.append(country_tag)
 
 

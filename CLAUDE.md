@@ -143,8 +143,13 @@ Documento de design completo: `docs/design.md`.
   jogadores; padrão 7036) ou entrar por IP:porta (recentes guardados); 3) sala com a lista de jogadores.
   Rede por WebSocket (`WebSocketMultiplayerPeer`): o host recebe `_register` e manda `_sync` para todos.
   No navegador não dá para criar servidor (e uma página https não conecta em ws://): multiplayer é no jogo
-  instalado. Insígnias genéricas em `ui/avatars/*.svg` (desenhos próprios). Falta: escolher países na sala,
-  iniciar a partida e sincronizar comandos (só o host aplica; os outros mandam comandos ao host).
+  instalado. Insígnias genéricas em `ui/avatars/*.svg` (desenhos próprios).
+  Na sala cada um escolhe um país (`Net.pick_country`, o host impede repetidos) e o host inicia (`_begin`).
+  Partida em rede (`main.mp`): o cliente manda o comando ao host (`send_command`); o host confere se o país
+  é do remetente, aplica e repassa a todos (`broadcast_command`); o tempo só anda no host, que manda
+  `broadcast_advance(horas)` e `broadcast_time(pausa, velocidade)`. Como a simulação é determinística,
+  todos ficam iguais. Jogador que sai: a IA assume (`ClaimCountryCommand` com release = o próprio país).
+  Host saiu: os clientes voltam ao menu com aviso (`Net.last_message`).
 - Menu do Esc (`ui/panels/pause_menu.gd`): Esc fecha primeiro o que estiver aberto (aviso, caixa, janela,
   seleção); sem nada aberto, abre o menu (Continuar jogo, Salvar jogo, Configurações, Sair para o menu inicial)
   e pausa o single player. "Carregar jogo" aparece no menu inicial quando existe `user://save.json`.

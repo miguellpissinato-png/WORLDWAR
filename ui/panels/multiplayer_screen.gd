@@ -23,6 +23,14 @@ var _lobby_title: Label
 var _lobby_sub: Label
 var _lobby_list: VBoxContainer
 var _lobby_hint: Label
+var _main
+var _picker: OptionButton
+var _picker_tags: Array = []
+var _start_button: Button
+
+
+func setup(main) -> void:
+	_main = main
 
 
 func _ready() -> void:
@@ -272,14 +280,27 @@ func _build_lobby(p: PanelContainer) -> void:
 	_lobby_list = VBoxContainer.new()
 	_lobby_list.add_theme_constant_override("separation", 6)
 	v.add_child(_lobby_list)
-	_lobby_hint = UiStyle.small_label("Próximo passo: cada jogador escolhe um país e o host inicia a partida. "
-		+ "Os países que ninguém escolher ficam com a IA.", 12)
+	var pr := HBoxContainer.new()
+	pr.add_theme_constant_override("separation", 10)
+	v.add_child(pr)
+	pr.add_child(UiStyle.section("Seu país"))
+	_picker = OptionButton.new()
+	_picker.custom_minimum_size = Vector2(320, 38)
+	_picker.add_theme_constant_override("icon_max_width", 26)
+	_picker.item_selected.connect(func(i): Net.pick_country(_picker_tags[i]))
+	pr.add_child(_picker)
+	_lobby_hint = UiStyle.small_label("Cada jogador escolhe um país; os que ninguém escolher ficam com a IA. "
+		+ "O host inicia a partida e controla o tempo (pausa e velocidade).", 12)
 	_lobby_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(_lobby_hint)
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_END
 	row.add_theme_constant_override("separation", 10)
 	v.add_child(row)
+	_start_button = UiStyle.primary_button("Iniciar partida", 40)
+	_start_button.custom_minimum_size.x = 220
+	_start_button.pressed.connect(func(): Net.start_game())
+	row.add_child(_start_button)
 	var leave := Button.new()
 	leave.text = "Sair da sala"
 	leave.custom_minimum_size = Vector2(160, 40)
@@ -312,10 +333,54 @@ func _refresh_lobby() -> void:
 		n.text = pl.nick + ("  (você)" if id == multiplayer.get_unique_id() else "")
 		n.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		h.add_child(n)
+		var tag := String(pl.get("tag", ""))
+		if tag != "" and _main != null:
+			var c: Country = _main.sim.state.country(tag)
+			var fb := UiStyle.flag_box(Vector2(30, 20))
+			UiStyle.set_flag(fb, tag, c.color)
+			h.add_child(fb)
+			h.add_child(UiStyle.small_label(c.name, 12, UiStyle.TEXT))
+		else:
+			h.add_child(UiStyle.small_label("escolhendo país...", 12))
 		if int(id) == 1:
 			h.add_child(UiStyle.small_label("HOST", 11, UiStyle.ACCENT))
 		_lobby_list.add_child(h)
 	_lobby_list.add_child(UiStyle.small_label("%d de %d" % [ids.size(), Net.max_players], 11))
+	_fill_picker()
+	_start_button.visible = Net.is_host
+	_start_button.disabled = not Net.can_start()
+	_start_button.tooltip_text = "" if Net.can_start() else "Todos precisam escolher um país."
+
+
+func _fill_picker() -> void:
+	if _main == null:
+		return
+	var taken := {}
+	for id in Net.players:
+		if id != multiplayer.get_unique_id():
+			taken[String(Net.players[id].get("tag", ""))] = Net.players[id].nick
+	var st: GameState = _main.sim.state
+	if _picker_tags.is_empty():
+		var tags: Array = st.countries.keys()
+		tags.sort_custom(func(a, b):
+			var ma := StartScreen.MAJORS.find(a)
+			var mb := StartScreen.MAJORS.find(b)
+			if ma != mb and (ma == -1 or mb == -1):
+				return ma != -1
+			if ma != -1:
+				return ma < mb
+			return StartScreen._plain(st.country(a).name) < StartScreen._plain(st.country(b).name))
+		_picker_tags = [""] + tags
+	_picker.clear()
+	for i in _picker_tags.size():
+		var tag: String = _picker_tags[i]
+		if tag == "":
+			_picker.add_item("Escolha um país")
+			continue
+		var c: Country = st.country(tag)
+		_picker.add_icon_item(UiStyle.flag_texture(tag), c.name + ("  (%s)" % taken[tag] if taken.has(tag) else ""))
+		_picker.set_item_disabled(i, taken.has(tag))
+	_picker.select(maxi(0, _picker_tags.find(Net.my_tag())))
 
 
 func _avatar_rect(id: String, size: float) -> TextureRect:
