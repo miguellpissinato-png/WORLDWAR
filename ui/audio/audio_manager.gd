@@ -36,6 +36,18 @@ func _ready() -> void:
 	_next_track()
 
 
+## No navegador o som só é liberado depois do primeiro clique ou tecla: se a música
+## não conseguiu começar antes disso, começa agora.
+func _input(event: InputEvent) -> void:
+	if _player == null or _player.playing or _tracks.is_empty():
+		return
+	if (event is InputEventMouseButton or event is InputEventKey or event is InputEventScreenTouch) and event.is_pressed():
+		if _player.stream == null:
+			_next_track()
+		else:
+			_player.play()
+
+
 func _next_track() -> void:
 	if _tracks.is_empty():
 		return
