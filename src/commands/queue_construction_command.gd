@@ -25,7 +25,7 @@ func validate(state: GameState, defs: Dictionary) -> String:
 	var s := state.state(state_id)
 	if s == null:
 		return "estado desconhecido"
-	if s.owner != country_tag:
+	if s.owner != country_tag or s.control() != country_tag:
 		return "o estado não pertence ao país"
 	var def: Dictionary = ConstructionSystem.definition(defs, building)
 	if def.is_empty():

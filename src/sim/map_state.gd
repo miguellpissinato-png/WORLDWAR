@@ -10,6 +10,7 @@ var modern_country: String   # país atual (ISO), usado só para aplicar regras 
 var center: Vector2          # ponto central, em coordenadas do mapa
 var area_km2: int
 var owner: String = ""       # tag do país dono
+var controller: String = ""  # quem ocupa o estado agora ("" = o próprio dono)
 var population: int = 0
 var building_slots: int = 0  # vagas para fábricas (civis + militares)
 ## Nível de cada construção, ex.: {"factory": 3, "infrastructure": 2}
@@ -48,6 +49,15 @@ func max_extraction_levels(resource: String, deposit_factor: float) -> int:
 
 
 ## Aceita tanto os dados do mapa (code, country, center) quanto dados de teste (owner, buildings).
+## País que controla o estado (o ocupante, ou o dono se não está ocupado).
+func control() -> String:
+	return owner if controller == "" else controller
+
+
+func occupied() -> bool:
+	return controller != "" and controller != owner
+
+
 static func from_dict(d: Dictionary) -> MapState:
 	var s := MapState.new()
 	s.id = int(d.id)

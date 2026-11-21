@@ -94,7 +94,16 @@ Documento de design completo: `docs/design.md`.
   `route_blocker()` diz qual país fecha o caminho).
 - `DiplomacySystem`: `JustifyWarCommand` (custa dinheiro, leva dias; o alvo é avisado) e, quando termina,
   `DeclareWarCommand` (a guerra só começa ao declarar). Eventos do tipo "Diplomacia" e "Guerra".
-- Combate e ocupação ainda não existem (Parte 3): em guerra, os grupos só conseguem entrar no país inimigo.
+- Combate (`CombatSystem`, regras em `combat` de `data/common/army.json`, valores de jogo): grupo em marcha
+  para na divisa de um estado com tropas inimigas e ataca; cada hora os lados perdem organização (0–100 por
+  regimento, `r.org`) na proporção da força do outro (ataque leve/blindado pelo equipamento, organização,
+  general, bônus de defesa) e um pouco de equipamento. Lado com todos abaixo de `break_org` perde: defensor
+  recua para vizinho amigo (sem saída = destruído); atacante desiste. Fora de batalha a organização volta.
+  `GameState.battles` (estado -> atacantes/defensores) é refeito a cada hora.
+- Ocupação: `MapState.controller` ("" = o dono); `control()` / `occupied()`; `GameState.set_control()`.
+  Entrar em estado de inimigo em guerra ocupa; entrar num estado próprio ocupado liberta. `states_of()` usa
+  quem controla (o ocupante usa fábricas e recursos). Mapa pinta pelo controle (`control_version`).
+- Ainda falta (parte 2 do combate): capitulação, paz e resumo de batalha.
 
 ## Inteligência
 

@@ -42,5 +42,5 @@ static func daily_update(state: GameState, defs: Dictionary) -> void:
 			country.construction_queue.erase(item)
 			var s := state.state(item.state_id)
 			# O estado pode ter mudado de dono durante a construção.
-			if s != null and s.owner == tag:
+			if s != null and s.owner == tag and s.control() == tag:
 				s.buildings[item.building] = s.level(item.building) + 1

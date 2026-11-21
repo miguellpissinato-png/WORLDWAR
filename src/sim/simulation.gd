@@ -50,6 +50,7 @@ func _tick_hour() -> void:
 	apply_pending()
 	state.hours += 1
 	MovementSystem.hourly_update(state, defs)
+	CombatSystem.hourly_update(state, defs)
 	if state.hours % 24 == 0:
 		_daily_update()
 		day_passed.emit(state.hours)

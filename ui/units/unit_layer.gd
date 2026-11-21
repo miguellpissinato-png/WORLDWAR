@@ -215,6 +215,7 @@ func _draw() -> void:
 	var sel: ArmyGroup = st.group(selected)
 	if sel != null and not _preview_path.is_empty():
 		_draw_route(sel, _preview_path, 0.6, true)
+	_draw_battles(st, cam2d, zoom)
 	var rx := _px * 0.38 / zoom
 	for id in _feet:
 		var g: ArmyGroup = st.group(id)
@@ -225,6 +226,34 @@ func _draw() -> void:
 		if id == selected:
 			draw_arc(Vector2.ZERO, rx * 1.35, 0, TAU, 32, Color("#e8d08a"), 2.6 / zoom / 0.38)
 	draw_set_transform(Vector2.ZERO)
+
+
+## Marca de batalha: anel vermelho pulsando e duas espadas cruzadas no estado em disputa.
+func _draw_battles(st: GameState, cam2d: MapCamera, zoom: float) -> void:
+	var pulse := 0.5 + 0.5 * sin(Time.get_ticks_msec() / 260.0)
+	for sid in st.battles:
+		var target: Vector2 = st.state(sid).center
+		var p := Vector2.ZERO
+		var n := 0
+		for gid in st.battles[sid].attackers:
+			var ga: ArmyGroup = st.group(gid)
+			if ga != null:
+				p += st.state(ga.state_id).center.lerp(target, MovementSystem.ATTACK_POS + 0.25)
+				n += 1
+		p = cam2d.near(p / n if n > 0 else target)
+		var r := clampf(_px * 0.55, 10.0, 22.0) / zoom
+		draw_circle(p, r * (1.25 + 0.25 * pulse), Color(0.85, 0.2, 0.15, 0.18 + 0.12 * pulse))
+		draw_circle(p, r, Color(0.09, 0.1, 0.11, 0.9))
+		draw_arc(p, r, 0, TAU, 32, Color(0.85, 0.31, 0.24), 2.2 / zoom)
+		var w := 2.6 / zoom
+		var s := r * 0.58
+		for k in [-1.0, 1.0]:
+			var a := p + Vector2(-s, -s * k)
+			var b := p + Vector2(s, s * k)
+			draw_line(a, b, Color("#e2cf98"), w, true)          # lâmina
+			var hilt := a.lerp(b, 0.78)
+			var gv := Vector2(s * k, -s).normalized() * s * 0.32
+			draw_line(hilt - gv, hilt + gv, Color("#e2cf98"), w, true)   # guarda
 
 
 ## Seta grossa e curva do grupo até o destino, com contorno escuro e ponta larga.

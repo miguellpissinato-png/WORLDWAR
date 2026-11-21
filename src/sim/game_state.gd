@@ -97,9 +97,13 @@ func states_of(tag: String) -> Array:
 	return _owned.get(tag, [])
 
 
-## Índice de estados por dono, refeito no máximo uma vez por hora (e depois de cada comando,
+## Índice de estados por quem controla (dono, ou ocupante), refeito no máximo uma vez por hora (e depois de cada comando,
 ## via invalidate_owners). Sem ele, cada consulta varria os 3.681 estados.
 var _owned: Dictionary = {}
+## Batalhas em andamento: id do estado -> {attackers: [grupos], defenders: [grupos], since: hora}.
+var battles: Dictionary = {}
+## Sobe a cada mudança de controle de estado (a interface repinta o mapa quando muda).
+var control_version := 0
 var _owned_stamp := -1
 
 
@@ -107,12 +111,20 @@ func invalidate_owners() -> void:
 	_owned_stamp = -1
 
 
+## Muda quem controla o estado (ocupação ou libertação).
+func set_control(s: MapState, tag: String) -> void:
+	s.controller = "" if tag == s.owner else tag
+	control_version += 1
+	invalidate_owners()
+
+
 func _rebuild_owned() -> void:
 	_owned = {}
 	for st in states.values():
-		if not _owned.has(st.owner):
-			_owned[st.owner] = []
-		_owned[st.owner].append(st)
+		var c: String = st.control()
+		if not _owned.has(c):
+			_owned[c] = []
+		_owned[c].append(st)
 	_owned_stamp = hours
 
 

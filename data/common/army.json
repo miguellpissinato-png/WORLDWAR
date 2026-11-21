@@ -3,22 +3,186 @@
   "max_regiments_per_group": 4,
   "max_groups_per_general": 5,
   "regiments": {
-    "infantaria":       {"name": "Infantaria",             "needs": [{"categories": ["rifle"], "qty": 10}], "march_km_day": 25},
-    "artilharia":       {"name": "Artilharia",             "needs": [{"categories": ["artillery"], "qty": 12}, {"categories": ["rifle"], "qty": 2}], "march_km_day": 20},
-    "tanquistas":       {"name": "Blindados",              "needs": [{"categories": ["tank"], "qty": 10}], "march_km_day": 50},
-    "atiradores":       {"name": "Atiradores de elite",    "needs": [{"categories": ["sniper"], "qty": 2}, {"categories": ["rifle"], "qty": 4}], "march_km_day": 25},
-    "choque":           {"name": "Tropas de choque",       "needs": [{"categories": ["smg"], "qty": 6}, {"categories": ["rifle"], "qty": 4}], "march_km_day": 25},
-    "paraquedistas":    {"name": "Paraquedistas",          "needs": [{"categories": ["rifle"], "qty": 6}, {"categories": ["smg"], "qty": 3}], "march_km_day": 25},
-    "desembarque":      {"name": "Tropas de desembarque",  "needs": [{"categories": ["rifle"], "qty": 8}, {"categories": ["smg"], "qty": 2}], "march_km_day": 25},
-    "assalto_anfibio":  {"name": "Assalto anfíbio",        "needs": [{"categories": ["rifle"], "qty": 8}, {"categories": ["smg"], "qty": 4}], "march_km_day": 25}
+    "infantaria": {
+      "name": "Infantaria",
+      "needs": [
+        {
+          "categories": [
+            "rifle"
+          ],
+          "qty": 10
+        }
+      ],
+      "march_km_day": 25
+    },
+    "artilharia": {
+      "name": "Artilharia",
+      "needs": [
+        {
+          "categories": [
+            "artillery"
+          ],
+          "qty": 12
+        },
+        {
+          "categories": [
+            "rifle"
+          ],
+          "qty": 2
+        }
+      ],
+      "march_km_day": 20
+    },
+    "tanquistas": {
+      "name": "Blindados",
+      "needs": [
+        {
+          "categories": [
+            "tank"
+          ],
+          "qty": 10
+        }
+      ],
+      "march_km_day": 50
+    },
+    "atiradores": {
+      "name": "Atiradores de elite",
+      "needs": [
+        {
+          "categories": [
+            "sniper"
+          ],
+          "qty": 2
+        },
+        {
+          "categories": [
+            "rifle"
+          ],
+          "qty": 4
+        }
+      ],
+      "march_km_day": 25
+    },
+    "choque": {
+      "name": "Tropas de choque",
+      "needs": [
+        {
+          "categories": [
+            "smg"
+          ],
+          "qty": 6
+        },
+        {
+          "categories": [
+            "rifle"
+          ],
+          "qty": 4
+        }
+      ],
+      "march_km_day": 25
+    },
+    "paraquedistas": {
+      "name": "Paraquedistas",
+      "needs": [
+        {
+          "categories": [
+            "rifle"
+          ],
+          "qty": 6
+        },
+        {
+          "categories": [
+            "smg"
+          ],
+          "qty": 3
+        }
+      ],
+      "march_km_day": 25
+    },
+    "desembarque": {
+      "name": "Tropas de desembarque",
+      "needs": [
+        {
+          "categories": [
+            "rifle"
+          ],
+          "qty": 8
+        },
+        {
+          "categories": [
+            "smg"
+          ],
+          "qty": 2
+        }
+      ],
+      "march_km_day": 25
+    },
+    "assalto_anfibio": {
+      "name": "Assalto anfíbio",
+      "needs": [
+        {
+          "categories": [
+            "rifle"
+          ],
+          "qty": 8
+        },
+        {
+          "categories": [
+            "smg"
+          ],
+          "qty": 4
+        }
+      ],
+      "march_km_day": 25
+    }
   },
-  "rank_stat": {"rifle": "soft_attack", "sniper": "soft_attack", "smg": "close_attack", "tank": "hard_attack", "artillery": "soft_attack"},
-  "movement": {"infrastructure_bonus_per_level": 0.05, "general_speed_bonus_per_level": 0.1},
+  "rank_stat": {
+    "rifle": "soft_attack",
+    "sniper": "soft_attack",
+    "smg": "close_attack",
+    "tank": "hard_attack",
+    "artillery": "soft_attack"
+  },
+  "movement": {
+    "infrastructure_bonus_per_level": 0.05,
+    "general_speed_bonus_per_level": 0.1
+  },
   "generals": {
     "recruit_cost": 500,
-    "start": {"_padrao": 1, "ALE": 4, "URS": 4, "EUA": 3, "RUN": 3, "FRA": 3, "ITA": 3, "JAP": 3},
+    "start": {
+      "_padrao": 1,
+      "ALE": 4,
+      "URS": 4,
+      "EUA": 3,
+      "RUN": 3,
+      "FRA": 3,
+      "ITA": 3,
+      "JAP": 3
+    },
     "skill_start_max": 3,
     "skill_max": 5,
     "_habilidades": "ataque, defesa e velocidade de 1 a 5. Cada nível acima de 1: +10% (ataque e defesa entram no combate da parte 3; velocidade já acelera a marcha)."
+  },
+  "combat": {
+    "_nota": "Combate terrestre (valores de jogo, não históricos). Organização 0–100 por regimento: cai na batalha e volta aos poucos fora dela. O lado com todos os regimentos abaixo de break_org perde: o defensor recua para um estado vizinho amigo (ou é destruído se não houver), o atacante desiste da marcha.",
+    "max_org": 100,
+    "org_loss_per_hour": 4.0,
+    "org_regen_per_hour": 1.0,
+    "break_org": 15,
+    "random_spread": 0.2,
+    "defender_bonus": 1.25,
+    "general_bonus_per_level": 0.1,
+    "org_power_floor": 0.4,
+    "equipment_loss_per_org": 0.0008,
+    "soft_weights": {
+      "soft_attack": 1.0,
+      "close_attack": 0.5
+    },
+    "hard_weights": {
+      "hard_attack": 1.0
+    },
+    "hard_categories": [
+      "tank"
+    ]
   }
 }

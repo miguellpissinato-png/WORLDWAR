@@ -143,7 +143,10 @@ func load_shapes() -> void:
 
 ## Atualiza a tabela id -> dono. Chamar quando estados mudarem de dono.
 func color_by_owner(state: GameState) -> void:
-	color_states(state, func(s: MapState): return state.country(s.owner).color)
+	color_states(state, func(s: MapState):
+		if s.occupied() and state.country(s.controller) != null:   # ocupado: cor do ocupante, um pouco mais escura
+			return state.country(s.controller).color.lerp(state.country(s.owner).color, 0.25).darkened(0.12)
+		return state.country(s.owner).color)
 
 
 ## Modo de mapa genérico: `color_of(MapState) -> Color` decide a cor de cada estado.

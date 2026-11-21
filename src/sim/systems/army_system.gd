@@ -75,7 +75,7 @@ static func category_plural(cat: String) -> String:
 
 static func home_state(state: GameState, tag: String) -> int:
 	var c := state.country(tag)
-	if c != null and state.state(c.capital_state) != null and state.state(c.capital_state).owner == tag:
+	if c != null and state.state(c.capital_state) != null and state.state(c.capital_state).control() == tag:
 		return c.capital_state
 	var mine := state.states_of(tag)
 	return mine[0].id if not mine.is_empty() else -1
@@ -104,7 +104,7 @@ static func form_regiment(state: GameState, defs: Dictionary, tag: String, type:
 		if c.equipment_count(k) <= 0:
 			c.equipment.erase(k)
 	var g := state.group(group_id) if group_id != -1 else new_group(state, tag, home_state(state, tag))
-	g.regiments.append({"type": type, "equipment": eq})
+	g.regiments.append({"type": type, "equipment": eq, "org": float(CombatSystem.rules(defs).get("max_org", 100))})
 	return g
 
 

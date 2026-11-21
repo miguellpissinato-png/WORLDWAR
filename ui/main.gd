@@ -116,6 +116,10 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if started and sim.state.control_version != _control_seen:
+		_control_seen = sim.state.control_version
+		_apply_map_mode()
+		_refresh_state_panel()
 	if started and not paused:
 		_accum += delta * HOURS_PER_SECOND[speed - 1]
 		var whole := int(_accum)
@@ -459,10 +463,17 @@ func _refresh_group_card() -> void:
 	var gen := sim.state.general(g.general_id)
 	if gen != null:
 		t += UiStyle.kv("General", "%s  [color=#999](ataque %d, defesa %d, velocidade %d)[/color]" % [gen.name, gen.attack, gen.defense, gen.speed]) + "\n"
-	if g.moving():
+	var org := CombatSystem.group_org(sim.defs, g)
+	t += UiStyle.kv("Organização", "[color=%s]%d%%[/color]" % ["#d9503c" if org < 40 else ("#e0b050" if org < 75 else "#8fc46a"), roundi(org)]) + "\n"
+	var fight := CombatSystem.attack_target(sim.state, g)
+	if fight != -1:
+		t += "[color=#d9503c]Atacando %s[/color]\n" % sim.state.state(fight).name
+	elif sim.state.battles.has(g.state_id):
+		t += "[color=#d9503c]Defendendo %s[/color]\n" % sim.state.state(g.state_id).name
+	if g.moving() and fight == -1:
 		t += UiStyle.kv("Marchando para", "%s, chega em ~%d dias" % [sim.state.state(g.destination()).name,
 			ceili(ArmySystem.eta_days(sim.state, sim.defs, g))]) + "\n"
-	else:
+	elif fight == -1:
 		t += UiStyle.kv("Em", sim.state.state(g.state_id).name) + "\n"
 	t += ArmyPanel.summary(sim, g)
 	if g.owner == player_tag:
@@ -509,9 +520,13 @@ func _refresh_state_panel() -> void:
 		return
 	var s := sim.state.state(selected_state)
 	var owner := sim.state.country(s.owner)
-	var mine := s.owner == player_tag
+	var mine := s.owner == player_tag and s.control() == player_tag
 	_set_card_title(s.name, "%s · %s km²" % [owner.name, UiStyle.num(s.area_km2)], s.owner)
 	var st := ""
+	if s.occupied():
+		st += "[color=#d9503c]Ocupado por %s[/color]\n" % sim.state.country(s.controller).name
+	if sim.state.battles.has(s.id):
+		st += "[color=#d9503c]Batalha em andamento[/color]\n"
 	if mine:
 		st += UiStyle.kv("Fábricas", "%d de %d vagas" % [s.level("factory"), s.building_slots])
 		st += "   " + UiStyle.kv("Infraestrutura", "%d" % s.level("infrastructure")) + "\n"
@@ -811,6 +826,7 @@ func _build_ui() -> void:
 # ---------------------------------------------------------------- menu do Esc, salvar e carregar
 
 const SCENARIO := "1936"
+var _control_seen := 0
 const SAVE_PATH := "user://save.json"
 var _settings: SettingsPanel
 var _pause_menu: PauseMenu
