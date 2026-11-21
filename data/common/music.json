@@ -1,0 +1,10 @@
+{
+  "_nota": "Músicas de fundo, tocadas em sequência alternada. Arquivos enviados pelo Miguel (nomes originais cscprod-*, ao que parece do Pixabay; conferir a licença antes de distribuir).",
+  "tracks": [
+    {"file": "res://audio/music/echoes_of_destiny.mp3", "title": "Echoes of Destiny", "original": "cscprod-echoes-of-destiny-full-edition-253774.mp3"},
+    {"file": "res://audio/music/eternal_surge.mp3", "title": "Eternal Surge", "original": "cscprod-eternal-surge-275773.mp3"},
+    {"file": "res://audio/music/rising_dominion.mp3", "title": "Rising Dominion", "original": "cscprod-rising-dominion-275776.mp3"}
+  ],
+  "default_master": 100,
+  "default_music": 50
+}

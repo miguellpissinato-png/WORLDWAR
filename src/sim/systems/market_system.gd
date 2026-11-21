@@ -5,11 +5,13 @@ extends RefCounted
 ## alvo = preço base x (demanda / oferta) ^ elasticidade, limitado entre min e max vezes o preço base.
 
 
-static func target_price(state: GameState, defs: Dictionary, res: Dictionary) -> float:
+static func target_price(state: GameState, defs: Dictionary, res: Dictionary, world_civil: int = -1) -> float:
 	var m: Dictionary = defs.get("market", {})
-	var factories := 0
-	for tag in state.countries:
-		factories += state.civil_factories(tag)
+	var factories := world_civil
+	if factories < 0:
+		factories = 0
+		for tag in state.countries:
+			factories += state.civil_factories(tag)
 	var demand := factories * float(res.get("demand_per_factory", 1.0))
 	var supply := float(state.world_production(res.id))
 	var ratio := (demand + 1.0) / (supply + 1.0)
@@ -19,8 +21,11 @@ static func target_price(state: GameState, defs: Dictionary, res: Dictionary) ->
 
 static func daily_update(state: GameState, defs: Dictionary) -> void:
 	var speed := float(defs.get("market", {}).get("price_speed", 0.05))
+	var civil := 0
+	for tag in state.countries:
+		civil += state.civil_factories(tag)
 	for res in defs.get("resources", []):
-		var target := target_price(state, defs, res)
+		var target := target_price(state, defs, res, civil)
 		var current := state.price(res.id)
 		state.prices[res.id] = target if current <= 0.0 else lerpf(current, target, speed)
 

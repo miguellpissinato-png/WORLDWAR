@@ -23,3 +23,7 @@ window/size/viewport_height=720
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
+
+[autoload]
+
+Audio="*res://ui/audio/audio_manager.gd"

@@ -550,3 +550,39 @@ static func money(v: float, currency: String = "$") -> String:
 
 static func price(v: float) -> String:
 	return ("%.2f" % v).replace(".", ",")
+
+
+## Botão largo de menu (menu de pausa): ícone + texto em Oswald, fundo escuro, fio dourado no foco.
+static func menu_button(icon_name: String, text: String, width: float = 300.0) -> Button:
+	var b := Button.new()
+	b.text = text.to_upper()
+	b.icon = load("res://ui/icons/%s.svg" % icon_name)
+	b.expand_icon = false
+	b.add_theme_constant_override("icon_max_width", 20)
+	b.add_theme_constant_override("h_separation", 12)
+	b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	b.custom_minimum_size = Vector2(width, 46)
+	b.add_theme_font_override("font", font("title"))
+	b.add_theme_font_size_override("font_size", 17)
+	b.add_theme_stylebox_override("normal", box(BG_BUTTON, Color(ACCENT, 0.25), 1, 4, 14))
+	b.add_theme_stylebox_override("hover", box(BG_HOVER, ACCENT, 1, 4, 14))
+	b.add_theme_stylebox_override("pressed", box(BG_DARK, ACCENT, 1, 4, 14))
+	b.add_theme_stylebox_override("focus", box(Color(0, 0, 0, 0), ACCENT_LIGHT, 1, 4, 14))
+	for k in ["font_color", "font_focus_color"]:
+		b.add_theme_color_override(k, TEXT)
+	for k in ["font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+		b.add_theme_color_override(k, ACCENT_LIGHT)
+	b.add_theme_color_override("icon_normal_color", ACCENT)
+	b.add_theme_color_override("icon_hover_color", ACCENT_LIGHT)
+	b.add_theme_color_override("icon_pressed_color", ACCENT_LIGHT)
+	b.add_theme_color_override("icon_focus_color", ACCENT)
+	return b
+
+
+## Fundo escuro de tela cheia atrás de janelas modais; bloqueia os cliques no jogo.
+static func scrim(alpha: float = 0.62) -> ColorRect:
+	var r := ColorRect.new()
+	r.color = Color(0.04, 0.045, 0.05, alpha)
+	r.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	r.mouse_filter = Control.MOUSE_FILTER_STOP
+	return r

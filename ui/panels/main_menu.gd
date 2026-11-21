@@ -5,6 +5,10 @@ extends Control
 
 signal single_player_chosen
 signal multiplayer_chosen
+signal settings_chosen
+signal load_chosen
+
+var _load_button: Button
 
 const CREAM := Color("#e8d9b5")
 const CREAM_LIGHT := Color("#f3e7c8")
@@ -97,7 +101,11 @@ func _ready() -> void:
 	small.add_theme_constant_override("separation", 12)
 	v.add_child(small)
 	var cfg := _small_button("settings", "CONFIGURAÇÕES", 196)
-	cfg.pressed.connect(func(): show_dialog("Configurações", "As opções do jogo serão definidas em breve."))
+	_load_button = _small_button("save", "CARREGAR JOGO", 196)
+	_load_button.pressed.connect(func(): load_chosen.emit())
+	_load_button.visible = false
+	small.add_child(_load_button)
+	cfg.pressed.connect(func(): settings_chosen.emit())
 	small.add_child(cfg)
 	if not OS.has_feature("web"):   # no navegador não dá para fechar a página pelo jogo
 		var quit := _small_button("exit", "SAIR", 124)
@@ -279,6 +287,11 @@ func _build_dialog() -> void:
 	ok.size_flags_horizontal = Control.SIZE_SHRINK_END
 	ok.pressed.connect(func(): _dialog.visible = false)
 	v.add_child(ok)
+
+
+## Mostra "Carregar jogo" quando existe um jogo salvo.
+func set_has_save(has_save: bool) -> void:
+	_load_button.visible = has_save
 
 
 func show_dialog(title: String, text: String) -> void:

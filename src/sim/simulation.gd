@@ -10,6 +10,9 @@ signal command_applied(command: Command)
 var state: GameState
 var defs: Dictionary          # definições de data/common (construções, regras)
 var _pending: Array = []      # comandos aguardando a próxima hora
+## Diário de comandos aplicados: [{"h": hora, "c": comando.to_dict()}]. Com o cenário e a semente,
+## basta para refazer a partida (salvar/carregar, replays).
+var journal: Array = []
 
 
 func _init(p_state: GameState, p_defs: Dictionary) -> void:
@@ -36,6 +39,8 @@ func apply_pending() -> void:
 		var reason: String = cmd.validate(state, defs)
 		if reason == "":
 			cmd.apply(state, defs)
+			state.invalidate_owners()
+			journal.append({"h": state.hours, "c": cmd.to_dict()})
 			command_applied.emit(cmd)
 		else:
 			command_rejected.emit(cmd, reason)

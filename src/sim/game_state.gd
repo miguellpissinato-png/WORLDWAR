@@ -92,7 +92,28 @@ func justification(owner: String, target: String) -> Dictionary:
 
 
 func states_of(tag: String) -> Array:
-	return states.values().filter(func(s): return s.owner == tag)
+	if _owned_stamp != hours:
+		_rebuild_owned()
+	return _owned.get(tag, [])
+
+
+## Índice de estados por dono, refeito no máximo uma vez por hora (e depois de cada comando,
+## via invalidate_owners). Sem ele, cada consulta varria os 3.681 estados.
+var _owned: Dictionary = {}
+var _owned_stamp := -1
+
+
+func invalidate_owners() -> void:
+	_owned_stamp = -1
+
+
+func _rebuild_owned() -> void:
+	_owned = {}
+	for st in states.values():
+		if not _owned.has(st.owner):
+			_owned[st.owner] = []
+		_owned[st.owner].append(st)
+	_owned_stamp = hours
 
 
 ## Total de uma construção somando todos os estados do país.

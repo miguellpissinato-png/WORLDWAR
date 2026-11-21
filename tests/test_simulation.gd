@@ -70,3 +70,21 @@ func test_apply_pending_without_time() -> void:
 	sim.apply_pending()
 	assert_eq(sim.state.country("AAA").construction_queue.size(), 1)
 	assert_eq(sim.state.hours, 0, "o tempo não andou")
+
+
+func test_save_and_replay() -> void:
+	# Salvar = diário de comandos; carregar refaz a partida e chega no mesmo estado.
+	var a := make_world()
+	a.submit(QueueConstructionCommand.create("AAA", 1, "factory"))
+	a.advance_hours(24 * 5 + 7)
+	a.submit(QueueConstructionCommand.create("AAA", 1, "infrastructure"))
+	a.apply_pending()   # com o jogo pausado
+	a.submit(QueueConstructionCommand.create("BBB", 2, "factory"))   # recusado: não entra no diário
+	a.advance_hours(24 * 40)
+	var data := SaveGame.to_dict(a, "teste", "AAA")
+	data = JSON.parse_string(JSON.stringify(data))   # como no arquivo
+	var b := SaveGame.replay(data, make_world().state, make_world().defs)
+	assert_eq(b.state.hours, a.state.hours, "mesma hora")
+	assert_eq(b.state.state(1).buildings, a.state.state(1).buildings)
+	assert_eq(b.state.country("AAA").money, a.state.country("AAA").money)
+	assert_eq(b.journal.size(), a.journal.size())

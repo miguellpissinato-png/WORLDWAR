@@ -124,6 +124,17 @@ Documento de design completo: `docs/design.md`.
   cartazes `ui/menu/menu_bg.jpg`, título na fonte de estêncil Big Shoulders (OFL), Single player (vai para a
   escolha de país), Multiplayer (aviso de "em breve" até existir a rede), Configurações (opções a definir)
   e Sair (some na versão web).
+- Menu do Esc (`ui/panels/pause_menu.gd`): Esc fecha primeiro o que estiver aberto (aviso, caixa, janela,
+  seleção); sem nada aberto, abre o menu (Continuar jogo, Salvar jogo, Configurações, Sair para o menu inicial)
+  e pausa o single player. "Carregar jogo" aparece no menu inicial quando existe `user://save.json`.
+- Salvar/carregar (`src/sim/save_game.gd`): o arquivo guarda cenário + diário de comandos (`Simulation.journal`);
+  carregar refaz a partida hora a hora (determinismo). Ao carregar, `SaveGame.pending` + `reload_current_scene()`.
+  Cerca de 11 s por ano de jogo; se ficar lento demais, trocar por uma foto do estado.
+- Configurações (`ui/panels/settings_panel.gd`), abas (por enquanto só Áudio: volume geral e música, 0–100).
+  Áudio no autoload `Audio` (`ui/audio/audio_manager.gd`): barramento "Musica", volumes em `user://settings.cfg`,
+  músicas de `data/common/music.json` (`audio/music/`) tocando em sequência; música começa em 50%.
+- Desempenho: `GameState.states_of()` usa um índice por dono (refeito a cada hora e depois de cada comando);
+  não voltar a varrer todos os estados em consultas por país.
 - Escolha de país (`ui/panels/start_screen.gd`): lista com bandeiras (grandes potências primeiro, nomes
   ordenados sem acento), ficha com placas de números e recursos com % da produção mundial, e
   "Ver no mapa" (destaca o país, voa a câmera; clicar em outro país troca).

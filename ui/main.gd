@@ -70,7 +70,12 @@ var _log: RichTextLabel
 
 func _ready() -> void:
 	var defs := ScenarioLoader.load_defs()
-	sim = Simulation.new(ScenarioLoader.load_scenario("1936", defs), defs)
+	var loading := SaveGame.pending
+	SaveGame.pending = {}
+	if loading.is_empty():
+		sim = Simulation.new(ScenarioLoader.load_scenario(SCENARIO, defs), defs)
+	else:
+		sim = SaveGame.replay(loading, ScenarioLoader.load_scenario(String(loading.get("scenario", SCENARIO)), defs), defs)
 	sim.command_rejected.connect(func(_c, reason): write_log("[color=#e08070]Ordem recusada:[/color] " + reason))
 	sim.day_passed.connect(func(_h): _on_day())
 	sim.command_applied.connect(func(_c): _refresh_all.call_deferred())
@@ -105,6 +110,9 @@ func _ready() -> void:
 
 	_build_ui()
 	_start.select("BRA")
+	if not loading.is_empty():
+		_enter_game(String(loading.player))
+		write_log("Jogo carregado: %s." % GameDate.format(sim.state.hours))
 
 
 func _process(delta: float) -> void:
@@ -139,8 +147,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif event.keycode >= KEY_1 and event.keycode <= KEY_5:
 			_set_speed(event.keycode - KEY_0)
 		elif event.keycode == KEY_ESCAPE:
-			units.select(-1)
-			_on_state_clicked(-1)
+			_on_escape()
+			get_viewport().set_input_as_handled()
 
 
 ## Ordem de marcha vinda do mapa. Se o caminho passa por um país com quem não estamos em guerra,
@@ -181,8 +189,13 @@ func write_log(line: String) -> void:
 # ---------------------------------------------------------------- início do jogo
 
 func _start_game(tag: String) -> void:
-	player_tag = tag
 	submit(ClaimCountryCommand.create(tag))
+	_enter_game(tag)
+
+
+## Entra na partida já com o país escolhido (jogo novo ou carregado).
+func _enter_game(tag: String) -> void:
+	player_tag = tag
 	started = true
 	_start.visible = false
 	_menu.visible = false
@@ -776,6 +789,90 @@ func _build_ui() -> void:
 		"Em breve: você e seus amigos escolhem um país cada um, e os países que ninguém escolher "
 		+ "continuam com a IA. O jogo já foi organizado para isso; falta a parte de rede."))
 	_root.add_child(_menu)
+
+
+	_settings = SettingsPanel.new()
+	_settings.visible = false
+	_root.add_child(_settings)
+	_menu.settings_chosen.connect(func(): _settings.open())
+	_menu.load_chosen.connect(_load_game)
+	_menu.set_has_save(FileAccess.file_exists(SAVE_PATH))
+
+	_pause_menu = PauseMenu.new()
+	_pause_menu.visible = false
+	_root.add_child(_pause_menu)
+	_root.move_child(_settings, -1)   # configurações por cima do menu de pausa
+	_pause_menu.continue_chosen.connect(_close_pause_menu)
+	_pause_menu.save_chosen.connect(_save_game)
+	_pause_menu.settings_chosen.connect(func(): _settings.open())
+	_pause_menu.quit_chosen.connect(func(): get_tree().reload_current_scene())
+
+
+# ---------------------------------------------------------------- menu do Esc, salvar e carregar
+
+const SCENARIO := "1936"
+const SAVE_PATH := "user://save.json"
+var _settings: SettingsPanel
+var _pause_menu: PauseMenu
+var _paused_before_menu := true
+
+
+## Esc fecha primeiro o que estiver aberto (aviso, caixa, janela, seleção); sem nada aberto,
+## abre o menu do jogo. Com o menu aberto, Esc volta ao jogo.
+func _on_escape() -> void:
+	if _pause_menu.visible:
+		_close_pause_menu()
+	elif _war_dialog.visible:
+		_war_dialog.visible = false
+	elif _drop_kind != "":
+		_close_drop()
+	elif [_economy, _market, _intel, _research, _production, _army].any(func(p): return p.visible):
+		_only_one_panel(null)
+	elif units.selected != -1 or _state_panel.visible:
+		units.select(-1)
+		_on_state_clicked(-1)
+	else:
+		_open_pause_menu()
+
+
+func _open_pause_menu() -> void:
+	_paused_before_menu = paused
+	paused = true   # single player: o jogo para enquanto o menu está aberto
+	_update_time_controls()
+	_pause_menu.open(false)
+
+
+func _close_pause_menu() -> void:
+	_pause_menu.visible = false
+	paused = _paused_before_menu
+	_update_time_controls()
+
+
+func _save_game() -> void:
+	var data := SaveGame.to_dict(sim, SCENARIO, player_tag)
+	var f := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if f == null:
+		_pause_menu.set_status("Não foi possível salvar o jogo.")
+		return
+	f.store_string(JSON.stringify(data))
+	f.close()
+	_pause_menu.set_status("Jogo salvo em %s." % GameDate.format(sim.state.hours))
+	write_log("Jogo salvo.")
+
+
+func _load_game() -> void:
+	var f := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if f == null:
+		return
+	var data = JSON.parse_string(f.get_as_text())
+	if not (data is Dictionary) or not data.has("journal"):
+		_menu.show_dialog("Carregar jogo", "O jogo salvo não pôde ser lido.")
+		return
+	SaveGame.pending = data
+	_menu.show_dialog("Carregando", "Refazendo a partida até %s..." % GameDate.format(int(data.get("hours", 0))))
+	await get_tree().process_frame
+	await get_tree().process_frame
+	get_tree().reload_current_scene()
 
 
 func _only_one_panel(p: Control) -> void:
