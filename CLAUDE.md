@@ -139,6 +139,8 @@ Documento de design completo: `docs/design.md`.
 - Pesquisa em organograma (`ResearchPanel` + `ResearchTreeCanvas`): colunas por ano, linhas ligando
   requisitos, cartões com ilustração. Ilustrações em `ui/research/<tech>.svg`, geradas por
   `tools/data/gen_research_art.py`; um PNG com o mesmo nome substitui o desenho automaticamente.
+  PNGs reais (660x300, fundo transparente, variante exata conferida) com fontes em `docs/fontes-imagens-pesquisa.md`;
+  suástica da deriva dos aviões alemães coberta. Itens sem PNG seguem com o SVG e são trocados aos poucos.
 - Tropas no mapa (`ui/units/`): bonecos 3D numa camada 3D por cima do mapa 2D (`UnitLayer`). Modelos:
   `SoldierModel` (articulado, uniforme de `data/common/uniforms.json`), `TankModel`, `PlaneModel`,
   montados com `MeshKit`. Soldado com tamanho fixo no mapa (cabe nos países); veículos em escala de
