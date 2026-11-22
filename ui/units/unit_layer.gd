@@ -167,6 +167,10 @@ func _has_planes(g: ArmyGroup) -> bool:
 	return g.count_of("avioes") >= 0.5
 
 
+static func moral_color(f: float) -> Color:
+	return Color("#d9503c") if f < 0.35 else (Color("#e0b050") if f < 0.7 else Color("#8fc46a"))
+
+
 ## Texto curto da pilha no mapa: "320 · 20 tq · 5 av".
 static func stack_label(g: ArmyGroup) -> String:
 	var parts := []
@@ -209,9 +213,15 @@ var _preview_path: Array = []
 
 
 ## Mostra por onde o grupo selecionado iria se o jogador clicasse no estado `sid` (-1 apaga).
+var _preview_forecast := {}
+var _battle_hits := {}    # estado -> retângulo (no mapa) da marca de batalha, para o clique
+var battle_pos := {}      # estado -> ponto (no mapa) da marca de batalha; o BattleOverlay desenha o quadro ali
+
+
 func preview(sid: int) -> void:
 	_preview_target = sid
 	_preview_path = []
+	_preview_forecast = {}
 	var g: ArmyGroup = _main.sim.state.group(selected) if _main != null else null
 	if g == null or g.owner != _main.player_tag or sid == -1:
 		return
@@ -221,6 +231,15 @@ func preview(sid: int) -> void:
 	_preview_path = ArmySystem.find_path(_main.sim.state, from, sid, g.owner)
 	if g.moving():
 		_preview_path = [from] + _preview_path
+	if not _preview_path.is_empty():
+		var f := CombatSystem.forecast(_main.sim.state, _main.sim.defs, [g], sid)
+		if not f.defenders.is_empty():
+			_preview_forecast = f
+
+
+## Previsão do ataque ao estado sob o mouse ({} se lá não há inimigo).
+func preview_forecast() -> Dictionary:
+	return _preview_forecast
 
 
 func _draw() -> void:
@@ -235,7 +254,10 @@ func _draw() -> void:
 	var sel: ArmyGroup = st.group(selected)
 	if sel != null and not _preview_path.is_empty():
 		_draw_route(sel, _preview_path, 0.6, true)
+	_battle_hits = {}
+	battle_pos = {}
 	_draw_battles(st, cam2d, zoom)
+
 	var rx := _px * 0.38 / zoom
 	for id in _feet:
 		var g: ArmyGroup = st.group(id)
@@ -251,9 +273,33 @@ func _draw() -> void:
 			var txt := stack_label(g)
 			var w := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
 			draw_set_transform(p + Vector2(0, rx * 0.55), 0.0, Vector2.ONE / zoom)
-			draw_rect(Rect2(-w * 0.5 - 4, 0, w + 8, 15), Color(0, 0, 0, 0.6))
+			var bw := maxf(w + 8, 44.0)
+			draw_rect(Rect2(-bw * 0.5, 0, bw, 19), Color(0, 0, 0, 0.6))
 			draw_string(font, Vector2(-w * 0.5, 11.5), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("#f0e6cc"))
+			# barra de moral (a "vida" da tropa)
+			var org := CombatSystem.group_org(_main.sim.defs, g) / 100.0
+			draw_rect(Rect2(-bw * 0.5 + 3, 14, bw - 6, 3), Color(1, 1, 1, 0.15))
+			draw_rect(Rect2(-bw * 0.5 + 3, 14, (bw - 6) * org, 3), moral_color(org))
 	draw_set_transform(Vector2.ZERO)
+
+
+static func _side_org(defs: Dictionary, side: Array) -> float:
+	var t := 0.0
+	var n := 0.0
+	for g: ArmyGroup in side:
+		var w := ArmySystem.stack_size(defs, g)
+		t += CombatSystem.group_org(defs, g) * w
+		n += w
+	return clampf(t / maxf(n, 0.001) / 100.0, 0.0, 1.0)
+
+
+## Estado da marca de batalha sob o ponto da tela (-1 = nenhuma).
+func battle_at(screen_pos: Vector2) -> int:
+	var world := get_viewport().get_canvas_transform().affine_inverse() * screen_pos
+	for sid in _battle_hits:
+		if _main.sim.state.battles.has(sid) and _battle_hits[sid].has_point(world):
+			return sid
+	return -1
 
 
 ## Marca de batalha: anel vermelho pulsando e duas espadas cruzadas no estado em disputa.
@@ -270,6 +316,8 @@ func _draw_battles(st: GameState, cam2d: MapCamera, zoom: float) -> void:
 				n += 1
 		p = cam2d.near(p / n if n > 0 else target)
 		var r := clampf(_px * 0.55, 10.0, 22.0) / zoom
+		battle_pos[sid] = p
+		_battle_hits[sid] = Rect2(p - Vector2(r, r) * 1.3, Vector2(r, r) * 2.6)
 		draw_circle(p, r * (1.25 + 0.25 * pulse), Color(0.85, 0.2, 0.15, 0.18 + 0.12 * pulse))
 		draw_circle(p, r, Color(0.09, 0.1, 0.11, 0.9))
 		draw_arc(p, r, 0, TAU, 32, Color(0.85, 0.31, 0.24), 2.2 / zoom)
@@ -375,6 +423,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	var mb := event as InputEventMouseButton
 	if mb.button_index == MOUSE_BUTTON_LEFT and mb.pressed:
+		var bsid := battle_at(mb.position)
+		if bsid != -1:
+			_main.open_battle(bsid)
+			get_viewport().set_input_as_handled()
+			return
 		var id := group_at(mb.position)
 		if id != -1:
 			select(id)

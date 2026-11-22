@@ -48,6 +48,7 @@ var _alert_badge: PanelContainer
 var _alert_count: Label
 var _newspaper: Newspaper
 var _peace: PeaceDialog
+var _battle: BattlePanel
 var _news_read := 0          # notícias já vistas no jornal (contador de GameState.news_count)
 var _news_toasted := 0
 var _extra: PanelContainer   # aviso "EXTRA!" de notícia grande
@@ -586,7 +587,8 @@ func _refresh_group_card() -> void:
 	if gen != null:
 		t += UiStyle.kv("General", "%s  [color=#999](ataque %d, defesa %d, velocidade %d)[/color]" % [gen.name, gen.attack, gen.defense, gen.speed]) + "\n"
 	var org := CombatSystem.group_org(sim.defs, g)
-	t += UiStyle.kv("Organização", "[color=%s]%d%%[/color]" % ["#d9503c" if org < 40 else ("#e0b050" if org < 75 else "#8fc46a"), roundi(org)]) + "\n"
+	t += UiStyle.kv("Moral (vida)", "[color=%s]%d%%[/color]" % ["#d9503c" if org < 35 else ("#e0b050" if org < 70 else "#8fc46a"), roundi(org)])
+	t += "   " + UiStyle.kv("Força", BattlePanel.power_text(CombatSystem.side_power(sim.state, sim.defs, [g], [], false))) + "\n"
 	var fight := CombatSystem.attack_target(sim.state, g)
 	if fight != -1:
 		t += "[color=#d9503c]Atacando %s[/color]\n" % sim.state.state(fight).name
@@ -611,12 +613,20 @@ var _send_sig := ""
 
 
 func _send_box(g: ArmyGroup) -> void:
-	var sig := "%d|%s|%s" % [g.id, g.moving(), ArmyPanel.counts_text(sim, g)]
+	var fight := CombatSystem.attack_target(sim.state, g)
+	if fight == -1 and sim.state.battles.has(g.state_id):
+		fight = g.state_id
+	var sig := "%d|%s|%s|%d" % [g.id, g.moving(), ArmyPanel.counts_text(sim, g), fight]
 	if sig == _send_sig:
 		return
 	_send_sig = sig
 	UiStyle.clear(_build_box)
 	_send = {}
+	if fight != -1:
+		var vb := UiStyle.primary_button("Ver a batalha", 34)
+		var bsid := fight
+		vb.pressed.connect(func(): open_battle(bsid))
+		_build_box.add_child(vb)
 	if g.owner != player_tag or g.moving():
 		return
 	_build_box.add_child(UiStyle.section("Enviar na próxima ordem"))
@@ -681,7 +691,11 @@ func _on_state_hovered(sid: int) -> void:
 		if not sim.state.can_enter(player_tag, s.owner):
 			t += "  ·  fronteira fechada: sem guerra com %s" % sim.state.country(s.owner).name
 		elif sim.state.at_war(player_tag, s.owner):
-			t += "  ·  clique para atacar"
+			var f: Dictionary = units.preview_forecast()
+			if f.is_empty():
+				t += "  ·  clique para atacar (sem tropas inimigas)"
+			else:
+				t += "  ·  força %d%% × %d%%: %s" % [roundi(f.share * 100), 100 - roundi(f.share * 100), "vitória provável" if f.winner == "att" else "derrota provável"]
 		else:
 			t += "  ·  clique para marchar"
 	_hover_label.text = t
@@ -720,10 +734,35 @@ func _refresh_state_panel() -> void:
 			st += "[color=#888]Relatório de inteligência de %s:[/color]\n" % GameDate.format(rep.hours).split(",")[0]
 			st += UiStyle.kv("Tesouro", "~" + UiStyle.money(rep.money, sim.defs.currency)) + "   "
 			st += UiStyle.kv("Fábricas", "~%d civis, ~%d militares" % [rep.civilian_factories, rep.military_factories]) + "\n"
+	# tropas paradas ou de passagem neste estado (de qualquer país)
+	var here := sim.state.groups.values().filter(func(gg): return gg.state_id == s.id and not gg.empty())
+	if not here.is_empty():
+		var by_owner := {}
+		for gg in here:
+			if not by_owner.has(gg.owner):
+				by_owner[gg.owner] = []
+			by_owner[gg.owner].append(gg)
+		for o in by_owner:
+			var cnt := {}
+			for gg in by_owner[o]:
+				for ty in gg.types():
+					cnt[ty] = float(cnt.get(ty, 0.0)) + gg.count_of(ty)
+			var parts := []
+			for ty in cnt:
+				parts.append("%d %s" % [roundi(cnt[ty]), ArmySystem.troop_def(sim.defs, ty).get("short", ty)])
+			var mor := UnitLayer._side_org(sim.defs, by_owner[o])
+			st += "[color=%s]Tropas %s:[/color] %s · moral %d%% · força %s\n" % [
+				"#d9503c" if sim.state.at_war(player_tag, o) else UiStyle.MUTED_HEX, NewsText.of(sim.state.country(o).name),
+				", ".join(parts), roundi(mor * 100), BattlePanel.power_text(CombatSystem.side_power(sim.state, sim.defs, by_owner[o], [], o != player_tag))]
 	_state_info.text = st
 
 	_send_sig = ""
 	UiStyle.clear(_build_box)
+	if sim.state.battles.has(s.id) or sim.state.battle_results.has(s.id):
+		var vb := UiStyle.primary_button("Ver a batalha" if sim.state.battles.has(s.id) else "Resultado da última batalha", 34)
+		var bsid := s.id
+		vb.pressed.connect(func(): open_battle(bsid))
+		_build_box.add_child(vb)
 	_spy_button.visible = not mine
 	_spy_button.text = "Investigar %s" % owner.name
 	if not mine:
@@ -957,6 +996,9 @@ func _build_ui() -> void:
 	_game_ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_game_ui.visible = false
 	_root.add_child(_game_ui)
+	var overlay := BattleOverlay.new()
+	_game_ui.add_child(overlay)   # primeiro filho: fica abaixo das janelas e da barra
+	overlay.setup(self)
 
 	_build_top_bar()
 
@@ -972,11 +1014,14 @@ func _build_ui() -> void:
 	_research = ResearchPanel.new()
 	_research.setup(self)
 	_game_ui.add_child(_research)
+	_battle = BattlePanel.new()
+	_battle.setup(self)
+	_game_ui.add_child(_battle)
 	_army = ArmyPanel.new()
 	_army.setup(self)
 	_game_ui.add_child(_army)
 	_build_side_panels()
-	for p in [_economy, _market, _intel, _research, _army]:
+	for p in [_economy, _market, _intel, _research, _army, _battle]:
 		_game_ui.move_child(p, -1)   # janelas por cima do registro e dos modos de mapa
 	_build_war_dialog()
 	_game_ui.move_child(_drop, -1)   # a caixa da barra fica por cima de tudo
@@ -1103,7 +1148,7 @@ func _on_escape() -> void:
 		_war_dialog.visible = false
 	elif _drop_kind != "":
 		_close_drop()
-	elif [_economy, _market, _intel, _research, _army].any(func(p): return p.visible):
+	elif [_economy, _market, _intel, _research, _army, _battle].any(func(p): return p.visible):
 		_only_one_panel(null)
 	elif units.selected != -1 or _state_panel.visible:
 		units.select(-1)
@@ -1155,7 +1200,7 @@ func _load_game() -> void:
 
 
 func _only_one_panel(p: Control) -> void:
-	for other in [_economy, _market, _intel, _research, _army]:
+	for other in [_economy, _market, _intel, _research, _army, _battle]:
 		if other != p:
 			other.visible = false
 
@@ -1836,3 +1881,10 @@ func _check_peace_offers() -> void:
 			_peace_seen[o.id] = true
 			_peace.open_incoming(o)
 			return
+
+
+## Abre a ficha da batalha no estado (também ao clicar na marca de batalha no mapa).
+func open_battle(sid: int) -> void:
+	_close_drop()
+	_only_one_panel(_battle)
+	_battle.open(sid)

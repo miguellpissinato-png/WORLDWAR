@@ -35,6 +35,7 @@ var news_count := 0
 var war_started: Dictionary = {}   # "A|B" (ordem alfabética) -> hora em que a guerra começou
 var peace_offers: Dictionary = {}  # id -> {id, from, to, money, states, resources, hours}
 var next_peace_id: int = 1
+var battle_results: Dictionary = {}  # estado -> última batalha encerrada (CombatSystem._store_result)
 var declared: Array = []           # "quem|alvo" de toda declaração de guerra (planos da IA não se repetem)
 var peace_last: Dictionary = {}    # "de|para" -> hora da última proposta (a IA espera para insistir)                # quantas notícias já saíram (o jornal guarda só as últimas)
 const MAX_NEWS := 300

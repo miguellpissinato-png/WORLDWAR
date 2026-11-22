@@ -29,16 +29,16 @@
     "_habilidades": "ataque, defesa e velocidade de 1 a 5. Cada nível acima de 1: +10% (ataque e defesa entram no combate da parte 3; velocidade já acelera a marcha)."
   },
   "combat": {
-    "_nota": "Combate terrestre (valores de jogo, não históricos). Organização 0–100 por regimento: cai na batalha e volta aos poucos fora dela. O lado com todos os regimentos abaixo de break_org perde: o defensor recua para um estado vizinho amigo (ou é destruído se não houver), o atacante desiste da marcha.",
+    "_nota": "Combate terrestre (valores de jogo, não históricos). Moral (organização) 0–100 por tropa: cai na batalha e volta aos poucos fora dela. Por hora os dois lados perdem juntos 2 x org_loss_per_hour pontos, divididos pela força: quem tem mais força tira mais moral do outro. Cada ponto de moral perdido mata equipment_loss_per_org das unidades (baixas). Quando todas as tropas de um lado ficam abaixo de break_org, ele perde: o defensor recua para um vizinho amigo (sem saída, é destruído) e o atacante desiste. Batalha parelha dura uns 3 dias e meio; muito desigual, 2 dias.",
     "max_org": 100,
-    "org_loss_per_hour": 4.0,
+    "org_loss_per_hour": 1.0,
     "org_regen_per_hour": 1.0,
     "break_org": 15,
     "random_spread": 0.2,
     "defender_bonus": 1.25,
     "general_bonus_per_level": 0.1,
     "org_power_floor": 0.4,
-    "equipment_loss_per_org": 0.0015,
+    "equipment_loss_per_org": 0.004,
     "soft_weights": {
       "soft_attack": 1.0,
       "close_attack": 0.5,
@@ -53,7 +53,9 @@
       "tank"
     ],
     "air_support_neighbor": 0.5,
-    "_avioes": "Aviões lutam na batalha do estado onde estão e apoiam com air_support_neighbor (fração da força) as batalhas dos estados vizinhos."
+    "_avioes": "Aviões lutam na batalha do estado onde estão e apoiam com air_support_neighbor (fração da força) as batalhas dos estados vizinhos.",
+    "safe_share": 0.6,
+    "_safe_share": "Vantagem (fração da força total) que a previsão chama de vitória segura; usada para dizer quantos soldados faltam."
   },
   "troops": {
     "infantaria": {

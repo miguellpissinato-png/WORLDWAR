@@ -68,7 +68,8 @@ static func hourly_update(state: GameState, defs: Dictionary) -> void:
 		if sid == -1:
 			continue
 		if not battles.has(sid):
-			battles[sid] = {"attackers": [], "defenders": [], "since": state.hours}
+			battles[sid] = {"attackers": [], "defenders": [], "since": state.hours, "dead_att": {}, "dead_def": {},
+				"p_att": 0.0, "p_def": 0.0, "loss_att": 0.0, "loss_def": 0.0}
 		battles[sid].attackers.append(g.id)
 	for sid in battles:
 		var b: Dictionary = battles[sid]
@@ -83,7 +84,9 @@ static func hourly_update(state: GameState, defs: Dictionary) -> void:
 					b.defenders.append(g.id)
 					break
 		if state.battles.has(sid):
-			b.since = state.battles[sid].since
+			var old: Dictionary = state.battles[sid]
+			for k in ["since", "dead_att", "dead_def"]:
+				b[k] = old.get(k, b[k])
 		else:
 			var att_tags: Array = att_owners.keys()
 			var def_tags := _owners(state, b.defenders)
@@ -128,8 +131,12 @@ static func _resolve(state: GameState, defs: Dictionary, cr: Dictionary, sid: in
 	var spread := float(cr.get("random_spread", 0.2))
 	var loss_def := base * 2.0 * share * (1.0 + state.rng.randf_range(-spread, spread))
 	var loss_att := base * 2.0 * (1.0 - share) * (1.0 + state.rng.randf_range(-spread, spread))
-	_damage(state, defs, cr, dfn, loss_def)
-	_damage(state, defs, cr, att, loss_att)
+	b.p_att = p_att
+	b.p_def = p_def
+	b.loss_att = loss_att
+	b.loss_def = loss_def
+	_add_dead(b.dead_def, _damage(state, defs, cr, dfn, loss_def))
+	_add_dead(b.dead_att, _damage(state, defs, cr, att, loss_att))
 	att = att.filter(func(g): return state.groups.has(g.id))
 	dfn = dfn.filter(func(g): return state.groups.has(g.id))
 
@@ -139,19 +146,98 @@ static func _resolve(state: GameState, defs: Dictionary, cr: Dictionary, sid: in
 	var place: String = state.state(sid).name
 	var att_tags := _owners(state, b.attackers)
 	var def_tags := _owners(state, b.defenders)
+	var days := "%.1f" % (float(state.hours - int(b.since)) / 24.0)
+	var tally := "Baixas: nós %s; inimigo %s. %s dias de luta."
 	if def_broken:
 		for g: ArmyGroup in dfn:
 			_retreat(state, g)
-		state.add_event(att_tags, "Vencemos a batalha em %s; o inimigo recuou." % place, "Guerra")
-		state.add_event(def_tags, "Perdemos a batalha em %s." % place, "Guerra")
+		state.add_event(att_tags, ("Vencemos a batalha em %s; o inimigo recuou. " % place) + tally % [dead_text(defs, b.dead_att), dead_text(defs, b.dead_def), days.replace(".", ",")], "Guerra")
+		state.add_event(def_tags, ("Perdemos a batalha em %s. " % place) + tally % [dead_text(defs, b.dead_def), dead_text(defs, b.dead_att), days.replace(".", ",")], "Guerra")
+		_store_result(state, sid, b, "att")
 		state.battles.erase(sid)
 	elif att_broken:
 		for g: ArmyGroup in att:
 			g.path = []
 			g.progress_km = 0.0
-		state.add_event(att_tags, "O ataque a %s fracassou; as tropas pararam." % place, "Guerra")
-		state.add_event(def_tags, "Seguramos %s; o ataque inimigo fracassou." % place, "Guerra")
+		state.add_event(att_tags, ("O ataque a %s fracassou; as tropas pararam. " % place) + tally % [dead_text(defs, b.dead_att), dead_text(defs, b.dead_def), days.replace(".", ",")], "Guerra")
+		state.add_event(def_tags, ("Seguramos %s; o ataque inimigo fracassou. " % place) + tally % [dead_text(defs, b.dead_def), dead_text(defs, b.dead_att), days.replace(".", ",")], "Guerra")
+		_store_result(state, sid, b, "def")
 		state.battles.erase(sid)
+
+
+static func _add_dead(into: Dictionary, dead: Dictionary) -> void:
+	for t in dead:
+		into[t] = float(into.get(t, 0.0)) + float(dead[t])
+
+
+## "120 soldados, 2 tanques" (ou "ninguém").
+static func dead_text(defs: Dictionary, dead: Dictionary) -> String:
+	var parts := []
+	for t in ["infantaria", "artilharia", "tanques", "avioes"]:
+		var n := roundi(float(dead.get(t, 0.0)))
+		if n > 0:
+			parts.append("%d %s" % [n, ArmySystem.troop_def(defs, t).get("short", t)])
+	return ", ".join(parts) if not parts.is_empty() else "ninguém"
+
+
+## Guarda o resultado da última batalha de cada estado (para a ficha de batalha mostrar o fim).
+static func _store_result(state: GameState, sid: int, b: Dictionary, winner: String) -> void:
+	var r := b.duplicate(true)
+	r["winner"] = winner
+	r["ended"] = state.hours
+	r["att_tags"] = _owners(state, b.attackers)
+	r["def_tags"] = _owners(state, b.defenders)
+	state.battle_results[sid] = r
+
+
+## Previsão de um ataque das pilhas `att` ao estado `sid` com as forças de agora:
+## {p_att, p_def, share, hours (até alguém ceder), winner ("att", "def" ou "" sem inimigo), defenders,
+##  soldiers_needed (soldados a mais do melhor modelo para chegar à vantagem segura)}.
+static func forecast(state: GameState, defs: Dictionary, att: Array, sid: int) -> Dictionary:
+	var cr := rules(defs)
+	var out := {"p_att": 0.0, "p_def": 0.0, "share": 1.0, "hours": 0.0, "winner": "", "defenders": [], "soldiers_needed": 0}
+	if att.is_empty():
+		return out
+	var tag: String = att[0].owner
+	var dfn: Array = []
+	if state.battles.has(sid) and att[0].id in state.battles[sid].attackers:
+		dfn = state.battles[sid].defenders.map(func(i): return state.group(i)).filter(func(g): return g != null)
+	else:
+		dfn = enemy_groups_in(state, sid, tag)
+	out.defenders = dfn
+	var p_att := side_power(state, defs, att, dfn, false) + air_support(state, defs, sid, att, dfn)
+	var p_def := side_power(state, defs, dfn, att, true) + air_support(state, defs, sid, dfn, att)
+	out.p_att = p_att
+	out.p_def = p_def
+	if dfn.is_empty():
+		return out
+	var share := p_att / maxf(p_att + p_def, 0.001)
+	out.share = share
+	var base := float(cr.get("org_loss_per_hour", 1.0)) * 2.0
+	var brk := float(cr.get("break_org", 15))
+	var t_def := (_top_org(defs, dfn) - brk) / maxf(base * share, 0.001)
+	var t_att := (_top_org(defs, att) - brk) / maxf(base * (1.0 - share), 0.001)
+	out.winner = "att" if t_def <= t_att else "def"
+	out.hours = maxf(0.0, minf(t_def, t_att))
+	# quantos soldados a mais para a vantagem segura
+	var safe := float(cr.get("safe_share", 0.6))
+	var need := p_def * safe / (1.0 - safe) - p_att
+	if need > 0.0:
+		var model := ArmySystem.best_model(defs, state.country(tag), "infantaria")
+		if model != "":
+			var one := troop_power(defs, {"type": "infantaria", "model": model, "count": 1.0, "org": 100.0},
+				hardness(defs, dfn), cr.get("soft_weights", {}), cr.get("hard_weights", {}))
+			if one > 0.0:
+				out.soldiers_needed = ceili(need / one)
+	return out
+
+
+static func _top_org(defs: Dictionary, side: Array) -> float:
+	var top := 0.0
+	for g: ArmyGroup in side:
+		for r in g.troops:
+			top = maxf(top, org_of(defs, r))
+	return top
 
 
 static func group_broken(defs: Dictionary, g: ArmyGroup, brk: float) -> bool:
@@ -243,17 +329,21 @@ static func hardness(defs: Dictionary, side: Array) -> float:
 
 
 ## Tira organização de todas as tropas do lado e um pouco das unidades (baixas). Pilha sem ninguém some.
-static func _damage(state: GameState, defs: Dictionary, cr: Dictionary, side: Array, org_loss: float) -> void:
-	var eq_loss := float(cr.get("equipment_loss_per_org", 0.0015)) * org_loss
+static func _damage(state: GameState, defs: Dictionary, cr: Dictionary, side: Array, org_loss: float) -> Dictionary:
+	var eq_loss := float(cr.get("equipment_loss_per_org", 0.004)) * org_loss
+	var dead := {}
 	for g: ArmyGroup in side:
 		for r in g.troops.duplicate():
 			r.org = maxf(0.0, org_of(defs, r) - org_loss)
-			r.count = float(r.count) * (1.0 - eq_loss)
+			var lost := float(r.count) * eq_loss
+			r.count = float(r.count) - lost
+			dead[r.type] = float(dead.get(r.type, 0.0)) + lost
 			if float(r.count) < 0.5:
 				g.troops.erase(r)
 		if g.empty():
 			state.add_event([g.owner], "%s foi aniquilado em %s." % [g.name, state.state(g.state_id).name], "Guerra")
 			state.groups.erase(g.id)
+	return dead
 
 
 ## Defensor derrotado: recua para o vizinho mais perto que seu lado controla e que não tem inimigos.

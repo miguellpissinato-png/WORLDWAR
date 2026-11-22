@@ -119,3 +119,31 @@ func test_planes_support_neighbor_battles() -> void:
 	assert_eq(CombatSystem.air_support(sim.state, sim.defs, 2, [att], [dfn]), 0.0, "o 3 não é vizinho do 2")
 	planes.state_id = 4
 	assert_true(CombatSystem.air_support(sim.state, sim.defs, 2, [att], [dfn]) > 0.0, "aviões no vizinho apoiam")
+
+
+func test_forecast_and_battle_report() -> void:
+	var sim := _world()
+	var att := _group(sim, "AAA", 4, 2, {"rifle": 10})
+	var dfn := _group(sim, "BBB", 2, 1, {"rifle_old": 4})
+	var f := CombatSystem.forecast(sim.state, sim.defs, [att], 2)
+	assert_eq(f.defenders.size(), 1, "vê o defensor")
+	assert_true(f.share > 0.7, "vantagem grande: %.2f" % f.share)
+	assert_eq(f.winner, "att", "prevê vitória")
+	assert_true(f.hours > 0.0, "com tempo estimado")
+	assert_eq(f.soldiers_needed, 0, "não precisa de mais ninguém")
+	sim.state.country("BBB").researched.append("tech_rifle")
+	var weak := CombatSystem.forecast(sim.state, sim.defs, [dfn], 4)
+	assert_eq(weak.defenders.size(), 1)
+	assert_true(weak.soldiers_needed > 0, "o fraco precisa de reforço: %d" % weak.soldiers_needed)
+	sim.submit(MoveGroupCommand.create("AAA", att.id, 2))
+	sim.advance_hours(24 * 10)
+	var r: Dictionary = sim.state.battle_results.get(2, {})
+	assert_eq(r.get("winner", ""), "att", "resultado guardado")
+	assert_true(float(r.dead_def.get("infantaria", 0.0)) > 0.0, "contou as baixas do defensor")
+	assert_true(sim.state.events.any(func(e): return "Baixas: nós" in str(e.text)), "aviso com as baixas")
+
+
+func test_forecast_without_enemy() -> void:
+	var sim := _world()
+	var att := _group(sim, "AAA", 4, 1, {"rifle": 10})
+	assert_eq(CombatSystem.forecast(sim.state, sim.defs, [att], 2).winner, "", "ninguém para lutar")

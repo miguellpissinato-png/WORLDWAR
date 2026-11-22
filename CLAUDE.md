@@ -129,7 +129,15 @@ Documento de design completo: `docs/design.md`.
   branca); jogador responde com `RespondPeaceCommand` (janela `ui/panels/peace_dialog.gd`, abre sozinha; a ficha
   do inimigo tem "Propor paz" com previsão). Aceita: termos pagos até o que há, guerra encerrada, ocupações
   desfeitas, tropas voltam para dentro. Planos de guerra da IA não se repetem (`GameState.declared`).
-- Ainda falta: capitulação e resumo de batalha.
+- Leitura da batalha (pedido do Miguel: saber a "vida" e quantos soldados levar): na interface a organização
+  se chama **Moral (vida da tropa)**, com barra sob o número de cada pilha no mapa. `GameState.battles[sid]` guarda
+  `p_att/p_def` (força), `loss_att/loss_def` (moral perdida na última hora) e `dead_att/dead_def` (baixas por tipo);
+  ao acabar, `battle_results[sid]` guarda o resultado e o aviso traz as baixas. `CombatSystem.forecast()` prevê um
+  ataque (vantagem, horas até um lado ceder, `soldiers_needed` para chegar a `safe_share`). Interface: quadro em
+  cada batalha e previsão ao passar o mouse com uma pilha selecionada (`ui/units/battle_overlay.gd`, por cima dos
+  bonecos), ficha da batalha (`ui/panels/battle_panel.gd`, abre clicando na marca ou em "Ver a batalha").
+  Força na tela = valor x10 (`BattlePanel.power_text`). Batalha parelha dura ~3,5 dias (`org_loss_per_hour` 1).
+- Ainda falta: capitulação.
 - Alianças = facções: `GameState.factions` (id -> {name, leader, members}); `allied()` = mesma facção.
   `FactionSystem` (entrar/sair, `JoinFactionCommand`/`LeaveFactionCommand`); quem entra assume as guerras da
   facção; declarar guerra chama as duas facções inteiras (`DiplomacySystem.side_of`/`start_war`). Libertar estado
