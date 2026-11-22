@@ -20,7 +20,8 @@ func _world() -> Simulation:
 func _group(sim: Simulation, tag: String, sid: int, regiments: int, eq: Dictionary) -> ArmyGroup:
 	var g := ArmySystem.new_group(sim.state, tag, sid)
 	for i in regiments:
-		g.regiments.append({"type": "infantaria", "equipment": eq.duplicate(), "org": 100.0})
+		for m in eq:
+			ArmySystem.add_troops(sim.defs, g, "infantaria", m, float(eq[m]), 100.0)
 	return g
 
 
@@ -46,8 +47,7 @@ func test_strong_attacker_wins_and_occupies() -> void:
 	assert_true(sim.state.events.any(func(e): return "Batalha em Estado 2" in str(e)), "houve batalha")
 	assert_true(sim.state.group(dfn.id) == null, "defensor sem saída foi destruído")
 	assert_eq(sim.state.state(2).control(), "AAA", "o vencedor ocupou")
-	var r: Dictionary = att.regiments[0]
-	assert_true(float(r.equipment.rifle) < 10.0, "houve perdas de equipamento")
+	assert_true(att.count_of("infantaria") < 20.0, "houve baixas")
 
 
 func test_weak_attacker_stops() -> void:
@@ -81,12 +81,12 @@ func test_liberation_and_org_recovery() -> void:
 	sim.state.set_control(sim.state.state(4), "BBB")
 	assert_true(sim.state.state(4).occupied())
 	var g := _group(sim, "AAA", 3, 1, {"rifle": 4})
-	g.regiments[0].org = 50.0
+	g.troops[0].org = 50.0
 	sim.submit(MoveGroupCommand.create("AAA", g.id, 4))
 	sim.advance_hours(24 * 6)
 	assert_eq(sim.state.state(4).control(), "AAA", "libertado")
 	assert_true(not sim.state.state(4).occupied())
-	assert_true(float(g.regiments[0].org) > 90.0, "organização voltou fora da batalha")
+	assert_true(float(g.troops[0].org) > 90.0, "organização voltou fora da batalha")
 
 
 func test_combat_is_deterministic() -> void:
@@ -99,5 +99,23 @@ func test_combat_is_deterministic() -> void:
 		_group(sim, "BBB", 2, 2, {"rifle": 5})
 		sim.submit(MoveGroupCommand.create("AAA", att.id, 2))
 		sim.advance_hours(24 * 5)
-		results.append(att.regiments[0].org)
+		results.append(att.troops[0].org)
 	assert_eq(results[0], results[1])
+
+
+func test_planes_support_neighbor_battles() -> void:
+	var sim := _world()
+	var att := _group(sim, "AAA", 4, 1, {"rifle": 10})
+	var dfn := _group(sim, "BBB", 2, 1, {"rifle": 10})
+	var base := CombatSystem.air_support(sim.state, sim.defs, 2, [att], [dfn])
+	assert_eq(base, 0.0, "sem aviões, sem apoio")
+	sim.defs.equipment["plane"] = {"name": "Avião", "category": "attack", "cost": 2.0, "resources": {}, "stats": {"ground_attack": 10.0}}
+	sim.defs.army.troops["avioes"] = {"name": "Aviões", "categories": ["attack"], "batch": 2, "days": 4, "work_per_unit": 1.0,
+		"resources_per_unit": 1.0, "stat_scale": 1.0, "size": 2, "march_km_day": 400, "rank": "ground_attack"}
+	sim.defs.army.combat["soft_weights"] = {"soft_attack": 1.0, "ground_attack": 0.5}
+	sim.defs.army.combat["air_support_neighbor"] = 0.5
+	var planes := ArmySystem.new_group(sim.state, "AAA", 3)
+	ArmySystem.add_troops(sim.defs, planes, "avioes", "plane", 4.0, 100.0)
+	assert_eq(CombatSystem.air_support(sim.state, sim.defs, 2, [att], [dfn]), 0.0, "o 3 não é vizinho do 2")
+	planes.state_id = 4
+	assert_true(CombatSystem.air_support(sim.state, sim.defs, 2, [att], [dfn]) > 0.0, "aviões no vizinho apoiam")

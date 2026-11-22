@@ -31,7 +31,12 @@ var factions: Dictionary = {}
 var factions_created: Array = []   # ids já criados uma vez (não renascem)
 ## Jornal: notícias do mundo, as mais novas no fim. {hours, headline, sub, body, state, tags, kind}
 var news: Array = []
-var news_count := 0                # quantas notícias já saíram (o jornal guarda só as últimas)
+var news_count := 0
+var war_started: Dictionary = {}   # "A|B" (ordem alfabética) -> hora em que a guerra começou
+var peace_offers: Dictionary = {}  # id -> {id, from, to, money, states, resources, hours}
+var next_peace_id: int = 1
+var declared: Array = []           # "quem|alvo" de toda declaração de guerra (planos da IA não se repetem)
+var peace_last: Dictionary = {}    # "de|para" -> hora da última proposta (a IA espera para insistir)                # quantas notícias já saíram (o jornal guarda só as últimas)
 const MAX_NEWS := 300
 ## Passagem militar: [quem passa, por onde] (ex.: Japão em Manchukuo). Vem do cenário.
 var access: Array = []
@@ -66,6 +71,10 @@ func generals_of(tag: String) -> Array:
 	var out := generals.values().filter(func(g): return g.owner == tag)
 	out.sort_custom(func(a, b): return a.id < b.id)
 	return out
+
+
+static func pair_key(a: String, b: String) -> String:
+	return "%s|%s" % [a, b] if a < b else "%s|%s" % [b, a]
 
 
 func at_war(a: String, b: String) -> bool:
@@ -147,12 +156,24 @@ func set_control(s: MapState, tag: String) -> void:
 
 func _rebuild_owned() -> void:
 	_owned = {}
+	_by_owner = {}
 	for st in states.values():
 		var c: String = st.control()
 		if not _owned.has(c):
 			_owned[c] = []
 		_owned[c].append(st)
+		_by_owner[st.owner] = int(_by_owner.get(st.owner, 0)) + 1
 	_owned_stamp = hours
+
+
+var _by_owner: Dictionary = {}
+
+
+## Quantos estados o país possui (é dono), ocupados ou não.
+func owned_count(tag: String) -> int:
+	if _owned_stamp != hours:
+		_rebuild_owned()
+	return int(_by_owner.get(tag, 0))
 
 
 ## Total de uma construção somando todos os estados do país.

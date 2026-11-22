@@ -17,16 +17,12 @@ func _world() -> Simulation:
 	gs.states[5].center = Vector2(1840, y)
 	gs.adjacency = {1: [3], 3: [1, 4], 4: [3, 2], 2: [4, 5], 5: [2]}
 	var c := gs.country("AAA")
-	c.researched.append_array(["t_infantaria"])
-	c.equipment = {"rifle": 10.0}
+	c.researched.append("tech_rifle")
 	return sim
 
 
 func _group(sim: Simulation) -> ArmyGroup:
-	var cmd := FormRegimentCommand.create("AAA", "infantaria")
-	sim.submit(cmd)
-	sim.apply_pending()
-	return sim.state.group(cmd.created_group)
+	return ArmySystem.spawn(sim.state, sim.defs, "AAA", "infantaria", "rifle", 10.0)
 
 
 func test_cannot_enter_country_without_war() -> void:

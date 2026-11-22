@@ -1,5 +1,5 @@
 extends TestCase
-# Indústria (civil x militar), pesquisa e linhas de produção.
+# Indústria (civil x militar) e pesquisa. A encomenda de tropas está em test_army.gd.
 # Mundo de teste: AAA 2 fábricas, BBB 1 fábrica, todas civis no começo. Conversão: 25% por dia.
 
 
@@ -87,81 +87,9 @@ func test_research_slots_limit() -> void:
 	assert_eq(ResearchSystem.can_start(sim.state, sim.defs, "AAA", "tech_rifle"), "", "vaga livre de novo")
 
 
-func test_cannot_produce_without_research() -> void:
-	var sim := make_world()
-	var reasons: Array = []
-	sim.command_rejected.connect(func(_c, r): reasons.append(r))
-	sim.submit(AddProductionLineCommand.create("AAA", "rifle", 1))
-	sim.apply_pending()
-	assert_eq(reasons, ["o equipamento ainda não foi pesquisado"])
-
-
-func _military_world() -> Simulation:
-	# AAA: 2 fábricas militares, fuzil pesquisado, 100 de ferro no estoque.
-	var sim := make_world()
-	var c := sim.state.country("AAA")
-	c.civil_share = 0.0
-	c.civil_share_target = 0.0
-	c.researched.append("tech_rifle")
-	c.stockpile["iron"] = 100.0
-	return sim
-
-
-func test_production_line_builds_and_consumes() -> void:
-	var sim := _military_world()
-	sim.submit(AddProductionLineCommand.create("AAA", "rifle", 2))
-	_days(sim, 1)
-	var c := sim.state.country("AAA")
-	# Dia 1: 2 fábricas x eficiência 0,5 = 1 dia-fábrica = 1 fuzil (custo 1), 1 de ferro.
-	assert_eq(c.equipment_count("rifle"), 1.0, "dia 1")
-	assert_eq(c.stock("iron"), 99.0, "ferro gasto")
-	_days(sim, 1)
-	# Dia 2: eficiência 0,6 -> 1,2 fuzil; total 2,2 (2 prontos).
-	assert_eq(c.equipment_count("rifle"), 2.0, "dia 2")
-	assert_true(absf(c.stock("iron") - 97.8) < 0.001, "ferro proporcional")
-
-
-func test_efficiency_grows_to_cap() -> void:
-	var sim := _military_world()
-	sim.submit(AddProductionLineCommand.create("AAA", "rifle", 1))
-	_days(sim, 10)
-	assert_eq(sim.state.country("AAA").production_lines[0].efficiency, 1.0)
-
-
-func test_shortage_slows_but_never_stops() -> void:
-	var sim := _military_world()
-	var c := sim.state.country("AAA")
-	c.stockpile["iron"] = 0.0
-	c.production_lines.clear()
-	ProductionSystem.new_line(c, sim.defs, "rifle", 2)
-	c.production_lines[0].efficiency = 1.0
-	_days(sim, 1)
-	# Sem ferro: anda a 25% (2 x 1,0 x 0,25 = 0,5 fuzil) e o estoque não fica negativo.
-	assert_true(absf(c.production_lines[0].progress - 0.5) < 0.001, "piso de 25%")
-	assert_eq(c.stock("iron"), 0.0, "estoque não negativo")
-	assert_true(c.last_shortage.get("iron", 0.0) > 0.0, "falta registrada")
-
-
-func test_lines_share_military_factories_in_order() -> void:
-	var sim := _military_world()
-	var c := sim.state.country("AAA")
-	ProductionSystem.new_line(c, sim.defs, "rifle", 2)
-	ProductionSystem.new_line(c, sim.defs, "rifle", 2)
-	_days(sim, 1)
-	assert_eq(c.production_lines[0].assigned, 2, "primeira linha leva tudo")
-	assert_eq(c.production_lines[1].assigned, 0, "segunda fica sem")
-	sim.submit(SetLineFactoriesCommand.create("AAA", c.production_lines[0].id, 1))
-	_days(sim, 1)
-	assert_eq(c.production_lines[1].assigned, 1, "dividiu")
-	sim.submit(RemoveProductionLineCommand.create("AAA", c.production_lines[0].id))
-	sim.apply_pending()
-	assert_eq(c.production_lines.size(), 1, "linha fechada")
-
-
 func test_military_commands_serialize() -> void:
 	for cmd in [SetCivilShareCommand.create("AAA", 0.4), StartResearchCommand.create("AAA", "tech_rifle"),
-			CancelResearchCommand.create("AAA", "tech_rifle"), AddProductionLineCommand.create("AAA", "rifle", 3),
-			SetLineFactoriesCommand.create("AAA", 1, 5), RemoveProductionLineCommand.create("AAA", 1)]:
+			CancelResearchCommand.create("AAA", "tech_rifle")]:
 		var copy := CommandRegistry.from_dict(cmd.to_dict())
 		assert_eq(copy.to_dict(), cmd.to_dict(), cmd.type_name())
 
@@ -181,3 +109,18 @@ func test_real_data_loads() -> void:
 	var gs := ScenarioLoader.load_scenario("1936", defs)
 	assert_true(gs.country("ALE").has_tech("tech_kar98k"), "Alemanha começa com o Kar98k")
 	assert_true(gs.military_factories("ALE") > 0, "Alemanha tem fábricas militares")
+
+
+func test_recruit_shortage_slows_but_never_stops() -> void:
+	var sim := make_world()
+	var c := sim.state.country("AAA")
+	c.civil_share = 0.0
+	c.civil_share_target = 0.0
+	c.researched.append("tech_rifle")
+	c.stockpile["iron"] = 0.0
+	sim.submit(RecruitTroopsCommand.create("AAA", "infantaria", 2))
+	sim.advance_hours(24)
+	# 2 lotes = 2 dias-fábrica; o lote pega pelo menos 1 fábrica por dia; sem ferro anda a 25%.
+	assert_true(absf(float(c.recruit_queue[0].work_done) - 0.25) < 0.001, "piso de 25%%: %s" % c.recruit_queue[0].work_done)
+	assert_eq(c.stock("iron"), 0.0, "estoque não negativo")
+	assert_true(c.last_shortage.get("iron", 0.0) > 0.0, "falta registrada")

@@ -191,32 +191,16 @@ static func _load_armies(gs: GameState, defs: Dictionary, armies: Dictionary) ->
 		for i in int(start.get(tag, start.get("_padrao", 1))):
 			ArmySystem.new_general(gs, defs, tag, int(gd.get("skill_start_max", 3)))
 		var plan: Dictionary = armies.get(tag, armies.get("_padrao", {}))
-		for regs in plan.get("groups", []):
-			var g: ArmyGroup = null
-			for type in regs:
-				if not c.has_tech("t_" + type):
-					continue
-				_give_for(defs, c, type, 1)
-				if ArmySystem.pick_equipment(defs, c, type).is_empty():
-					continue
-				g = ArmySystem.form_regiment(gs, defs, tag, type, -1 if g == null else g.id)
-		var spare: Dictionary = plan.get("spare", {})
-		for cat in spare:
-			var best := _best_unlocked(defs, c, cat)
-			if best != "":
-				c.equipment[best] = c.equipment_count(best) + float(spare[cat])
-
-
-## Coloca no depósito o equipamento que um regimento precisa (melhor modelo já pesquisado).
-static func _give_for(defs: Dictionary, c: Country, type: String, times: int) -> void:
-	for need in ArmySystem.regiment_def(defs, type).get("needs", []):
-		var best := ""
-		for cat in need.categories:
-			best = _best_unlocked(defs, c, cat)
-			if best != "":
-				break
-		if best != "":
-			c.equipment[best] = c.equipment_count(best) + float(need.qty) * times
+		var troops: Dictionary = plan.get("troops", {})
+		var home := ArmySystem.home_state(gs, tag)
+		var g: ArmyGroup = null
+		for type in troops:
+			var model := ArmySystem.best_model(defs, c, type)
+			if model == "":
+				continue
+			if g == null:
+				g = ArmySystem.new_group(gs, tag, home)
+			ArmySystem.add_troops(defs, g, type, model, float(troops[type]), float(defs.get("army", {}).get("combat", {}).get("max_org", 100)))
 
 
 static func _best_unlocked(defs: Dictionary, c: Country, category: String) -> String:

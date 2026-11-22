@@ -51,6 +51,7 @@ func _tick_hour() -> void:
 	state.hours += 1
 	MovementSystem.hourly_update(state, defs)
 	CombatSystem.hourly_update(state, defs)
+	ArmySystem.merge_stacks(state, defs)
 	if state.hours % 24 == 0:
 		_daily_update()
 		day_passed.emit(state.hours)
@@ -63,13 +64,14 @@ func _daily_update() -> void:
 	TradeSystem.daily_update(state, defs)
 	IntelligenceSystem.daily_update(state, defs)
 	ConstructionSystem.daily_update(state, defs)
-	ProductionSystem.daily_update(state, defs)
+	RecruitSystem.daily_update(state, defs)
 	ResearchSystem.daily_update(state, defs)
 	DiplomacySystem.daily_update(state, defs)
 	ObjectiveSystem.daily_update(state, defs)
 	FactionSystem.daily_update(state, defs)
+	PeaceSystem.daily_update(state, defs)
 	# Países da IA: decidem e mandam comandos, aplicados na hora (determinístico; fora do diário).
 	for cmd in AiSystem.decide(state, defs):
 		if cmd.validate(state, defs) == "":
 			cmd.apply(state, defs)
-			state.invalidate_owners()
+	state.invalidate_owners()   # (a paz já refaz o índice sozinha; aqui basta uma vez no fim)

@@ -3,9 +3,9 @@
   "think_every_days": 5,
   "build": {"keep_money": 150, "max_queue": 2, "extraction_every": 3},
   "civil_share": {"peace": 0.7, "war": 0.45, "planning": 0.55},
-  "army": {"base_groups": 1, "factories_per_group": 2, "regiments_per_think": 3, "max_groups": 24, "types": ["tanquistas", "artilharia", "infantaria"], "line_factories": 6},
+  "army": {"queue_days": 10, "generals_for": 4, "mix": {"infantaria": 0.55, "artilharia": 0.2, "tanques": 0.15, "avioes": 0.1}},
   "trade": {"sell_above": 120, "sell_share": 0.25, "max_offers": 2},
-  "war": {"attack_groups_share": 0.8},
+  "war": {"attack_share": 0.8, "min_attack_size": 60, "max_front_km": 1500, "max_orders": 4},
   "war_plans": [
     {"tag": "ITA", "target": "ETI", "from": "1936-01"},
     {"tag": "JAP", "target": "CHI", "from": "1937-07"},

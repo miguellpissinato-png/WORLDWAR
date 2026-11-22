@@ -1,6 +1,6 @@
 class_name DisbandGroupCommand
 extends Command
-## Dissolve um grupo parado; o equipamento volta ao depósito.
+## Dispensa uma pilha de tropas (ela deixa de existir).
 
 var group_id: int
 

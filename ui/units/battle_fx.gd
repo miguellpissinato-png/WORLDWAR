@@ -49,9 +49,8 @@ func _spawn(delta: float) -> void:
 			var g: ArmyGroup = st.group(gid)
 			if g == null:
 				continue
-			for r in g.regiments:
-				if r.type in ["artilharia", "tanquistas"]:
-					heavy = true
+			if g.count_of("artilharia") + g.count_of("tanques") + g.count_of("avioes") >= 0.5:
+				heavy = true
 			if gid in b.attackers:
 				apos += cam.near(MovementSystem.map_position(st, g))
 				n += 1

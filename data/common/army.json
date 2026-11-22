@@ -1,141 +1,6 @@
 {
-  "_nota": "Exército. Regimentos ficam prontos na hora: pegam equipamento do depósito (o melhor que houver da categoria pedida). Grupos reúnem regimentos; generais comandam grupos. Velocidades de marcha são valores de jogo (marcha a pé de 20–30 km/dia é a faixa usual citada para a época; a confirmar com fonte).",
-  "max_regiments_per_group": 4,
+  "_nota": "Exército. As tropas ficam em pilhas por estado (soldados, artilharia, tanques, aviões). O botão + da aba Exército encomenda um lote: as fábricas militares fazem o trabalho (dias-fábrica) e gastam recursos do estoque; o lote fica pronto depois de pelo menos 'days' dias e nasce no estado favorito (ou num vizinho, se ele estiver cheio). O modelo é o melhor já pesquisado da categoria. Todos os números são valores de jogo, não históricos.",
   "max_groups_per_general": 5,
-  "regiments": {
-    "infantaria": {
-      "name": "Infantaria",
-      "needs": [
-        {
-          "categories": [
-            "rifle"
-          ],
-          "qty": 10
-        }
-      ],
-      "march_km_day": 25
-    },
-    "artilharia": {
-      "name": "Artilharia",
-      "needs": [
-        {
-          "categories": [
-            "artillery"
-          ],
-          "qty": 12
-        },
-        {
-          "categories": [
-            "rifle"
-          ],
-          "qty": 2
-        }
-      ],
-      "march_km_day": 20
-    },
-    "tanquistas": {
-      "name": "Blindados",
-      "needs": [
-        {
-          "categories": [
-            "tank"
-          ],
-          "qty": 10
-        }
-      ],
-      "march_km_day": 50
-    },
-    "atiradores": {
-      "name": "Atiradores de elite",
-      "needs": [
-        {
-          "categories": [
-            "sniper"
-          ],
-          "qty": 2
-        },
-        {
-          "categories": [
-            "rifle"
-          ],
-          "qty": 4
-        }
-      ],
-      "march_km_day": 25
-    },
-    "choque": {
-      "name": "Tropas de choque",
-      "needs": [
-        {
-          "categories": [
-            "smg"
-          ],
-          "qty": 6
-        },
-        {
-          "categories": [
-            "rifle"
-          ],
-          "qty": 4
-        }
-      ],
-      "march_km_day": 25
-    },
-    "paraquedistas": {
-      "name": "Paraquedistas",
-      "needs": [
-        {
-          "categories": [
-            "rifle"
-          ],
-          "qty": 6
-        },
-        {
-          "categories": [
-            "smg"
-          ],
-          "qty": 3
-        }
-      ],
-      "march_km_day": 25
-    },
-    "desembarque": {
-      "name": "Tropas de desembarque",
-      "needs": [
-        {
-          "categories": [
-            "rifle"
-          ],
-          "qty": 8
-        },
-        {
-          "categories": [
-            "smg"
-          ],
-          "qty": 2
-        }
-      ],
-      "march_km_day": 25
-    },
-    "assalto_anfibio": {
-      "name": "Assalto anfíbio",
-      "needs": [
-        {
-          "categories": [
-            "rifle"
-          ],
-          "qty": 8
-        },
-        {
-          "categories": [
-            "smg"
-          ],
-          "qty": 4
-        }
-      ],
-      "march_km_day": 25
-    }
-  },
   "rank_stat": {
     "rifle": "soft_attack",
     "sniper": "soft_attack",
@@ -173,16 +38,92 @@
     "defender_bonus": 1.25,
     "general_bonus_per_level": 0.1,
     "org_power_floor": 0.4,
-    "equipment_loss_per_org": 0.0008,
+    "equipment_loss_per_org": 0.0015,
     "soft_weights": {
       "soft_attack": 1.0,
-      "close_attack": 0.5
+      "close_attack": 0.5,
+      "ground_attack": 0.6,
+      "air_attack": 0.2
     },
     "hard_weights": {
-      "hard_attack": 1.0
+      "hard_attack": 1.0,
+      "ground_attack": 0.4
     },
     "hard_categories": [
       "tank"
-    ]
+    ],
+    "air_support_neighbor": 0.5,
+    "_avioes": "Aviões lutam na batalha do estado onde estão e apoiam com air_support_neighbor (fração da força) as batalhas dos estados vizinhos."
+  },
+  "troops": {
+    "infantaria": {
+      "name": "Soldados",
+      "short": "soldados",
+      "categories": [
+        "rifle"
+      ],
+      "batch": 10,
+      "days": 5,
+      "work_per_unit": 0.2,
+      "resources_per_unit": 0.05,
+      "stat_scale": 0.01,
+      "size": 1,
+      "march_km_day": 25,
+      "rank": "soft_attack"
+    },
+    "artilharia": {
+      "name": "Artilharia",
+      "short": "peças",
+      "categories": [
+        "artillery"
+      ],
+      "batch": 5,
+      "days": 7,
+      "work_per_unit": 0.5,
+      "resources_per_unit": 1.0,
+      "stat_scale": 0.1,
+      "size": 4,
+      "march_km_day": 20,
+      "rank": "soft_attack"
+    },
+    "tanques": {
+      "name": "Tanques",
+      "short": "tanques",
+      "categories": [
+        "tank"
+      ],
+      "batch": 5,
+      "days": 10,
+      "work_per_unit": 1.0,
+      "resources_per_unit": 1.0,
+      "stat_scale": 0.3,
+      "size": 8,
+      "march_km_day": 40,
+      "rank": "hard_attack"
+    },
+    "avioes": {
+      "name": "Aviões",
+      "short": "aviões",
+      "categories": [
+        "attack",
+        "bomber",
+        "fighter"
+      ],
+      "batch": 5,
+      "days": 10,
+      "work_per_unit": 1.0,
+      "resources_per_unit": 1.0,
+      "stat_scale": 0.15,
+      "size": 4,
+      "march_km_day": 400,
+      "rank": "ground_attack"
+    }
+  },
+  "recruit": {
+    "_nota": "Capacidade de um estado (soma de 'size' das tropas paradas lá) e quantas casas de vizinhos procurar quando o favorito está cheio.",
+    "state_capacity": 600,
+    "spill_depth": 3,
+    "max_batches_per_click": 10,
+    "shortage_floor": 0.25
   }
 }

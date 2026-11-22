@@ -29,11 +29,11 @@ var researched: Array = []          # ids de tecnologias concluídas
 var research: Array = []            # [{tech, progress, days}] pesquisas em andamento (uma por vaga)
 var research_slots: int = 3
 
-# Produção militar
-var production_lines: Array = []    # [{id, equipment, factories, efficiency, progress}]
-var next_line_id: int = 1
-var equipment: Dictionary = {}      # equipamento -> unidades prontas no depósito
-var last_production: Dictionary = {} # equipamento -> unidades feitas no último dia
+# Exército: lotes encomendados às fábricas militares (RecruitSystem)
+var recruit_queue: Array = []       # [{id, type, model, count, work, work_done, days, days_done}]
+var next_recruit_id: int = 1
+var rally_state: int = -1           # estado favorito: as tropas novas nascem ali (-1 = capital)
+var last_recruited: Dictionary = {} # tipo -> unidades prontas no último dia
 var last_shortage: Dictionary = {}  # recurso -> quanto faltou no último dia
 
 
@@ -45,10 +45,6 @@ var intel_reports: Dictionary = {}  # tag -> relatório congelado (ver Intellige
 
 func stock(resource: String) -> float:
 	return float(stockpile.get(resource, 0.0))
-
-
-func equipment_count(eq: String) -> float:
-	return float(equipment.get(eq, 0.0))
 
 
 func has_tech(tech: String) -> bool:

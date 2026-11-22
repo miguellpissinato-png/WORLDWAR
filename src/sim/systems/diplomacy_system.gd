@@ -68,6 +68,7 @@ static func declare(state: GameState, tag: String, target: String) -> void:
 	var me := state.country(tag)
 	var them := state.country(target)
 	start_war(state, tag, target)
+	state.declared.append("%s|%s" % [tag, target])
 	state.justifications = state.justifications.filter(func(j): return not (j.owner == tag and j.target == target))
 	state.add_event([tag, target], "%s declarou guerra a %s." % [me.name, them.name], "Guerra")
 	var cap := state.state(them.capital_state)
@@ -95,6 +96,7 @@ static func start_war(state: GameState, a: String, b: String) -> void:
 	pair.sort()
 	if not pair in state.wars:
 		state.wars.append(pair)
+		state.war_started[GameState.pair_key(a, b)] = state.hours
 
 
 static func _sides_text(state: GameState, tag: String, target: String) -> String:

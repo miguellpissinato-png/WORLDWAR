@@ -64,7 +64,7 @@ Documento de design completo: `docs/design.md`.
 ## Indústria, pesquisa e produção militar
 
 - Fábricas são uma construção só (`factory`). `Country.civil_share` divide entre civis (bens de consumo e
-  construção) e militares (linhas de produção): `GameState.civil_factories()` / `military_factories()`.
+  construção) e militares (encomenda de tropas): `GameState.civil_factories()` / `military_factories()`.
   `SetCivilShareCommand` muda o alvo; `IndustrySystem` converte `industry.conversion_per_day` por dia.
   Nunca usar `total_building(tag, "factory")` para economia ou produção: usar as funções civil/militar.
 - Equipamento: dados históricos com fontes em `tools/data/equipment_table.json`; `tools/data/gen_equipment.py`
@@ -72,22 +72,27 @@ Documento de design completo: `docs/design.md`.
   vão em `estimado` e aparecem "a conferir" na interface. Fontes listadas em `docs/fontes-equipamento.md`.
 - Pesquisa (`ResearchSystem`): 5 áreas, vagas por país, penalidade por ano adiantado (limite
   `max_years_ahead`) e por projeto estrangeiro (`origin`). Começo do cenário: `data/scenarios/<ano>/research.json`.
-- Produção (`ProductionSystem`): linhas pegam fábricas militares em ordem; eficiência sobe por dia;
-  recursos saem do estoque e a falta reduz a velocidade até `shortage_floor` (estoque nunca negativo).
-  Regras em `military_production` de `data/common/buildings.json`.
+- Produção militar = encomenda de tropas (`RecruitSystem`, não há mais linhas de equipamento): a aba Exército
+  tem um botão + por tipo (`troops` em `data/common/army.json`: soldados, artilharia, tanques, aviões; lote,
+  dias mínimos, dias-fábrica e recursos por unidade, escalas de combate). `RecruitTroopsCommand` põe o lote em
+  `Country.recruit_queue`; por dia as fábricas militares trabalham em ordem (cada lote pega só o que precisa
+  para o prazo), gastam recursos (falta reduz até `shortage_floor`) e o lote pronto nasce no estado favorito
+  (`Country.rally_state`, `SetRallyStateCommand`, estrela na ficha do estado) ou no vizinho nosso mais perto
+  com espaço (`recruit.state_capacity`, `spill_depth`). O modelo é o melhor pesquisado (`ArmySystem.best_model`).
 - Eventos para o jogador: `GameState.add_event(tags, texto, tipo)`; o tipo vira o prefixo no registro.
 
 ## Exército
 
-- `data/common/army.json`: tipos de regimento (equipamento necessário por categoria, marcha em km/dia),
-  limites (regimentos por grupo, grupos por general) e generais. Nomes dos generais (fictícios, decisão
-  do Miguel: nada de generais reais) em `data/common/general_names.json`, sorteados com `GameState.rng`.
-- `ArmyGroup` (regimentos, estado atual, caminho, km andados no trecho) e `General` (ataque, defesa,
-  velocidade 1–5). `ArmySystem`: formar regimento na hora com o melhor equipamento do depósito,
-  dissolver, caminho por terra (Dijkstra em km, só no próprio país por enquanto).
-- `MovementSystem.hourly_update` anda o grupo hora a hora; `MapGeo.km()` dá a distância real.
+- `data/common/army.json`: tipos de tropa (`troops`), regras de encomenda (`recruit`), limites de generais e
+  combate. Nomes dos generais (fictícios, decisão do Miguel: nada de generais reais) em
+  `data/common/general_names.json`, sorteados com `GameState.rng`.
+- Tropas em pilhas: `ArmyGroup.troops` = [{type, model, count, org}]; pilhas paradas do mesmo país no mesmo
+  estado viram uma só a cada hora (`ArmySystem.merge_stacks`). `MoveGroupCommand` com `counts` manda só uma
+  parte (vira pilha nova; a ficha da pilha tem barras "Enviar na próxima ordem"). `General` (ataque, defesa,
+  velocidade 1–5) dá bônus à pilha. Caminho por terra (Dijkstra em km) respeitando `can_enter`.
+- `MovementSystem.hourly_update` anda a pilha hora a hora no passo do tipo mais lento; `MapGeo.km()` dá a distância real.
   Vizinhança por terra: `data/map/adjacency.json`, gerado por `tools/map/build_adjacency.py`.
-- Exército inicial: `data/scenarios/<ano>/armies.json` (valores de exemplo, marcados).
+- Exército inicial: `data/scenarios/<ano>/armies.json` (tropas por tipo na capital; valores de exemplo, marcados).
 
 ## Diplomacia e guerra
 
@@ -99,8 +104,9 @@ Documento de design completo: `docs/design.md`.
   `DeclareWarCommand` (a guerra só começa ao declarar). Eventos do tipo "Diplomacia" e "Guerra".
 - Combate (`CombatSystem`, regras em `combat` de `data/common/army.json`, valores de jogo): grupo em marcha
   para na divisa de um estado com tropas inimigas e ataca; cada hora os lados perdem organização (0–100 por
-  regimento, `r.org`) na proporção da força do outro (ataque leve/blindado pelo equipamento, organização,
-  general, bônus de defesa) e um pouco de equipamento. Lado com todos abaixo de `break_org` perde: defensor
+  entrada de tropa, `r.org`) na proporção da força do outro (estatísticas do modelo x unidades x `stat_scale`,
+  leve/blindado, organização, general, bônus de defesa) e um pouco das unidades (baixas). Aviões lutam onde
+  estão e apoiam as batalhas vizinhas (`air_support_neighbor`). Lado com todos abaixo de `break_org` perde: defensor
   recua para vizinho amigo (sem saída = destruído); atacante desiste. Fora de batalha a organização volta.
   `GameState.battles` (estado -> atacantes/defensores) é refeito a cada hora.
 - Efeitos de batalha (`ui/units/battle_fx.gd`, filho do `UnitLayer`): clarões, traçantes, explosões com fumaça
@@ -117,7 +123,13 @@ Documento de design completo: `docs/design.md`.
   escolhe na sala o modo individual (um sorteado e secreto por jogador) ou comum (votação; empate = sorteio).
   Briefing do começo e tela de vitória/derrota em `ui/panels/briefing_screen.gd`; barra do topo tem "Objetivo".
   Enquanto não houver marinha, as porcentagens deixam de fora as ilhas grandes.
-- Ainda falta (parte 2 do combate): capitulação, paz e resumo de batalha.
+- Paz (`PeaceSystem`, regras em `peace` de `data/common/diplomacy.json`): `ProposePeaceCommand` pede dinheiro,
+  estados e recursos do inimigo (ou nada = paz branca); paz separada entre os dois países. A IA decide na hora
+  (`ai_accepts`: andamento da guerra + cansaço >= custo dos termos) e também propõe (pede o que ocupa ou paz
+  branca); jogador responde com `RespondPeaceCommand` (janela `ui/panels/peace_dialog.gd`, abre sozinha; a ficha
+  do inimigo tem "Propor paz" com previsão). Aceita: termos pagos até o que há, guerra encerrada, ocupações
+  desfeitas, tropas voltam para dentro. Planos de guerra da IA não se repetem (`GameState.declared`).
+- Ainda falta: capitulação e resumo de batalha.
 - Alianças = facções: `GameState.factions` (id -> {name, leader, members}); `allied()` = mesma facção.
   `FactionSystem` (entrar/sair, `JoinFactionCommand`/`LeaveFactionCommand`); quem entra assume as guerras da
   facção; declarar guerra chama as duas facções inteiras (`DiplomacySystem.side_of`/`start_war`). Libertar estado
@@ -128,11 +140,13 @@ Documento de design completo: `docs/design.md`.
 ## IA dos países e jornal
 
 - `data/common/ai.json` (valores de jogo): cada país da IA pensa a cada `think_every_days` (escalonado) em
-  `AiSystem`: economia (civil/militar, construir), pesquisa, produção, exército (regimentos e generais),
-  comércio (vende excesso a quem tem falta), diplomacia e operações (ataca o estado inimigo mais perto da frente).
+  `AiSystem`: economia (civil/militar, construir), pesquisa, exército (encomenda tropas pela proporção `mix`, generais),
+  comércio (vende excesso a quem tem falta), diplomacia, operações (manda `attack_share` de cada pilha grande ao
+  estado inimigo mais perto da frente) e paz.
   `war_plans` e `factions` seguem fatos históricos com datas aproximadas; plano com justificativa pronta declara.
   Os comandos da IA são aplicados dentro de `Simulation._daily_update` (determinísticos, fora do diário).
-  Sem `defs.ai` (mundo de teste), a IA não joga. Hoje: cerca de 20–30 s por ano de jogo simulado sem tela.
+  Sem `defs.ai` (mundo de teste), a IA não joga. Hoje: 17–30 s por ano simulado sem tela em paz, ~45 s com
+  guerra mundial (1940). Caminhos: A* com heap (`ArmySystem._dijkstra`); combate usa índice estado -> pilhas.
 - Notícias: `GameState.add_news(manchete, linha fina, texto, estado, tags, tipo)`; `news_count` conta todas
   (a lista guarda só as últimas `MAX_NEWS`). Artigos e contrações em `NewsText` ("à França", "aos Aliados";
   gênero pela primeira palavra). Nomes de aliança no plural ficam em `NewsText.PLURAL`.
@@ -157,14 +171,14 @@ Documento de design completo: `docs/design.md`.
 ## Interface
 
 - `ui/main.gd` orquestra; painéis em `ui/panels/` (escolha de país, economia, mercado, inteligência,
-  pesquisa, produção, exército); a ficha de equipamento é `ResearchPanel.equipment_sheet()`.
+  pesquisa, exército); a ficha de equipamento é `ResearchPanel.equipment_sheet()`.
 - Visual "quartel-general" (aprovado pelo Miguel, proposta A do Design): tudo passa por `ui/ui_style.gd`.
   Painéis `#17191c` com fio dourado `#c9b37a` e sombra; títulos em Oswald maiúsculo espaçado
   (`title_label`, `section`, `header`); números em Oswald (`number_label`); texto em Inter.
   Fontes em `ui/fonts/` (OFL, recortadas para latim); ícones de traço brancos em `ui/icons/*.svg`,
   coloridos com `UiStyle.icon(nome, cor)`. Não criar estilos soltos nos painéis: usar as funções do UiStyle.
-- Barra superior: país (abre ficha), Tesouro (abre detalhe), Fábricas civis|militares, Pesquisa,
-  Grupos, Recursos (abre tabela com estoque, variação de ontem e preço)
+- Barra superior: país (abre ficha), Tesouro (abre detalhe), Fábricas civis|militares (abre Exército), Pesquisa,
+  Soldados, Recursos (abre tabela com estoque, variação de ontem e preço)
   e Jornal (notícias do mundo + avisos do jogador e falta de recurso), data, pausa e 5 barras de velocidade.
   As caixas abertas são uma só (`_drop` em `main.gd`); Esc ou clique fora fecham.
 - Menu inicial (`ui/panels/main_menu.gd`, modelo "cartaz central" escolhido pelo Miguel): imagem de

@@ -63,9 +63,9 @@ func open_briefing(tag: String, can_reroll: bool, multiplayer_game: bool) -> voi
 	var steps := UiStyle.rich(560)
 	steps.text = "\n".join([
 		"[color=#c9b37a]1.[/color] Fortaleça a indústria: clique num estado seu → [b]Construir[/b] fábricas (o topo mostra civis | militares).",
-		"[color=#c9b37a]2.[/color] Arme o país: [b]Produção[/b] → linhas de equipamento; [b]Pesquisa[/b] → armas melhores.",
-		"[color=#c9b37a]3.[/color] Monte o exército: [b]Exército[/b] → regimentos e generais.",
-		"[color=#c9b37a]4.[/color] Escolha o alvo: clique num estado vizinho com um grupo selecionado → justificar e declarar guerra.",
+		"[color=#c9b37a]2.[/color] Arme o país: [b]Exército[/b] → botões [b]+[/b] encomendam soldados, artilharia, tanques e aviões; [b]Pesquisa[/b] → modelos melhores.",
+		"[color=#c9b37a]3.[/color] Marque o [b]estado favorito[/b] (estrela na ficha de um estado seu): as tropas novas nascem lá.",
+		"[color=#c9b37a]4.[/color] Escolha o alvo: selecione uma pilha de tropas e clique num estado vizinho → justificar e declarar guerra. Para encerrar, a ficha do inimigo tem [b]Propor paz[/b].",
 		"[color=#c9b37a]5.[/color] O tempo começa pausado: [b]espaço[/b] solta o relógio; 1 a 5 mudam a velocidade."])
 	_box.add_child(steps)
 	if multiplayer_game:

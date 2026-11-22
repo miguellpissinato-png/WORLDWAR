@@ -1,17 +1,59 @@
 {
-  "_nota": "Exército inicial em 1º/01/1936. VALORES DE EXEMPLO, não dados históricos: o tamanho real dos exércitos de 1936 ainda será pesquisado com fonte. Os grupos começam na capital. 'spare' = equipamento extra no depósito, por categoria (vai o melhor modelo pesquisado).",
+  "_nota": "Exército inicial em 1º/01/1936, em pilhas na capital. VALORES DE EXEMPLO, não dados históricos: o tamanho real dos exércitos de 1936 ainda será pesquisado com fonte. Cada tipo usa o melhor modelo já pesquisado; sem modelo, o tipo fica de fora.",
   "rifle_standin": {
     "_nota": "Países sem fuzil próprio nos dados recebem um fuzil representante até termos os modelos de cada país: o Kar98k representa os fuzis Mauser, usados por boa parte dos exércitos da época.",
     "RUN": "tech_lee_enfield_no4",
     "EUA": "tech_m1_garand",
     "_padrao": "tech_kar98k"
   },
-  "_padrao": {"groups": [["infantaria", "infantaria"]], "spare": {"rifle": 10}},
-  "ALE": {"groups": [["infantaria", "infantaria", "artilharia"], ["tanquistas", "infantaria"]], "spare": {"rifle": 20}},
-  "URS": {"groups": [["infantaria", "infantaria"], ["tanquistas", "infantaria"]], "spare": {"rifle": 20}},
-  "EUA": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
-  "RUN": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
-  "FRA": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
-  "ITA": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}},
-  "JAP": {"groups": [["infantaria", "infantaria"], ["infantaria"]], "spare": {"rifle": 20}}
+  "_padrao": {
+    "troops": {
+      "infantaria": 200,
+      "artilharia": 5
+    }
+  },
+  "ALE": {
+    "troops": {
+      "infantaria": 600,
+      "artilharia": 20,
+      "tanques": 20
+    }
+  },
+  "URS": {
+    "troops": {
+      "infantaria": 600,
+      "artilharia": 20,
+      "tanques": 20
+    }
+  },
+  "EUA": {
+    "troops": {
+      "infantaria": 500,
+      "artilharia": 15
+    }
+  },
+  "RUN": {
+    "troops": {
+      "infantaria": 500,
+      "artilharia": 15
+    }
+  },
+  "FRA": {
+    "troops": {
+      "infantaria": 500,
+      "artilharia": 15
+    }
+  },
+  "ITA": {
+    "troops": {
+      "infantaria": 500,
+      "artilharia": 15
+    }
+  },
+  "JAP": {
+    "troops": {
+      "infantaria": 500,
+      "artilharia": 15
+    }
+  }
 }

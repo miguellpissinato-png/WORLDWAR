@@ -44,8 +44,6 @@ func make_world() -> Simulation:
 				"block_per_defense": 0.12, "block_per_offense": 0.06, "block_max": 0.6,
 				"detect_per_defense": 0.012, "detect_per_offense": 0.006, "detect_min": 0.002, "noise_base": 0.3}},
 		"industry": {"default_civil_share": 1.0, "conversion_per_day": 0.25},
-		"military_production": {"efficiency_start": 0.5, "efficiency_gain_per_day": 0.1, "efficiency_max": 1.0,
-			"shortage_floor": 0.25, "max_factories_per_line": 15},
 		"equipment": {
 			"rifle": {"name": "Fuzil", "category": "rifle", "cost": 1.0, "resources": {"iron": 1.0},
 				"stats": {"soft_attack": 3.0}},
@@ -65,16 +63,21 @@ func make_world() -> Simulation:
 				"tech_future": {"name": "Futuro", "area": "blindados", "year": 1940, "days": 10, "money_cost": 10, "origin": []},
 			},
 		},
-		"diplomacy": {"justify_days": 3, "justify_cost": 10},
+		"diplomacy": {"justify_days": 3, "justify_cost": 10, "peace": {"army_weight": 0.6, "capital_weight": 0.25,
+			"state_weight": 1.5, "money_weight": 0.4, "resource_weight": 0.15, "tired_per_month": 0.01, "tired_max": 0.3,
+			"white_margin": 0.05, "offer_days": 30}},
 		"objectives": {"max_start_progress": 0.4, "region_names": {"europa": "Europa"}, "objectives": [
 			{"id": "europa", "name": "Conquistar a Europa", "targets": [{"regions": ["europa"], "share": 0.9}]},
 			{"id": "mundo_70", "name": "Dominar 70% do mundo", "targets": [{"regions": ["mundo"], "share": 0.7}]}]},
 		"army": {
-			"max_regiments_per_group": 2, "max_groups_per_general": 2,
-			"regiments": {
-				"infantaria": {"name": "Infantaria", "needs": [{"categories": ["rifle"], "qty": 4}], "march_km_day": 24},
-				"tanquistas": {"name": "Blindados", "needs": [{"categories": ["tank"], "qty": 2}], "march_km_day": 48},
+			"max_groups_per_general": 2,
+			"troops": {
+				"infantaria": {"name": "Soldados", "short": "soldados", "categories": ["rifle"], "batch": 10, "days": 3,
+					"work_per_unit": 0.1, "resources_per_unit": 0.1, "stat_scale": 1.0, "size": 1, "march_km_day": 24, "rank": "soft_attack"},
+				"tanques": {"name": "Tanques", "short": "tanques", "categories": ["tank"], "batch": 2, "days": 4,
+					"work_per_unit": 1.0, "resources_per_unit": 1.0, "stat_scale": 1.0, "size": 5, "march_km_day": 48, "rank": "hard_attack"},
 			},
+			"recruit": {"state_capacity": 50, "spill_depth": 2, "max_batches_per_click": 10, "shortage_floor": 0.25},
 			"rank_stat": {"rifle": "soft_attack", "tank": "hard_attack"},
 			"movement": {"infrastructure_bonus_per_level": 0.0, "general_speed_bonus_per_level": 0.1},
 			"generals": {"recruit_cost": 300, "skill_start_max": 3},

@@ -1,5 +1,24 @@
 {
   "_nota": "Regras de diplomacia e guerra. Valores de jogo (ajustáveis), não dados históricos.",
   "justify_days": 30,
-  "justify_cost": 300
+  "justify_cost": 300,
+  "peace": {
+    "_nota": "Paz (valores de jogo). A IA aceita quando andamento_da_guerra(de quem propõe) + cansaço >= custo dos termos - white_margin. Andamento = estados ocupados de cada lado + army_weight x (força relativa - 0,5) +/- capital_weight pela capital tomada. Custo = state_weight x fração dos estados pedidos + money_weight x dinheiro/(tesouro+500) + resource_weight x recurso/(estoque+50).",
+    "army_weight": 0.6,
+    "capital_weight": 0.25,
+    "state_weight": 1.5,
+    "money_weight": 0.4,
+    "resource_weight": 0.15,
+    "tired_per_month": 0.01,
+    "tired_max": 0.3,
+    "white_margin": 0.05,
+    "offer_days": 30,
+    "ai_retry_days": 45,
+    "ai_demand_score": 0.25,
+    "ai_white_score": -0.3,
+    "ai_white_after_months": 18,
+    "ai_max_states": 12,
+    "ai_min_months": 3,
+    "_ia": "A IA só propõe depois de ai_min_months de guerra: pede os estados que ocupa quando o andamento passa de ai_demand_score; pede paz branca quando está perdendo território e o andamento está abaixo de ai_white_score, ou quando a guerra empata por ai_white_after_months."
+  }
 }

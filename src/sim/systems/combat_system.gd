@@ -4,7 +4,7 @@ extends RefCounted
 ## Uma batalha acontece quando um grupo em marcha chega na divisa de um estado onde há grupos
 ## de um país com quem está em guerra: ele para na divisa (MovementSystem) e ataca.
 ## Cada hora, os dois lados perdem organização (0–100) na proporção da força do outro, e um pouco
-## de equipamento. Quando todos os regimentos de um lado ficam abaixo de `break_org`, esse lado perde:
+## de tropas (baixas). Quando todas as tropas de um lado ficam abaixo de `break_org`, esse lado perde:
 ## o defensor recua para um estado vizinho amigo (ou é destruído, se não há para onde ir) e o
 ## atacante desiste da marcha. Fora de batalha, a organização volta aos poucos.
 ## Regras e valores (de jogo) em `combat` de data/common/army.json.
@@ -20,40 +20,51 @@ static func org_of(defs: Dictionary, r: Dictionary) -> float:
 
 ## Organização média do grupo (0–100).
 static func group_org(defs: Dictionary, g: ArmyGroup) -> float:
-	if g.regiments.is_empty():
-		return 0.0
 	var t := 0.0
-	for r in g.regiments:
-		t += org_of(defs, r)
-	return t / g.regiments.size()
+	var n := 0.0
+	for r in g.troops:
+		var w := float(r.count) * float(ArmySystem.troop_def(defs, r.type).get("size", 1))
+		t += org_of(defs, r) * w
+		n += w
+	return t / n if n > 0.0 else 0.0
 
 
 ## Grupos parados ou de passagem no estado `sid` que são inimigos (em guerra) de `tag`.
-static func enemy_groups_in(state: GameState, sid: int, tag: String) -> Array:
+static func enemy_groups_in(state: GameState, sid: int, tag: String, idx: Dictionary = {}) -> Array:
 	var out := []
-	for g: ArmyGroup in state.groups.values():
-		if g.state_id == sid and g.owner != tag and state.at_war(tag, g.owner) and not g.regiments.is_empty():
+	var pool: Array = idx.get(sid, []) if not idx.is_empty() else state.groups.values()
+	for g: ArmyGroup in pool:
+		if g.state_id == sid and g.owner != tag and state.at_war(tag, g.owner) and not g.empty():
 			out.append(g)
 	return out
 
 
 ## Grupo atacando: em marcha, parado na divisa do próximo estado, que tem inimigos.
-static func attack_target(state: GameState, g: ArmyGroup) -> int:
-	if not g.moving() or g.regiments.is_empty():
+static func attack_target(state: GameState, g: ArmyGroup, idx: Dictionary = {}) -> int:
+	if not g.moving() or g.empty():
 		return -1
 	var nxt: int = g.path[0]
-	var leg := MapGeo.km(state.state(g.state_id).center, state.state(nxt).center)
-	if g.progress_km + 0.001 < leg:
+	if not idx.is_empty() and not idx.has(nxt):
+		return -1   # ninguém lá (barato: sem calcular distância)
+	if enemy_groups_in(state, nxt, g.owner, idx).is_empty():
 		return -1
-	return nxt if not enemy_groups_in(state, nxt, g.owner).is_empty() else -1
+	var leg := MapGeo.km(state.state(g.state_id).center, state.state(nxt).center)
+	return nxt if g.progress_km + 0.001 >= leg else -1
 
 
 static func hourly_update(state: GameState, defs: Dictionary) -> void:
 	var cr := rules(defs)
-	# 1. Montar as batalhas desta hora.
+	# 1. Montar as batalhas desta hora (com um índice estado -> pilhas, para não varrer tudo).
+	var idx := {"_": []}
+	for g: ArmyGroup in state.groups.values():
+		if not idx.has(g.state_id):
+			idx[g.state_id] = []
+		idx[g.state_id].append(g)
 	var battles := {}
 	for g: ArmyGroup in state.groups.values():
-		var sid := attack_target(state, g)
+		if not g.moving():
+			continue
+		var sid := attack_target(state, g, idx)
 		if sid == -1:
 			continue
 		if not battles.has(sid):
@@ -64,8 +75,8 @@ static func hourly_update(state: GameState, defs: Dictionary) -> void:
 		var att_owners := {}
 		for gid in b.attackers:
 			att_owners[state.group(gid).owner] = true
-		for g: ArmyGroup in state.groups.values():
-			if g.state_id != sid or g.regiments.is_empty() or att_owners.has(g.owner):
+		for g: ArmyGroup in idx.get(sid, []):
+			if g.state_id != sid or g.empty() or att_owners.has(g.owner):
 				continue
 			for t in att_owners:
 				if state.at_war(t, g.owner):
@@ -83,7 +94,7 @@ static func hourly_update(state: GameState, defs: Dictionary) -> void:
 	var fighting := {}
 	for sid in battles:
 		var b: Dictionary = battles[sid]
-		_resolve(state, defs, cr, sid, b)
+		_resolve(state, defs, cr, sid, b, idx)
 		for gid in b.attackers + b.defenders:
 			fighting[gid] = true
 
@@ -93,8 +104,9 @@ static func hourly_update(state: GameState, defs: Dictionary) -> void:
 	for g: ArmyGroup in state.groups.values():
 		if fighting.has(g.id):
 			continue
-		for r in g.regiments:
-			r.org = minf(max_org, org_of(defs, r) + regen)
+		for r in g.troops:
+			if r.org < max_org:
+				r.org = minf(max_org, float(r.org) + regen)
 
 
 static func _owners(state: GameState, ids: Array) -> Array:
@@ -106,18 +118,20 @@ static func _owners(state: GameState, ids: Array) -> Array:
 	return out.keys()
 
 
-static func _resolve(state: GameState, defs: Dictionary, cr: Dictionary, sid: int, b: Dictionary) -> void:
+static func _resolve(state: GameState, defs: Dictionary, cr: Dictionary, sid: int, b: Dictionary, idx: Dictionary = {}) -> void:
 	var att: Array = b.attackers.map(func(i): return state.group(i))
 	var dfn: Array = b.defenders.map(func(i): return state.group(i))
-	var p_att := side_power(state, defs, att, dfn, false)
-	var p_def := side_power(state, defs, dfn, att, true)
+	var p_att := side_power(state, defs, att, dfn, false) + air_support(state, defs, sid, att, dfn, idx)
+	var p_def := side_power(state, defs, dfn, att, true) + air_support(state, defs, sid, dfn, att, idx)
 	var share := p_att / maxf(p_att + p_def, 0.001)   # 0–1: quanto do dano vai para o defensor
 	var base := float(cr.get("org_loss_per_hour", 4.0))
 	var spread := float(cr.get("random_spread", 0.2))
 	var loss_def := base * 2.0 * share * (1.0 + state.rng.randf_range(-spread, spread))
 	var loss_att := base * 2.0 * (1.0 - share) * (1.0 + state.rng.randf_range(-spread, spread))
-	_damage(defs, cr, dfn, loss_def)
-	_damage(defs, cr, att, loss_att)
+	_damage(state, defs, cr, dfn, loss_def)
+	_damage(state, defs, cr, att, loss_att)
+	att = att.filter(func(g): return state.groups.has(g.id))
+	dfn = dfn.filter(func(g): return state.groups.has(g.id))
 
 	var brk := float(cr.get("break_org", 15))
 	var att_broken := att.all(func(g): return group_broken(defs, g, brk))
@@ -141,7 +155,7 @@ static func _resolve(state: GameState, defs: Dictionary, cr: Dictionary, sid: in
 
 
 static func group_broken(defs: Dictionary, g: ArmyGroup, brk: float) -> bool:
-	for r in g.regiments:
+	for r in g.troops:
 		if org_of(defs, r) > brk:
 			return false
 	return true
@@ -160,18 +174,8 @@ static func side_power(state: GameState, defs: Dictionary, side: Array, enemy: A
 	var total := 0.0
 	for g: ArmyGroup in side:
 		var gp := 0.0
-		for r in g.regiments:
-			var rp := 0.0
-			for eq in r.equipment:
-				var st: Dictionary = defs.equipment.get(eq, {}).get("stats", {})
-				var soft := 0.0
-				for k in soft_w:
-					soft += float(st.get(k, 0.0)) * float(soft_w[k])
-				var hrd := 0.0
-				for k in hard_w:
-					hrd += float(st.get(k, 0.0)) * float(hard_w[k])
-				rp += (soft * (1.0 - hard) + hrd * hard) * float(r.equipment[eq])
-			gp += rp * (floor_ + (1.0 - floor_) * org_of(defs, r) / max_org)
+		for r in g.troops:
+			gp += troop_power(defs, r, hard, soft_w, hard_w) * (floor_ + (1.0 - floor_) * org_of(defs, r) / max_org)
 		var gen := state.general(g.general_id)
 		if gen != null:
 			gp *= 1.0 + gen_bonus * ((gen.defense if defending else gen.attack) - 1)
@@ -181,29 +185,75 @@ static func side_power(state: GameState, defs: Dictionary, side: Array, enemy: A
 	return total
 
 
-## Parte blindada do lado (0–1): unidades das categorias blindadas sobre o total de unidades.
+## Poder de uma entrada de tropa contra um inimigo com fração blindada `hard`.
+static func troop_power(defs: Dictionary, r: Dictionary, hard: float, soft_w: Dictionary, hard_w: Dictionary) -> float:
+	var soft := 0.0
+	for k in soft_w:
+		soft += ArmySystem.troop_stat(defs, r, k) * float(soft_w[k])
+	var hrd := 0.0
+	for k in hard_w:
+		hrd += ArmySystem.troop_stat(defs, r, k) * float(hard_w[k])
+	return soft * (1.0 - hard) + hrd * hard
+
+
+## Apoio aéreo: aviões do lado parados em estados vizinhos da batalha (e fora dela) ajudam com uma
+## fração da força (`air_support_neighbor`).
+static func air_support(state: GameState, defs: Dictionary, sid: int, side: Array, enemy: Array, idx: Dictionary = {}) -> float:
+	var cr := rules(defs)
+	var k := float(cr.get("air_support_neighbor", 0.5))
+	if k <= 0.0 or side.is_empty():
+		return 0.0
+	var owners := {}
+	var inside := {}
+	for g in side:
+		owners[g.owner] = true
+		inside[g.id] = true
+	var near: Array = state.adjacency.get(sid, [])
+	var pool := []
+	if idx.is_empty():
+		pool = state.groups.values()
+	else:
+		for n in near:
+			pool.append_array(idx.get(n, []))
+	var hard := -1.0
+	var total := 0.0
+	for g: ArmyGroup in pool:
+		if inside.has(g.id) or not owners.has(g.owner) or g.moving() or not g.state_id in near:
+			continue
+		for r in g.troops:
+			if r.type == "avioes":
+				if hard < 0.0:
+					hard = hardness(defs, enemy)
+				total += troop_power(defs, r, hard, cr.get("soft_weights", {}), cr.get("hard_weights", {})) * org_of(defs, r) / float(cr.get("max_org", 100))
+	return total * k
+
+
+## Parte blindada do lado (0–1): espaço ocupado por tropas das categorias blindadas sobre o total.
 static func hardness(defs: Dictionary, side: Array) -> float:
 	var hard_cats: Array = rules(defs).get("hard_categories", ["tank"])
 	var h := 0.0
 	var n := 0.0
 	for g: ArmyGroup in side:
-		for r in g.regiments:
-			for eq in r.equipment:
-				var q := float(r.equipment[eq])
-				n += q
-				if defs.equipment.get(eq, {}).get("category", "") in hard_cats:
-					h += q
+		for r in g.troops:
+			var q := float(r.count) * float(ArmySystem.troop_def(defs, r.type).get("size", 1))
+			n += q
+			if defs.equipment.get(r.model, {}).get("category", "") in hard_cats:
+				h += q
 	return h / n if n > 0.0 else 0.0
 
 
-## Tira organização de todos os regimentos do lado e um pouco de equipamento (perdas).
-static func _damage(defs: Dictionary, cr: Dictionary, side: Array, org_loss: float) -> void:
-	var eq_loss := float(cr.get("equipment_loss_per_org", 0.0008)) * org_loss
+## Tira organização de todas as tropas do lado e um pouco das unidades (baixas). Pilha sem ninguém some.
+static func _damage(state: GameState, defs: Dictionary, cr: Dictionary, side: Array, org_loss: float) -> void:
+	var eq_loss := float(cr.get("equipment_loss_per_org", 0.0015)) * org_loss
 	for g: ArmyGroup in side:
-		for r in g.regiments:
+		for r in g.troops.duplicate():
 			r.org = maxf(0.0, org_of(defs, r) - org_loss)
-			for eq in r.equipment.keys():
-				r.equipment[eq] = maxf(0.0, float(r.equipment[eq]) * (1.0 - eq_loss))
+			r.count = float(r.count) * (1.0 - eq_loss)
+			if float(r.count) < 0.5:
+				g.troops.erase(r)
+		if g.empty():
+			state.add_event([g.owner], "%s foi aniquilado em %s." % [g.name, state.state(g.state_id).name], "Guerra")
+			state.groups.erase(g.id)
 
 
 ## Defensor derrotado: recua para o vizinho mais perto que seu lado controla e que não tem inimigos.

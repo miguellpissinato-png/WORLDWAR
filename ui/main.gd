@@ -28,7 +28,6 @@ var _economy: EconomyPanel
 var _market: MarketPanel
 var _intel: IntelPanel
 var _research: ResearchPanel
-var _production: ProductionPanel
 var _army: ArmyPanel
 var _date_label: Label
 var _date_sub: Label
@@ -48,6 +47,7 @@ var _alert_button: Button
 var _alert_badge: PanelContainer
 var _alert_count: Label
 var _newspaper: Newspaper
+var _peace: PeaceDialog
 var _news_read := 0          # notícias já vistas no jornal (contador de GameState.news_count)
 var _news_toasted := 0
 var _extra: PanelContainer   # aviso "EXTRA!" de notícia grande
@@ -183,11 +183,14 @@ func order_move(group_id: int, sid: int) -> void:
 	var g := sim.state.group(group_id)
 	if g == null:
 		return
-	var cmd := MoveGroupCommand.create(player_tag, group_id, sid)
+	var cmd := MoveGroupCommand.create(player_tag, group_id, sid, _send_counts(g))
 	var reason := cmd.validate(sim.state, sim.defs)
 	if reason == "":
 		submit(cmd)
 		units.preview(-1)
+		_send_sig = ""
+		if cmd.moved_group != -1 and cmd.moved_group != group_id:
+			units.select(cmd.moved_group)
 		return
 	var dest_owner: String = sim.state.state(sid).owner
 	var blocker := ""
@@ -387,6 +390,7 @@ func _on_day() -> void:
 		if player_tag in e.tags:
 			write_log("[color=#e0c070]%s:[/color] %s" % [e.get("kind", "Inteligência"), e.text])
 	_check_extra()
+	_check_peace_offers()
 	_refresh_all()
 
 
@@ -400,7 +404,6 @@ func _refresh_all() -> void:
 	_market.refresh()
 	_intel.refresh()
 	_research.refresh()
-	_production.refresh()
 	_army.refresh()
 	_refresh_group_card()
 	if _map_mode == "resources":
@@ -420,7 +423,7 @@ func _refresh_top_bar() -> void:
 	var mil := sim.state.military_factories(player_tag)
 	_chips.factories.civ.text = str(civ)
 	_chips.factories.mil.text = str(mil)
-	_chips.factories.button.tooltip_text = "Fábricas: %d civis, %d militares\nClique para abrir a Produção." % [civ, mil]
+	_chips.factories.button.tooltip_text = "Fábricas: %d civis, %d militares\nClique para abrir o Exército." % [civ, mil]
 	_chips.research.value.text = str(c.research.size())
 	_chips.research.extra.text = "/%d" % c.research_slots
 	_chips.research.button.tooltip_text = "Pesquisa: %d de %d vagas ocupadas\nClique para abrir a Pesquisa." % [c.research.size(), c.research_slots]
@@ -429,8 +432,14 @@ func _refresh_top_bar() -> void:
 	_chips.objective.value.text = "%d%%" % roundi(op.value * 100) if obj_id != "" else "—"
 	_chips.objective.button.tooltip_text = "Objetivo: %s\nClique para ver o andamento." % ObjectiveSystem.find(sim.defs, obj_id).get("name", "nenhum")
 	var groups := sim.state.groups_of(player_tag)
-	_chips.army.value.text = str(groups.size())
-	_chips.army.button.tooltip_text = "Exército: %d grupos\nClique para abrir o Exército." % groups.size()
+	var soldiers := 0.0
+	var tanks := 0.0
+	for g in groups:
+		soldiers += g.count_of("infantaria")
+		tanks += g.count_of("tanques")
+	_chips.army.value.text = UiStyle.num(soldiers)
+	_chips.army.button.tooltip_text = "Exército: %s soldados e %s tanques em %d pilhas\n%d lotes em preparo\nClique para abrir o Exército." % [
+		UiStyle.num(soldiers), UiStyle.num(tanks), groups.size(), sim.state.country(player_tag).recruit_queue.size()]
 	for r in sim.defs.resources:
 		var cell: Dictionary = _res_cells[r.id]
 		var stock := c.stock(r.id)
@@ -592,8 +601,65 @@ func _refresh_group_card() -> void:
 	if g.owner == player_tag:
 		t += "\n\n[color=%s]Clique num estado para mandar marchar. Esc tira a seleção.[/color]" % UiStyle.MUTED_HEX
 	_state_info.text = t
-	UiStyle.clear(_build_box)
 	_spy_button.visible = false
+	_send_box(g)
+
+
+## Quanto da pilha parada vai na próxima ordem de marcha (barras por tipo; o resto fica).
+var _send := {}
+var _send_sig := ""
+
+
+func _send_box(g: ArmyGroup) -> void:
+	var sig := "%d|%s|%s" % [g.id, g.moving(), ArmyPanel.counts_text(sim, g)]
+	if sig == _send_sig:
+		return
+	_send_sig = sig
+	UiStyle.clear(_build_box)
+	_send = {}
+	if g.owner != player_tag or g.moving():
+		return
+	_build_box.add_child(UiStyle.section("Enviar na próxima ordem"))
+	for type in g.types():
+		var total := roundi(g.count_of(type))
+		if total <= 0:
+			continue
+		_send[type] = total
+		var h := HBoxContainer.new()
+		h.add_theme_constant_override("separation", 8)
+		var name_l := Label.new()
+		name_l.text = str(ArmySystem.troop_def(sim.defs, type).get("name", type))
+		name_l.custom_minimum_size = Vector2(78, 0)
+		h.add_child(name_l)
+		var sl := HSlider.new()
+		sl.min_value = 0
+		sl.max_value = total
+		sl.step = 1
+		sl.value = total
+		sl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		sl.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		h.add_child(sl)
+		var val := UiStyle.number_label("%d/%d" % [total, total], 13)
+		val.custom_minimum_size = Vector2(70, 0)
+		val.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		h.add_child(val)
+		var tp: String = type
+		sl.value_changed.connect(func(v):
+			_send[tp] = int(v)
+			val.text = "%d/%d" % [int(v), total])
+		_build_box.add_child(h)
+	_build_box.add_child(UiStyle.small_label("O que não for enviado fica neste estado.", 11))
+
+
+## {tipo: n} para a ordem de marcha, ou {} se vai tudo.
+func _send_counts(g: ArmyGroup) -> Dictionary:
+	if _send.is_empty() or g.moving():
+		return {}
+	var all := true
+	for type in g.types():
+		if int(_send.get(type, 0)) < roundi(g.count_of(type)):
+			all = false
+	return {} if all else _send.duplicate()
 
 
 func _set_card_title(title: String, sub: String, tag: String) -> void:
@@ -656,12 +722,30 @@ func _refresh_state_panel() -> void:
 			st += UiStyle.kv("Fábricas", "~%d civis, ~%d militares" % [rep.civilian_factories, rep.military_factories]) + "\n"
 	_state_info.text = st
 
+	_send_sig = ""
 	UiStyle.clear(_build_box)
 	_spy_button.visible = not mine
 	_spy_button.text = "Investigar %s" % owner.name
 	if not mine:
 		_diplomacy_box(_build_box, s.owner)
 		return
+	# estado favorito: as tropas novas nascem aqui
+	var fav := ArmySystem.rally_state(sim.state, player_tag) == selected_state
+	var star := Button.new()
+	star.icon = UiStyle.icon_texture("star")
+	star.expand_icon = true
+	star.add_theme_constant_override("icon_max_width", 16)
+	star.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	star.text = "Estado favorito: as tropas novas nascem aqui" if fav else "Marcar como favorito (tropas novas nascem aqui)"
+	star.add_theme_color_override("icon_normal_color", UiStyle.ACCENT if fav else UiStyle.MUTED)
+	star.add_theme_color_override("font_color", UiStyle.ACCENT if fav else UiStyle.TEXT)
+	star.disabled = fav
+	star.tooltip_text = "Se o estado estiver cheio de tropas, elas nascem nos estados vizinhos."
+	var sid_fav := selected_state
+	star.pressed.connect(func():
+		submit(SetRallyStateCommand.create(player_tag, sid_fav))
+		_refresh_all())
+	_build_box.add_child(star)
 	var cur: String = sim.defs.currency
 	var options: Array = sim.defs.buildings.keys()
 	for r in sim.defs.resources:
@@ -693,6 +777,20 @@ func _diplomacy_box(parent: Control, tag: String) -> void:
 	var cur: String = sim.defs.currency
 	if sim.state.at_war(player_tag, tag):
 		parent.add_child(UiStyle.small_label("Em guerra com %s. Suas tropas podem entrar." % them.name, 13, UiStyle.BAD))
+		var theirs := PeaceSystem.pending(sim.state, tag, player_tag)
+		if not theirs.is_empty():
+			var see := Button.new()
+			see.text = "%s propôs paz: ver proposta" % them.name
+			see.pressed.connect(func(): _peace.open_incoming(theirs))
+			parent.add_child(see)
+		var mine_offer := PeaceSystem.pending(sim.state, player_tag, tag)
+		if not mine_offer.is_empty():
+			parent.add_child(UiStyle.small_label("Proposta de paz enviada; aguardando resposta.", 12, UiStyle.WARN))
+		else:
+			var pb := Button.new()
+			pb.text = "Propor paz a %s" % them.name
+			pb.pressed.connect(func(): _peace.open_proposal(tag))
+			parent.add_child(pb)
 	elif sim.state.allied(player_tag, tag):
 		parent.add_child(UiStyle.small_label("Aliado.", 13, UiStyle.GOOD))
 	elif j.is_empty():
@@ -874,14 +972,11 @@ func _build_ui() -> void:
 	_research = ResearchPanel.new()
 	_research.setup(self)
 	_game_ui.add_child(_research)
-	_production = ProductionPanel.new()
-	_production.setup(self)
-	_game_ui.add_child(_production)
 	_army = ArmyPanel.new()
 	_army.setup(self)
 	_game_ui.add_child(_army)
 	_build_side_panels()
-	for p in [_economy, _market, _intel, _research, _production, _army]:
+	for p in [_economy, _market, _intel, _research, _army]:
 		_game_ui.move_child(p, -1)   # janelas por cima do registro e dos modos de mapa
 	_build_war_dialog()
 	_game_ui.move_child(_drop, -1)   # a caixa da barra fica por cima de tudo
@@ -938,6 +1033,9 @@ func _build_ui() -> void:
 		Net.leave()
 		get_tree().reload_current_scene())
 	_mp_screen.setup(self)
+	_peace = PeaceDialog.new()
+	_root.add_child(_peace)
+	_peace.setup(self)
 	_newspaper = Newspaper.new()
 	_root.add_child(_newspaper)
 	_newspaper.setup(self)
@@ -999,11 +1097,13 @@ func _on_escape() -> void:
 		_close_pause_menu()
 	elif _newspaper.visible:
 		_newspaper.close()
+	elif _peace.visible:
+		_peace.visible = false
 	elif _war_dialog.visible:
 		_war_dialog.visible = false
 	elif _drop_kind != "":
 		_close_drop()
-	elif [_economy, _market, _intel, _research, _production, _army].any(func(p): return p.visible):
+	elif [_economy, _market, _intel, _research, _army].any(func(p): return p.visible):
 		_only_one_panel(null)
 	elif units.selected != -1 or _state_panel.visible:
 		units.select(-1)
@@ -1055,7 +1155,7 @@ func _load_game() -> void:
 
 
 func _only_one_panel(p: Control) -> void:
-	for other in [_economy, _market, _intel, _research, _production, _army]:
+	for other in [_economy, _market, _intel, _research, _army]:
 		if other != p:
 			other.visible = false
 
@@ -1119,13 +1219,13 @@ func _build_top_bar() -> void:
 	_chips.treasury = _chip(bar, "treasury", "Tesouro", 126)
 	_chips.treasury.button.pressed.connect(func(): _toggle_drop("treasury", _chips.treasury.button))
 	_chips.factories = _chip(bar, "factory", "Fábricas", 96, true)
-	_chips.factories.button.pressed.connect(func(): _open_panel("production"))
+	_chips.factories.button.pressed.connect(func(): _open_panel("army"))
 	_chips.research = _chip(bar, "research", "Pesquisa", 94)
 	_chips.research.extra.add_theme_color_override("font_color", UiStyle.MUTED)
 	_chips.research.extra.add_theme_font_override("font", UiStyle.font("number"))
 	_chips.research.extra.add_theme_font_size_override("font_size", 14)
 	_chips.research.button.pressed.connect(func(): _open_panel("research"))
-	_chips.army = _chip(bar, "army", "Grupos", 88)
+	_chips.army = _chip(bar, "army", "Soldados", 88)
 	_chips.army.button.pressed.connect(func(): _open_panel("army"))
 	_chips.objective = _chip(bar, "target", "Objetivo", 92)
 	_chips.objective.button.pressed.connect(func(): _toggle_drop("objective", _chips.objective.button))
@@ -1474,8 +1574,7 @@ func _alert_row(icon_name: String, color: Color, kind: String, text: String) -> 
 
 func _build_side_panels() -> void:
 	# Menu lateral: um botão por janela; o botão da janela aberta fica aceso.
-	_panels = {"economy": _economy, "market": _market, "production": _production,
-		"research": _research, "army": _army, "intel": _intel}
+	_panels = {"economy": _economy, "market": _market, "research": _research, "army": _army, "intel": _intel}
 	var left := UiStyle.panel(8)
 	left.position = Vector2(10, UiStyle.PANEL_Y)
 	left.custom_minimum_size = Vector2(156, 0)
@@ -1483,8 +1582,8 @@ func _build_side_panels() -> void:
 	var lv := VBoxContainer.new()
 	lv.add_theme_constant_override("separation", 2)
 	left.add_child(lv)
-	for pair in [["Economia", "economy"], ["Mercado", "market"], ["Produção", "production"],
-			["Pesquisa", "research"], ["Exército", "army"], ["Inteligência", "intel"]]:
+	for pair in [["Economia", "economy"], ["Mercado", "market"], ["Exército", "army"],
+			["Pesquisa", "research"], ["Inteligência", "intel"]]:
 		var b := Button.new()
 		b.text = pair[0]
 		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -1723,3 +1822,17 @@ func _hide_extra() -> void:
 	if _extra != null:
 		_extra.queue_free()
 		_extra = null
+
+
+## Proposta de paz nova para o jogador: abre a janela para responder (uma vez por proposta).
+var _peace_seen := {}
+
+
+func _check_peace_offers() -> void:
+	if _peace.visible or _newspaper.visible:
+		return
+	for o in sim.state.peace_offers.values():
+		if o.to == player_tag and not _peace_seen.has(o.id):
+			_peace_seen[o.id] = true
+			_peace.open_incoming(o)
+			return

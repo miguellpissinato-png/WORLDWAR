@@ -3,16 +3,22 @@ extends Command
 ## Manda um grupo marchar até um estado (o caminho é calculado por terra). As tropas só passam por
 ## território próprio, aliado ou de quem está em guerra conosco.
 ## Se já estava marchando, ele termina o trecho em que está antes de mudar de rumo.
+## `counts` ({tipo: unidades}) manda só uma parte da pilha parada: ela vira uma pilha nova.
 
 var group_id: int
 var target: int
+var counts: Dictionary = {}
+var moved_group := -1     # pilha que marchou (preenchido ao aplicar)
+var _cache_key := ""      # caminho já calculado no validate (a mesma hora e posição): não recalcula no apply
+var _cache_route: Array = []
 
 
-static func create(tag: String, p_group: int, p_target: int) -> MoveGroupCommand:
+static func create(tag: String, p_group: int, p_target: int, p_counts: Dictionary = {}) -> MoveGroupCommand:
 	var c := MoveGroupCommand.new()
 	c.country_tag = tag
 	c.group_id = p_group
 	c.target = p_target
+	c.counts = p_counts
 	return c
 
 
@@ -22,6 +28,15 @@ func type_name() -> String:
 
 func _route(state: GameState) -> Array:
 	var g := state.group(group_id)
+	var key := "%d|%d|%s|%d" % [state.hours, g.state_id, g.path, state.wars.size()]
+	if key == _cache_key:
+		return _cache_route
+	_cache_key = key
+	_cache_route = _route_now(state, g)
+	return _cache_route
+
+
+func _route_now(state: GameState, g: ArmyGroup) -> Array:
 	if g.moving():
 		# Continua até o próximo estado e segue dali.
 		var nxt: int = g.path[0]
@@ -45,6 +60,16 @@ func validate(state: GameState, _defs: Dictionary) -> String:
 		return "não estamos em guerra com %s" % state.country(s.owner).name
 	if not g.moving() and target == g.state_id:
 		return "o grupo já está lá"
+	if not counts.is_empty():
+		if g.moving():
+			return "só dá para dividir uma pilha parada"
+		var total := 0.0
+		for type in counts:
+			if float(counts[type]) < 0.0 or float(counts[type]) > g.count_of(type) + 0.001:
+				return "quantidade inválida"
+			total += float(counts[type])
+		if total <= 0.0:
+			return "escolha quantas tropas enviar"
 	if _route(state).is_empty():
 		var from: int = g.path[0] if g.moving() else g.state_id
 		var blocker := ArmySystem.route_blocker(state, from, target, country_tag)
@@ -54,15 +79,20 @@ func validate(state: GameState, _defs: Dictionary) -> String:
 	return ""
 
 
-func apply(state: GameState, _defs: Dictionary) -> void:
+func apply(state: GameState, defs: Dictionary) -> void:
+	var route := _route(state)
 	var g := state.group(group_id)
-	g.path = _route(state)
+	if not counts.is_empty():
+		g = ArmySystem.split(state, defs, g, counts)
+	g.path = route
+	moved_group = g.id
 
 
 func _fields() -> Dictionary:
-	return {"group_id": group_id, "target": target}
+	return {"group_id": group_id, "target": target, "counts": counts}
 
 
 func _load_fields(d: Dictionary) -> void:
 	group_id = int(d.group_id)
 	target = int(d.target)
+	counts = d.get("counts", {})

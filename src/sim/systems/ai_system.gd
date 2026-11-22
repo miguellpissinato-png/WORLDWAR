@@ -34,11 +34,12 @@ static func think(state: GameState, defs: Dictionary, tag: String, turn: int) ->
 	var cmds := []
 	_economy(state, defs, tag, turn, cmds)
 	_research(state, defs, tag, cmds)
-	_production(state, defs, tag, cmds)
 	_army(state, defs, tag, cmds)
 	_trade(state, defs, tag, cmds)
 	_diplomacy(state, defs, tag, cmds)
 	_operations(state, defs, tag, cmds)
+	if turn % 3 == 0:
+		_peace(state, defs, tag, cmds)   # paz: a cada 3 rodadas basta
 	return cmds
 
 
@@ -110,86 +111,57 @@ static func _research(state: GameState, defs: Dictionary, tag: String, cmds: Arr
 		break   # uma por vez: o dinheiro sai a cada pesquisa
 
 
-# ---------------------------------------------------------------- produção militar
-
-static func _production(state: GameState, defs: Dictionary, tag: String, cmds: Array) -> void:
-	var c := state.country(tag)
-	var mil := state.military_factories(tag)
-	var used := 0
-	for l in c.production_lines:
-		used += int(l.factories)
-	var free := mil - used
-	if free < 1:
-		return
-	var unlocked := ResearchSystem.unlocked_equipment(defs, c)
-	var made := c.production_lines.map(func(l): return l.equipment)
-	# categoria com menos estoque no depósito, entre as que o exército usa
-	var best_eq := ""
-	var best_stock := INF
-	for cat in ["rifle", "artillery", "tank"]:
-		var eq := _best_of(defs, unlocked, cat)
-		if eq == "" or eq in made:
-			continue
-		var stock := 0.0
-		for e in c.equipment:
-			if defs.equipment.get(e, {}).get("category", "") == cat:
-				stock += float(c.equipment[e])
-		if cat == "rifle":
-			stock *= 0.5   # fuzis são a base de quase todo regimento
-		if stock < best_stock:
-			best_stock = stock
-			best_eq = eq
-	if best_eq == "":
-		# tudo já tem linha: reforça a primeira
-		if not c.production_lines.is_empty():
-			var l: Dictionary = c.production_lines[0]
-			cmds.append(SetLineFactoriesCommand.create(tag, int(l.id), int(l.factories) + free))
-		return
-	cmds.append(AddProductionLineCommand.create(tag, best_eq, mini(free, int(rules(defs).get("army", {}).get("line_factories", 6)))))
-
-
-static func _best_of(defs: Dictionary, unlocked: Array, cat: String) -> String:
-	var best := ""
-	var year := -1
-	for eq in unlocked:
-		var d: Dictionary = defs.equipment.get(eq, {})
-		if d.get("category", "") == cat and int(d.get("year", 0)) > year:
-			year = int(d.get("year", 0))
-			best = eq
-	return best
-
-
 # ---------------------------------------------------------------- exército
 
+## Encomenda tropas para manter as fábricas militares ocupadas (`queue_days` de trabalho na fila),
+## escolhendo o tipo mais abaixo da proporção desejada (`mix`, pelo espaço que ocupam).
 static func _army(state: GameState, defs: Dictionary, tag: String, cmds: Array) -> void:
 	var r: Dictionary = rules(defs).get("army", {})
 	var c := state.country(tag)
-	var groups := state.groups_of(tag)
-	var want := mini(int(r.get("max_groups", 24)), int(r.get("base_groups", 1)) + state.military_factories(tag) / maxi(1, int(r.get("factories_per_group", 4))))
-	var max_regs := int(ArmySystem.army(defs).get("max_regiments_per_group", 4))
-	var home := ArmySystem.home_state(state, tag)
-	var planned := {}   # grupo -> regimentos pedidos agora
-	var new_groups := 0
-	for i in int(r.get("regiments_per_think", 3)):
-		for type in r.get("types", ["infantaria"]):
-			var target := -1
-			for g in groups:
-				if g.regiments.size() + int(planned.get(g.id, 0)) < max_regs and g.state_id == home and not g.moving():
-					target = g.id
-					break
-			if target == -1 and (groups.size() + new_groups >= want or new_groups > 0):
-				continue
-			var cmd := FormRegimentCommand.create(tag, type, target)
-			if cmd.validate(state, defs) == "":
-				cmds.append(cmd)
-				if target == -1:
-					new_groups += 1
-				else:
-					planned[target] = int(planned.get(target, 0)) + 1
+	var mil := state.military_factories(tag)
+	if mil > 0:
+		var queued := 0.0
+		for item in c.recruit_queue:
+			queued += float(item.work) - float(item.work_done)
+		var room := mil * float(r.get("queue_days", 10)) - queued
+		var mix: Dictionary = r.get("mix", {"infantaria": 1.0})
+		var have := {}
+		var total := 0.0
+		for g in state.groups_of(tag):
+			for t in g.troops:
+				var sz := float(t.count) * float(ArmySystem.troop_def(defs, t.type).get("size", 1))
+				have[t.type] = float(have.get(t.type, 0.0)) + sz
+				total += sz
+		for item in c.recruit_queue:
+			var sz := float(item.count) * float(ArmySystem.troop_def(defs, item.type).get("size", 1))
+			have[item.type] = float(have.get(item.type, 0.0)) + sz
+			total += sz
+		for _i in 4:
+			if room <= 0.0:
 				break
-	# generais
+			var pick := ""
+			var gap := -INF
+			for type in mix:
+				if ArmySystem.can_recruit(state, defs, tag, type, 1) != "":
+					continue
+				var g := float(mix[type]) - float(have.get(type, 0.0)) / maxf(total, 1.0)
+				if g > gap:
+					gap = g
+					pick = type
+			if pick == "":
+				break
+			var cost := ArmySystem.batch_cost(defs, pick, ArmySystem.best_model(defs, c, pick), 1)
+			var n := clampi(int(room / maxf(cost.work, 0.01)), 1, int(ArmySystem.recruit_rules(defs).get("max_batches_per_click", 10)))
+			cmds.append(RecruitTroopsCommand.create(tag, pick, n))
+			room -= cost.work * n
+			var sz := float(cost.count * n) * float(ArmySystem.troop_def(defs, pick).get("size", 1))
+			have[pick] = float(have.get(pick, 0.0)) + sz
+			total += sz
+	# generais para as pilhas maiores
+	var groups := state.groups_of(tag)
+	groups.sort_custom(func(a, b): return ArmySystem.stack_size(defs, a) > ArmySystem.stack_size(defs, b))
 	var free_gens := state.generals_of(tag).filter(func(gn): return ArmySystem.groups_of_general(state, gn.id).is_empty())
-	for g in groups:
+	for g in groups.slice(0, int(r.get("generals_for", 4))):
 		if g.general_id == -1 or state.general(g.general_id) == null:
 			if not free_gens.is_empty():
 				cmds.append(AssignGeneralCommand.create(tag, g.id, free_gens.pop_front().id))
@@ -247,19 +219,14 @@ static func _has_plan_soon(state: GameState, defs: Dictionary, tag: String) -> b
 	return false
 
 
-static func _regiments(state: GameState, tag: String) -> int:
-	var n := 0
-	for g in state.groups_of(tag):
-		n += g.regiments.size()
-	return n
-
-
 static func _diplomacy(state: GameState, defs: Dictionary, tag: String, cmds: Array) -> void:
 	var ym := _ym(state)
 	for p in _plans(defs, tag):
 		var target: String = p.target
 		if state.country(target) == null or ym < String(p.from) or state.at_war(tag, target) or state.allied(tag, target):
 			continue
+		if "%s|%s" % [tag, target] in state.declared:
+			continue   # plano já cumprido (depois de uma paz, não volta a atacar sozinho)
 		if state.states_of(target).is_empty():
 			continue
 		if p.has("if_at_war") and not state.at_war(p.if_at_war[0], p.if_at_war[1]):
@@ -281,42 +248,106 @@ static func _operations(state: GameState, defs: Dictionary, tag: String, cmds: A
 	var enemies := state.enemies_of(tag)
 	if enemies.is_empty():
 		return
-	var groups := state.groups_of(tag).filter(func(g): return not g.moving() and not g.regiments.is_empty() and not state.battles.has(g.state_id))
-	if groups.is_empty():
-		return
-	var keep := int(ceil(groups.size() * (1.0 - float(rules(defs).get("war", {}).get("attack_groups_share", 0.8)))))
-	groups.sort_custom(func(a, b): return a.id < b.id)
-	var attackers := groups.slice(keep)
+	var war: Dictionary = rules(defs).get("war", {})
+	var min_size := float(war.get("min_attack_size", 60))
+	var attackers := state.groups_of(tag).filter(func(g): return not g.moving() and not g.empty() \
+		and not state.battles.has(g.state_id) and ArmySystem.stack_size(defs, g) >= min_size)
 	if attackers.is_empty():
 		return
-	# frente: estados controlados por inimigos vizinhos de estados nossos ou aliados
-	var front := []
-	for s: MapState in state.states.values():
-		var ctl := s.control()
-		if not ctl in enemies:
-			continue
-		for n in state.adjacency.get(s.id, []):
-			var ns := state.state(n)
-			if ns != null and state.can_enter(tag, ns.control()) and not ns.control() in enemies:
-				front.append(s)
-				break
-	if front.is_empty():
-		return
+	# alvo de cada pilha: o estado inimigo mais perto, procurando pelos vizinhos (por onde dá para passar)
+	# até `max_front_km` de distância
 	var taken := {}
+	var max_km := float(war.get("max_front_km", 1500))
+	var orders := 0
+	attackers.sort_custom(func(a, b): return ArmySystem.stack_size(defs, a) > ArmySystem.stack_size(defs, b))
 	for g in attackers:
-		var here: Vector2 = state.state(g.state_id).center
-		var best: MapState = null
-		var best_km := INF
-		for s: MapState in front:
-			if taken.has(s.id):
-				continue
-			var km := here.distance_squared_to(s.center)
-			if km < best_km:
-				best_km = km
-				best = s
+		if orders >= int(war.get("max_orders", 4)):
+			break
+		var best := _nearest_enemy_state(state, tag, enemies, g.state_id, max_km, taken)
 		if best == null:
-			best = front[0]
+			continue   # nenhuma frente por perto (outro continente): fica de guarda
+		orders += 1
 		taken[best.id] = true
-		var cmd := MoveGroupCommand.create(tag, g.id, best.id)
+		# manda a maior parte e deixa uma guarnição
+		var share := float(war.get("attack_share", 0.8))
+		var counts := {}
+		for type in g.types():
+			counts[type] = floorf(g.count_of(type) * share)
+		var cmd := MoveGroupCommand.create(tag, g.id, best.id, counts)
 		if cmd.validate(state, defs) == "":
 			cmds.append(cmd)
+
+
+## Estado controlado por um inimigo mais perto de `start`, andando por estados em que podemos entrar.
+## Um alvo já escolhido nesta rodada conta 50% mais longe (espalha as pilhas pela frente).
+static func _nearest_enemy_state(state: GameState, tag: String, enemies: Array, start: int, max_km: float, taken: Dictionary) -> MapState:
+	var origin := state.state(start).center
+	var seen := {start: true}
+	var ring := [start]
+	var best: MapState = null
+	var best_km := INF
+	var visited := 0
+	while not ring.is_empty() and visited < 600:
+		var nxt := []
+		for sid in ring:
+			for n in state.adjacency.get(sid, []):
+				if seen.has(n):
+					continue
+				seen[n] = true
+				var s := state.state(n)
+				if s == null:
+					continue
+				var km := MapGeo.km(origin, s.center)
+				if km > max_km:
+					continue
+				visited += 1
+				var ctl := s.control()
+				if ctl in enemies:
+					var score := km * (1.5 if taken.has(n) else 1.0)
+					if score < best_km:
+						best_km = score
+						best = s
+				elif state.can_enter(tag, ctl):
+					nxt.append(n)
+		ring = nxt
+		if best != null and not ring.is_empty():
+			# já achou: só mais um anel para ver se há algo mais perto
+			for sid in ring:
+				for n in state.adjacency.get(sid, []):
+					if seen.has(n):
+						continue
+					var s2 := state.state(n)
+					if s2 != null and s2.control() in enemies:
+						var km2 := MapGeo.km(origin, s2.center) * (1.5 if taken.has(n) else 1.0)
+						if km2 < best_km:
+							best_km = km2
+							best = s2
+			break
+	return best
+
+
+# ---------------------------------------------------------------- paz
+
+## Propõe paz: pede os estados ocupados quando a guerra vai bem; paz branca quando vai mal ou se arrasta.
+static func _peace(state: GameState, defs: Dictionary, tag: String, cmds: Array) -> void:
+	var pr := PeaceSystem.rules(defs)
+	for e in state.enemies_of(tag):
+		var last := int(state.peace_last.get("%s|%s" % [tag, e], -1000000))
+		if state.hours - last < int(pr.get("ai_retry_days", 45)) * 24:
+			continue
+		if not PeaceSystem.pending(state, tag, e).is_empty():
+			continue
+		var months := PeaceSystem.war_months(state, tag, e)
+		if months < float(pr.get("ai_min_months", 3)):
+			continue
+		var score := PeaceSystem.war_score(state, defs, tag, e)
+		var take := []
+		for s: MapState in state.states_of(tag):
+			if s.owner == e:
+				take.append(s.id)
+		take.sort()
+		var losing := PeaceSystem.occupied_share(state, e, tag) > 0.0 and score <= float(pr.get("ai_white_score", -0.3))
+		if score >= float(pr.get("ai_demand_score", 0.25)) and not take.is_empty():
+			cmds.append(ProposePeaceCommand.create(tag, e, 0.0, take.slice(0, int(pr.get("ai_max_states", 12))), {}))
+		elif losing or (months >= float(pr.get("ai_white_after_months", 18)) and absf(score) < 0.15):
+			cmds.append(ProposePeaceCommand.create(tag, e))

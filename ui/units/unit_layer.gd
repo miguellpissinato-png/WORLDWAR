@@ -122,6 +122,7 @@ func _process(delta: float) -> void:
 			continue
 		var pos: Vector2 = cam2d.near(MovementSystem.map_position(st, g))
 		var has_tank := _has_tanks(g)
+		var has_plane := _has_planes(g)
 		if not g.moving() and parked[g.state_id].size() > 1:
 			var list: Array = parked[g.state_id]
 			pos.x += (list.find(g.id) - (list.size() - 1) * 0.5) * _px * 1.1 / zoom
@@ -132,10 +133,10 @@ func _process(delta: float) -> void:
 		_feet[g.id] = pos
 		_screen[g.id] = sp
 		var m: Dictionary = _models.get(g.id, {})
-		if m.is_empty() or m.has_tank != has_tank:
+		if m.is_empty() or m.has_tank != has_tank or m.has_plane != has_plane:
 			if not m.is_empty():
 				m.holder.queue_free()
-			m = _make_model(g, has_tank)
+			m = _make_model(g, has_tank, has_plane)
 			_models[g.id] = m
 		var holder: Node3D = m.holder
 		holder.position = _ground(sp)
@@ -159,13 +160,24 @@ func _process(delta: float) -> void:
 
 
 func _has_tanks(g: ArmyGroup) -> bool:
-	for r in g.regiments:
-		if r.type == "tanquistas":
-			return true
-	return false
+	return g.count_of("tanques") >= 0.5
 
 
-func _make_model(g: ArmyGroup, has_tank: bool) -> Dictionary:
+func _has_planes(g: ArmyGroup) -> bool:
+	return g.count_of("avioes") >= 0.5
+
+
+## Texto curto da pilha no mapa: "320 · 20 tq · 5 av".
+static func stack_label(g: ArmyGroup) -> String:
+	var parts := []
+	for pair in [["infantaria", ""], ["artilharia", " art"], ["tanques", " tq"], ["avioes", " av"]]:
+		var n := roundi(g.count_of(pair[0]))
+		if n > 0:
+			parts.append("%d%s" % [n, pair[1]])
+	return " · ".join(parts)
+
+
+func _make_model(g: ArmyGroup, has_tank: bool, has_plane: bool = false) -> Dictionary:
 	var holder := Node3D.new()
 	_root.add_child(holder)
 	var u := uniform_of(g.owner)
@@ -178,7 +190,12 @@ func _make_model(g: ArmyGroup, has_tank: bool) -> Dictionary:
 		tank.position = Vector3(1.05, 0, -0.45)
 		holder.add_child(tank)
 	# Parado, o boneco olha um pouco de lado para a câmera.
-	return {"holder": holder, "soldier": soldier, "tank": tank, "has_tank": has_tank, "yaw": 0.4}
+	if has_plane:
+		var plane := PlaneModel.create("fighter", Color(u.get("vehicle", "#5a5c45")), Color(u.get("vehicle", "#5a5c45")).lightened(0.3), str(u.get("marking", "")))
+		plane.scale = Vector3.ONE * VEHICLE_SCALE * 0.8
+		plane.position = Vector3(-0.9, 2.3, 0.2)
+		holder.add_child(plane)
+	return {"holder": holder, "soldier": soldier, "tank": tank, "has_tank": has_tank, "has_plane": has_plane, "yaw": 0.4}
 
 
 # ---------------------------------------------------------------- base e setas (no mapa, debaixo dos bonecos)
@@ -228,6 +245,14 @@ func _draw() -> void:
 		draw_circle(Vector2.ZERO, rx, st.country(g.owner).color.darkened(0.1))
 		if id == selected:
 			draw_arc(Vector2.ZERO, rx * 1.35, 0, TAU, 32, Color("#e8d08a"), 2.6 / zoom / 0.38)
+		# número de tropas embaixo do boneco (tamanho fixo na tela)
+		if _px >= 22.0 and (g.owner == _main.player_tag or zoom >= MIN_ZOOM_ALL):
+			var font := UiStyle.font("bold")
+			var txt := stack_label(g)
+			var w := font.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 11).x
+			draw_set_transform(p + Vector2(0, rx * 0.55), 0.0, Vector2.ONE / zoom)
+			draw_rect(Rect2(-w * 0.5 - 4, 0, w + 8, 15), Color(0, 0, 0, 0.6))
+			draw_string(font, Vector2(-w * 0.5, 11.5), txt, HORIZONTAL_ALIGNMENT_LEFT, -1, 11, Color("#f0e6cc"))
 	draw_set_transform(Vector2.ZERO)
 
 
